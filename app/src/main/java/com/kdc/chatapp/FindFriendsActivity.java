@@ -31,7 +31,7 @@ public class FindFriendsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_find_firends);
+        setContentView(R.layout.activity_find_friends);
 
         UserRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
