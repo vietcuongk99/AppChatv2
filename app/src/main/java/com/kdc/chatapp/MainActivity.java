@@ -179,15 +179,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void SenUserToSettingsActivity() {
         Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);;
-        settingsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(settingsIntent);
-        finish();
     }
 
     private void SenUserToFindFriendsActivity() {
         Intent findFriendsIntent = new Intent(MainActivity.this, FindFriendsActivity.class);;
         findFriendsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(findFriendsIntent);
-        finish();
     }
 }
