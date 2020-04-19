@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/darker_gray"
     tools:context=".ChatActivity">
 
     <include android:id="@+id/chat_toolbar"
@@ -32,7 +33,7 @@
             android:id="@+id/input_message"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Nhập vào đây"
+            android:hint="Write your message here..."
             android:padding="15dp"
             android:layout_toLeftOf="@+id/send_message_btn"
             android:layout_centerVertical="true"

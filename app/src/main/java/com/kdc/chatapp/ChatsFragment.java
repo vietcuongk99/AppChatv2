@@ -33,7 +33,6 @@ public class ChatsFragment extends Fragment {
     private RecyclerView chatsList;
     private DatabaseReference ChatsRef, UsersRef;
     private FirebaseAuth mAuth;
-
     private String currentUserID;
 
     public ChatsFragment() {
@@ -74,6 +73,7 @@ public class ChatsFragment extends Fragment {
             @Override
             protected void onBindViewHolder(@NonNull final ChatsViewHolder holder, int position, @NonNull Contacts model) {
                 final String userIDs = getRef(position).getKey();
+                final String[] retImage = {"default_image"};
 
                 UsersRef.child(userIDs).addValueEventListener(new ValueEventListener() {
                     @Override
@@ -82,8 +82,8 @@ public class ChatsFragment extends Fragment {
                         if(dataSnapshot.exists()) {
 
                             if (dataSnapshot.hasChild("image")) {
-                                final String retImage = dataSnapshot.child("image").getValue().toString();
-                                Picasso.get().load(retImage).into(holder.profileImage);
+                                retImage[0] = dataSnapshot.child("image").getValue().toString();
+                                Picasso.get().load(retImage[0]).into(holder.profileImage);
                             }
 
                             final String retName = dataSnapshot.child("name").getValue().toString();
@@ -99,6 +99,7 @@ public class ChatsFragment extends Fragment {
                                     Intent chatIntent = new Intent(getContext(), ChatActivity.class);
                                     chatIntent.putExtra("visit_user_id", userIDs);
                                     chatIntent.putExtra("visit_user_name", retName);
+                                    chatIntent.putExtra("visit_image", retImage[0]);
 
                                     startActivity(chatIntent);
                                 }
