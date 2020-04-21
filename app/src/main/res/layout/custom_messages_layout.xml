@@ -17,6 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginTop="10dp"
+        android:layout_marginLeft="3dp"
         android:layout_toEndOf="@+id/message_profile_image"
         android:background="@drawable/receiver_message_layout"
         android:text="Recever messages here."
@@ -24,6 +25,32 @@
         android:textSize="14sp"
         android:textStyle="bold"
         />
+    
+    <ImageView
+        android:id="@+id/message_receiver_image_view"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_alignParentStart="true"
+        android:layout_margin="5dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="13dp"
+        android:scaleType="centerCrop">
+
+    </ImageView>
+
+
+    <ImageView
+        android:id="@+id/message_sender_image_view"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="5dp"
+        android:scaleType="centerCrop">
+
+    </ImageView>
+    
+    
+    
     <TextView
         android:id="@+id/sender_message_text"
         android:layout_width="wrap_content"
