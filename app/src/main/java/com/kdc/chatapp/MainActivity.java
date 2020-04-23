@@ -232,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
         HashMap<String, Object> onlineStateMap = new HashMap<>();
         onlineStateMap.put("time", saveCurrentTime);
         onlineStateMap.put("date", saveCurrentDate);
-        onlineStateMap.put("status", state);
+        onlineStateMap.put("state", state);
 
         currentUserID = mAuth.getCurrentUser().getUid();
         RootRef.child("Users").child(currentUserID).child("userState")

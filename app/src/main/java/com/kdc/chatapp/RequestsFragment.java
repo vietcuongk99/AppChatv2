@@ -124,12 +124,12 @@ public class RequestsFragment extends Fragment {
                                                     @Override
                                                     public void onClick(DialogInterface dialog, int i) {
                                                         if (i == 0) {
-                                                            ContactsRef.child(currentUserID).child(list_user_id).child("Contact")
+                                                            ContactsRef.child(currentUserID).child(list_user_id).child("Contacts")
                                                                     .setValue("Saved").addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                 @Override
                                                                 public void onComplete(@NonNull Task<Void> task) {
                                                                     if (task.isSuccessful()) {
-                                                                        ContactsRef.child(list_user_id).child(currentUserID).child("Contact")
+                                                                        ContactsRef.child(list_user_id).child(currentUserID).child("Contacts")
                                                                                 .setValue("Saved").addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                             @Override
                                                                             public void onComplete(@NonNull Task<Void> task) {
