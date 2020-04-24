@@ -31,7 +31,6 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_alignParentStart="true"
-        android:layout_margin="5dp"
         android:layout_marginStart="50dp"
         android:layout_marginTop="13dp"
         android:scaleType="centerCrop">
@@ -64,6 +63,5 @@
         android:textStyle="bold"
         android:padding="10dp"
         />
-
 
 </RelativeLayout>

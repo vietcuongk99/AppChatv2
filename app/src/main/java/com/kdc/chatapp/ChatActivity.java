@@ -28,6 +28,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -222,39 +223,45 @@ public class ChatActivity extends AppCompatActivity {
 
                 final StorageReference filePath = storageReference.child(messagePushID + "." + checker);
 
-                filePath.putFile(fileUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                filePath.putFile(fileUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                        if(task.isSuccessful()){
-                            Map messageTextBody = new HashMap();
-                            messageTextBody.put("message", task.getResult().toString());
-                            messageTextBody.put("name", fileUri.getLastPathSegment());
-                            messageTextBody.put("type", checker);
-                            messageTextBody.put("from",messageSenderID);
-                            messageTextBody.put("to", messageReceiverID);
-                            messageTextBody.put("messageID", messagePushID);
-                            messageTextBody.put("time", saveCurrentTime);
-                            messageTextBody.put("date", saveCurrentDate);
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        filePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                String downloadUrl = uri.toString();
+
+                                Map messageImageBody = new HashMap();
+                                messageImageBody.put("message",downloadUrl);
+                                messageImageBody.put("name",fileUri.getLastPathSegment());
+                                messageImageBody.put("type",checker);
+                                messageImageBody.put("from",messageSenderID);
+                                messageImageBody.put("to", messageReceiverID);
+                                messageImageBody.put("messageID", messagePushID);
+                                messageImageBody.put("time", saveCurrentTime);
+                                messageImageBody.put("date", saveCurrentDate);
 
 
-                            Map messageBodyDetails = new HashMap();
-                            messageBodyDetails.put(messageSenderRef + "/" + messagePushID, messageTextBody);
-                            messageBodyDetails.put(messageReceiverRef + "/" + messagePushID, messageTextBody);
+                                Map messageBodyDetail = new HashMap();
+                                messageBodyDetail.put(messageSenderRef+ "/" + messagePushID, messageImageBody);
+                                messageBodyDetail.put(messageReceiverRef+ "/" + messagePushID, messageImageBody);
 
-                            RootRef.updateChildren(messageBodyDetails);
-                            loadingBar.dismiss();
-                        }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        loadingBar.dismiss();
-                        Toast.makeText(ChatActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                RootRef.updateChildren(messageBodyDetail);
+                                loadingBar.dismiss();
+
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                loadingBar.dismiss();
+                                Toast.makeText(ChatActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
                 }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                     @Override
-                    public void onProgress(@NonNull UploadTask.TaskSnapshot taskSnapshot) {
-                        double p = (100.0*taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                        double p = (100.0* taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
                         loadingBar.setMessage((int) p + " % Uploading...");
                     }
                 });
@@ -274,14 +281,14 @@ public class ChatActivity extends AppCompatActivity {
                 final StorageReference filePath = storageReference.child(messagePushID + "." + "jpg");
                 uploadTask = filePath.putFile(fileUri);
 
-                uploadTask.continueWithTask(new Continuation() {
+                uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                     @Override
-                    public Object then(@NonNull Task task) throws Exception {
-
-                        if(!task.isSuccessful()) {
+                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                        if (!task.isSuccessful()) {
                             throw task.getException();
                         }
 
+                        // Continue with the task to get the download URL
                         return filePath.getDownloadUrl();
                     }
                 }).addOnCompleteListener(new OnCompleteListener<Uri>() {
