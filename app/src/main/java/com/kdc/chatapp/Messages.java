@@ -1,7 +1,7 @@
 package com.kdc.chatapp;
 
 public class Messages {
-    private String from, message, type, to, messageID, time, date;
+    private String from, message, type, to, messageID, time, date, name;
 
     public Messages(){
 

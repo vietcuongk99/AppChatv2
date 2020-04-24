@@ -10,5 +10,5 @@ project xây dựng ứng dụng chat cho mobile
   
 Link hướng dẫn: https://www.youtube.com/watch?v=WGOY7Lsac1U&list=PLxefhmF0pcPmtdoud8f64EpgapkclCllj&index=41&fbclid=IwAR0XvDwabflvANmg54scnf2Y7yzyIwFMNIZ3ijIx43hV1E2uJSdpC13HA_M
 
-Tiến độ: hết video 59
+Tiến độ: hết video 60 + 4p đầu video 61
 
