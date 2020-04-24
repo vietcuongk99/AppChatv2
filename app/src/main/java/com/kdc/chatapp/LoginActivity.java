@@ -3,8 +3,10 @@ package com.kdc.chatapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -21,8 +23,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.sinch.android.rtc.SinchError;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity implements SinchService.StartFailedListener  {
 
     private FirebaseAuth mAuth;
     private ProgressDialog loadingBar;
@@ -37,7 +40,10 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        //asking for permissions here
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA, Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.READ_PHONE_STATE},100);
+        }
         mAuth = FirebaseAuth.getInstance();
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
 
@@ -56,6 +62,26 @@ public class LoginActivity extends AppCompatActivity {
                 AllowUserToLogin();
             }
         });
+
+    }
+    //this method is invoked when the connection is established with the SinchService
+    @Override
+    protected void onServiceConnected() {
+        getSinchServiceInterface().setStartListener(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onStartFailed(SinchError error) {
+        Toast.makeText(this, error.toString(), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onStarted() {
 
     }
 
@@ -84,7 +110,9 @@ public class LoginActivity extends AppCompatActivity {
 
                                 String currentUserId = mAuth.getCurrentUser().getUid();
                                 String deviceToken = FirebaseInstanceId.getInstance().getToken();
-
+                                if (!getSinchServiceInterface().isStarted()) {
+                                    getSinchServiceInterface().startClient(mAuth.getCurrentUser().getUid());
+                                }
                                 UsersRef.child(currentUserId).child("device_token")
                                         .setValue(deviceToken).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override

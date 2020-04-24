@@ -40,5 +40,25 @@
         android:textSize="14sp"
         android:textStyle="bold"
         />
+    <Button
+        android:id="@+id/pCall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:minHeight="30dp"
+        android:minWidth="30dp"
+        android:text="P"
+        android:textSize="20sp" />
+    <Button
+        android:id="@+id/vCall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/pCall"
+        android:layout_marginLeft="10dp"
+        android:minHeight="30dp"
+        android:minWidth="30dp"
+        android:text="V"
+        android:textSize="20sp" />
+
 
 </RelativeLayout>

@@ -19,6 +19,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
@@ -42,6 +43,7 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
+import com.sinch.android.rtc.calling.Call;
 import com.squareup.picasso.Picasso;
 
 import java.text.SimpleDateFormat;
@@ -53,7 +55,7 @@ import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ChatActivity extends AppCompatActivity {
+public class ChatActivity extends BaseActivity {
 
     private String messageReceiverID, messageReceiverName, messageReceiverImage, messageSenderID;
     private TextView userName, userLastSeen;
@@ -76,6 +78,9 @@ public class ChatActivity extends AppCompatActivity {
     private StorageTask uploadTask;
     private Uri fileUri;
     private ProgressDialog loadingBar;
+
+    private Button pCall;
+    private Button vCall;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -154,7 +159,8 @@ public class ChatActivity extends AppCompatActivity {
                 builder.show();
             }
         });
-
+        pCall.setOnClickListener(buttonClickListener);
+        vCall.setOnClickListener(buttonClickListener);
     }
 
 
@@ -195,6 +201,8 @@ public class ChatActivity extends AppCompatActivity {
         SimpleDateFormat currentTime = new SimpleDateFormat("hh:mm a");
         saveCurrentTime = currentTime.format(calendar.getTime());
 
+        pCall = findViewById(R.id.pCall);
+        vCall = findViewById(R.id.vCall);
 
     }
 
@@ -451,4 +459,51 @@ public class ChatActivity extends AppCompatActivity {
             });
         }
     }
+
+    //to place the call to the entered name
+    private void callButtonClicked() {
+        String userName = messageReceiverID;
+        if (userName.isEmpty()) {
+            Toast.makeText(this, "Please enter a user to call", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        Call call = getSinchServiceInterface().callUser(userName);
+        String callId = call.getCallId();
+
+        Intent callScreen = new Intent(this, CallScreenActivity.class);
+        callScreen.putExtra(SinchService.CALL_ID, callId);
+        startActivity(callScreen);
+    }
+    private void callVideoButtonClicked() {
+        String userName = messageReceiverID;
+        if (userName.isEmpty()) {
+            Toast.makeText(this, "Please enter a user to call", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        Call call = getSinchServiceInterface().callUserVideo(userName);
+        String callId = call.getCallId();
+
+        Intent callScreen = new Intent(this, CallScreenActivity.class);
+        callScreen.putExtra(SinchService.CALL_ID, callId);
+        startActivity(callScreen);
+    }
+
+    private View.OnClickListener buttonClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.pCall:
+                    callButtonClicked();
+                    break;
+
+                case R.id.vCall:
+                    callVideoButtonClicked();
+                    break;
+
+
+            }
+        }
+    };
 }
