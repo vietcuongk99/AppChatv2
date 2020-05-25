@@ -32,7 +32,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements SinchService.StartFailedListener{
 
 
     private Toolbar mToolbar;
@@ -63,6 +63,26 @@ public class MainActivity extends BaseActivity {
         myTabLayout.setupWithViewPager(myViewPager);
     }
 
+    //this method is invoked when the connection is established with the SinchService
+    @Override
+    protected void onServiceConnected() {
+        getSinchServiceInterface().setStartListener(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    public void onStartFailed(SinchError error) {
+        Toast.makeText(this, error.toString(), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onStarted() {
+
+    }
     @Override
     protected void onStart() {
         super.onStart();
@@ -107,6 +127,9 @@ public class MainActivity extends BaseActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                     if (dataSnapshot.child("name").exists()) {
+                        if (!getSinchServiceInterface().isStarted()) {
+                            getSinchServiceInterface().startClient(mAuth.getCurrentUser().getUid());
+                        }
                         Toast.makeText(MainActivity.this, "Welcome", Toast.LENGTH_SHORT).show();
                     }
                     else {

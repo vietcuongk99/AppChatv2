@@ -25,7 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.sinch.android.rtc.SinchError;
 
-public class LoginActivity extends BaseActivity implements SinchService.StartFailedListener  {
+public class LoginActivity extends BaseActivity  {
 
     private FirebaseAuth mAuth;
     private ProgressDialog loadingBar;
@@ -64,26 +64,6 @@ public class LoginActivity extends BaseActivity implements SinchService.StartFai
         });
 
     }
-    //this method is invoked when the connection is established with the SinchService
-    @Override
-    protected void onServiceConnected() {
-        getSinchServiceInterface().setStartListener(this);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public void onStartFailed(SinchError error) {
-        Toast.makeText(this, error.toString(), Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void onStarted() {
-
-    }
 
     private void AllowUserToLogin() {
         String email = UserEmail.getText().toString();
@@ -110,9 +90,7 @@ public class LoginActivity extends BaseActivity implements SinchService.StartFai
 
                                 String currentUserId = mAuth.getCurrentUser().getUid();
                                 String deviceToken = FirebaseInstanceId.getInstance().getToken();
-                                if (!getSinchServiceInterface().isStarted()) {
-                                    getSinchServiceInterface().startClient(mAuth.getCurrentUser().getUid());
-                                }
+
                                 UsersRef.child(currentUserId).child("device_token")
                                         .setValue(deviceToken).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
