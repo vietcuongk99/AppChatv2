@@ -79,8 +79,8 @@ public class ChatActivity extends BaseActivity {
     private Uri fileUri;
     private ProgressDialog loadingBar;
 
-    private Button pCall;
-    private Button vCall;
+    private ImageButton pCall;
+    private ImageButton vCall;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

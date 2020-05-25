@@ -6,6 +6,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.sinch.android.rtc.AudioController;
 import com.sinch.android.rtc.ClientRegistration;
 import com.sinch.android.rtc.Sinch;
@@ -188,6 +189,7 @@ public class SinchService extends Service {
 
         @Override
         public void onIncomingCall(CallClient callClient, Call call) {
+
             Log.d(TAG, "Incoming call");
             Intent intent = new Intent(SinchService.this, IncomingCallScreenActivity.class);
             intent.putExtra(CALL_ID, call.getCallId());

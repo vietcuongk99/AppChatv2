@@ -7,8 +7,8 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/custom_profile_image"
-        android:layout_width="47dp"
-        android:layout_height="47dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:src="@drawable/profile_image"
@@ -40,25 +40,24 @@
         android:textSize="14sp"
         android:textStyle="bold"
         />
-    <Button
+    <ImageButton
         android:id="@+id/pCall"
+        android:background="@null"
+        android:layout_marginTop="15dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:minHeight="30dp"
-        android:minWidth="30dp"
-        android:text="P"
-        android:textSize="20sp" />
-    <Button
+        android:layout_toLeftOf="@id/vCall"
+        android:layout_marginRight="15dp"
+        android:src="@drawable/ic_phone_call" />
+    <ImageButton
         android:id="@+id/vCall"
+        android:background="@null"
+        android:layout_marginTop="15dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/pCall"
-        android:layout_marginLeft="10dp"
-        android:minHeight="30dp"
-        android:minWidth="30dp"
-        android:text="V"
-        android:textSize="20sp" />
+        android:layout_toLeftOf="@id/custom_profile_image"
+        android:layout_marginRight="20dp"
+        android:src="@drawable/ic_video_call" />
 
 
 </RelativeLayout>

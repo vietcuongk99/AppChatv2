@@ -6,11 +6,19 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.sinch.android.rtc.AudioController;
 import com.sinch.android.rtc.calling.Call;
 import com.sinch.android.rtc.calling.CallEndCause;
@@ -41,6 +49,9 @@ public class CallScreenActivity extends BaseActivity {
     private TextView mCallDuration;
     private TextView mCallState;
     private TextView mCallerName;
+
+    private DatabaseReference RootRef;
+    private String callName;
 
     private class UpdateCallDurationTask extends TimerTask {
 
@@ -73,12 +84,13 @@ public class CallScreenActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.callscreen);
 
+        RootRef = FirebaseDatabase.getInstance().getReference();
+
         mAudioPlayer = new AudioPlayer(this);
         mCallDuration = (TextView) findViewById(R.id.callDuration);
         mCallerName = (TextView) findViewById(R.id.remoteUser);
         mCallState = (TextView) findViewById(R.id.callState);
-        Button endCallButton = (Button) findViewById(R.id.hangupButton);
-
+        ImageButton endCallButton = (ImageButton) findViewById(R.id.hangupButton);
         endCallButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,6 +101,7 @@ public class CallScreenActivity extends BaseActivity {
         mCallId = getIntent().getStringExtra(SinchService.CALL_ID);
         if (savedInstanceState == null) {
             mCallStart = System.currentTimeMillis();
+
         }
     }
 
@@ -110,13 +123,27 @@ public class CallScreenActivity extends BaseActivity {
 
     //method to update video feeds in the UI
     private void updateUI() {
+
         if (getSinchServiceInterface() == null) {
             return; // early
         }
 
         Call call = getSinchServiceInterface().getCall(mCallId);
         if (call != null) {
-            mCallerName.setText(call.getRemoteUserId());
+        RootRef.child("Users").child(call.getRemoteUserId()).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                callName = dataSnapshot.child("name").getValue().toString();
+                mCallerName.setText(callName);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
             mCallState.setText(call.getState().toString());
             if (call.getState() == CallState.ESTABLISHED) {
                 //when the call is established, addVideoViews configures the video to  be shown

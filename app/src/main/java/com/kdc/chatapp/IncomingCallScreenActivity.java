@@ -6,8 +6,12 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.sinch.android.rtc.calling.Call;
 import com.sinch.android.rtc.calling.CallEndCause;
 import com.sinch.android.rtc.video.VideoCallListener;
@@ -24,10 +28,9 @@ public class IncomingCallScreenActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.incomingcall);
-
-        Button answer = (Button) findViewById(R.id.answerButton);
+        ImageButton answer = (ImageButton) findViewById(R.id.answerButton);
         answer.setOnClickListener(mClickListener);
-        Button decline = (Button) findViewById(R.id.declineButton);
+        ImageButton decline = (ImageButton) findViewById(R.id.declineButton);
         decline.setOnClickListener(mClickListener);
 
         mAudioPlayer = new AudioPlayer(this);
@@ -38,10 +41,11 @@ public class IncomingCallScreenActivity extends BaseActivity {
     @Override
     protected void onServiceConnected() {
         Call call = getSinchServiceInterface().getCall(mCallId);
+
         if (call != null) {
             call.addCallListener(new SinchCallListener());
             TextView remoteUser = (TextView) findViewById(R.id.remoteUser);
-            remoteUser.setText(call.getRemoteUserId());
+            remoteUser.setText("Có người gọi tới");
 
         } else {
             Log.e(TAG, "Started with invalid callId, aborting");

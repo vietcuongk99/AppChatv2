@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ffffffff"
+    android:background="@drawable/call"
     android:orientation="vertical"
     android:weightSum="5">
 
@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="#fffafafa"
         android:orientation="vertical">
 
         <TextView
@@ -20,7 +19,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_margin="10dp"
             android:text=""
-            android:textSize="28sp" />
+            android:textAppearance="?android:attr/textAppearanceLarge" />
 
         <TextView
             android:id="@+id/callState"
@@ -29,7 +28,7 @@
             android:layout_gravity="center_horizontal"
             android:text="Ringing"
             android:textAllCaps="true"
-            android:textSize="16sp" />
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
             android:id="@+id/callDuration"
@@ -39,8 +38,7 @@
             android:layout_marginBottom="8dp"
             android:layout_marginTop="4dp"
             android:text="00:00"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textSize="16sp" />
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
     </LinearLayout>
 
@@ -48,7 +46,6 @@
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_weight="3"
-        android:background="@android:color/darker_gray"
         android:orientation="vertical"
         android:padding="0dip">
 
@@ -73,18 +70,18 @@
         android:id="@+id/bottomPanel"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@color/colorPrimaryDark">
+        android:layout_weight="1">
 
-        <Button
+        <ImageButton
             android:id="@+id/hangupButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:background="@drawable/button_background"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_centerInParent="true"
             android:paddingBottom="20dp"
             android:paddingTop="20dp"
-            android:text="END call"
-            android:textSize="20sp" />
+            android:src="@drawable/ic_call"
+            />
 
     </RelativeLayout>
 
