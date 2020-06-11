@@ -101,17 +101,6 @@ public class MainActivity extends BaseActivity implements SinchService.StartFail
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-
-        if (currentUser != null) {
-            updateUserStatus("offline");
-        }
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
 
@@ -132,7 +121,6 @@ public class MainActivity extends BaseActivity implements SinchService.StartFail
                         if (!getSinchServiceInterface().isStarted()) {
                             getSinchServiceInterface().startClient(mAuth.getCurrentUser().getUid());
                         }
-                        Toast.makeText(MainActivity.this, "Welcome", Toast.LENGTH_SHORT).show();
                     }
                     else {
                         SenUserToSettingsActivity();
@@ -247,10 +235,10 @@ public class MainActivity extends BaseActivity implements SinchService.StartFail
         String saveCurrentTime, saveCurrentDate;
 
         Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat currentDate = new SimpleDateFormat("MMM dd, yyyy");
+        SimpleDateFormat currentDate = new SimpleDateFormat("dd/MM/yyyy");
         saveCurrentDate = currentDate.format(calendar.getTime());
 
-        SimpleDateFormat currentTime = new SimpleDateFormat("hh:mm a");
+        SimpleDateFormat currentTime = new SimpleDateFormat("hh:mm:ss");
         saveCurrentTime = currentTime.format(calendar.getTime());
 
         HashMap<String, Object> onlineStateMap = new HashMap<>();

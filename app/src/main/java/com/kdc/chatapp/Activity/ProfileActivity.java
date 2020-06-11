@@ -47,7 +47,7 @@ public class ProfileActivity extends AppCompatActivity {
         NotificationRef = FirebaseDatabase.getInstance().getReference().child("Notifications");
 
         receiverUserID = getIntent().getExtras().get("visit_user_id").toString();
-//        Toast.makeText(this,"User ID: " + receiverUserID, Toast.LENGTH_SHORT).show();
+
         senderUserId = mAuth.getCurrentUser().getUid();
 
         userProfileImage = (CircleImageView) findViewById(R.id.visit_profile_image);
@@ -57,10 +57,10 @@ public class ProfileActivity extends AppCompatActivity {
         DeclineMessageRequestButton = (Button) findViewById(R.id.decline_message_request_button);
         Current_State = "new";
 
-        RetrieveUserinfo();
+        RetrieveUserInfo();
     }
 
-    private void RetrieveUserinfo() {
+    private void RetrieveUserInfo() {
         UserRef.child(receiverUserID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -73,7 +73,7 @@ public class ProfileActivity extends AppCompatActivity {
                     userProfileName.setText(userName);
                     userProfileStatus.setText(userStatus);
 
-                    ManageChatrequests();
+                    ManageChatRequests();
                 }
                 else{
                     String userName = dataSnapshot.child("name").getValue().toString();
@@ -82,7 +82,7 @@ public class ProfileActivity extends AppCompatActivity {
                     userProfileName.setText(userName);
                     userProfileStatus.setText(userStatus);
 
-                    ManageChatrequests();
+                    ManageChatRequests();
                 }
             }
 
@@ -94,7 +94,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
-    private void ManageChatrequests() {
+    private void ManageChatRequests() {
         ChatRequestRef.child(senderUserId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -158,9 +158,7 @@ public class ProfileActivity extends AppCompatActivity {
                     if(Current_State.equals("request_received")){
                         AcceptChatRequest();
                     }
-                    if(Current_State.equals("request_received")){
-                        AcceptChatRequest();
-                    }
+
                     if(Current_State.equals("friends")){
                         RemoveSpecificContact();
                     }

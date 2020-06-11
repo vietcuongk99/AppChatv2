@@ -26,6 +26,10 @@ import com.kdc.chatapp.Model.Contacts;
 import com.kdc.chatapp.R;
 import com.squareup.picasso.Picasso;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
@@ -92,7 +96,7 @@ public class ChatsFragment extends Fragment {
                             final String retStatus = dataSnapshot.child("status").getValue().toString();
 
                             holder.userName.setText(retName);
-                            holder.userStatus.setText("Last Seen: " + "\n" + "Date " + " Time");
+//                            holder.userStatus.setText("Last Seen: " + "\n" + "Date " + " Time");
 
                             if (dataSnapshot.child("userState").hasChild("state")) {
                                 String state = dataSnapshot.child("userState").child("state").getValue().toString();
@@ -103,7 +107,17 @@ public class ChatsFragment extends Fragment {
                                     holder.userStatus.setText("online");
                                 }
                                 else if (state.equals("offline")) {
-                                    holder.userStatus.setText("Last Seen: " + date + " " + time);
+                                    Date now = new Date();
+                                    String SDate1 = date+" "+time;
+                                    try {
+                                        Date date1 = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse(SDate1);
+                                        long x = (now.getTime()-date1.getTime())/60000;
+                                        if(x<60) holder.userStatus.setText("active " + x + " minutes ago");
+                                        else if(x>1440) holder.userStatus.setText("active " + x/1440 + " days ago");
+                                        else holder.userStatus.setText("active " + x/60 + " hours ago");
+                                    } catch (ParseException e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                             }
                             else {
