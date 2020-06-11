@@ -1,4 +1,4 @@
-package com.kdc.chatapp;
+package com.kdc.chatapp.Call;
 
 import android.app.Service;
 import android.content.Intent;
@@ -6,7 +6,6 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.sinch.android.rtc.AudioController;
 import com.sinch.android.rtc.ClientRegistration;
 import com.sinch.android.rtc.Sinch;

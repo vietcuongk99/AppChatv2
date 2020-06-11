@@ -1,4 +1,4 @@
-package com.kdc.chatapp;
+package com.kdc.chatapp.Model;
 
 public class Contacts {
     public String name, status, image;

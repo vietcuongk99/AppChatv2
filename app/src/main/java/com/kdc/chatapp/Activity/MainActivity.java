@@ -1,8 +1,7 @@
-package com.kdc.chatapp;
+package com.kdc.chatapp.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,13 +25,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.kdc.chatapp.R;
+import com.kdc.chatapp.Call.SinchService;
+import com.kdc.chatapp.Adapter.TabsAccessorAdapter;
 import com.sinch.android.rtc.SinchError;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 
-public class MainActivity extends BaseActivity implements SinchService.StartFailedListener{
+public class MainActivity extends BaseActivity implements SinchService.StartFailedListener {
 
 
     private Toolbar mToolbar;

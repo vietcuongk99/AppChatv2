@@ -1,4 +1,4 @@
-package com.kdc.chatapp;
+package com.kdc.chatapp.Activity;
 
 import android.content.ComponentName;
 import android.content.Intent;
@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.os.IBinder;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.kdc.chatapp.Call.SinchService;
 
 public abstract class BaseActivity extends AppCompatActivity implements ServiceConnection {
 

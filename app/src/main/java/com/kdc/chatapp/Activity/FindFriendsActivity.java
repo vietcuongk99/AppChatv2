@@ -1,4 +1,4 @@
-package com.kdc.chatapp;
+package com.kdc.chatapp.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +18,8 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.kdc.chatapp.Model.Contacts;
+import com.kdc.chatapp.R;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -44,6 +46,16 @@ public class FindFriendsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle("Find Friends");
 
+
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
     }
 
     @Override
@@ -66,7 +78,7 @@ public class FindFriendsActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         String visit_user_id = getRef(position).getKey();
-                        Intent profileIntent = new Intent(FindFriendsActivity.this,ProfileActivity.class);
+                        Intent profileIntent = new Intent(FindFriendsActivity.this, ProfileActivity.class);
                         profileIntent.putExtra("visit_user_id",visit_user_id);
                         startActivity(profileIntent);
                     }

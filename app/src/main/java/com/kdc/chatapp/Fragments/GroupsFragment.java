@@ -1,7 +1,6 @@
-package com.kdc.chatapp;
+package com.kdc.chatapp.Fragments;
 
 import android.content.Intent;
-import android.icu.text.Edits;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,6 +18,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.kdc.chatapp.Activity.GroupChatActivity;
+import com.kdc.chatapp.R;
 
 import java.util.ArrayList;
 import java.util.HashSet;

@@ -1,4 +1,4 @@
-package com.kdc.chatapp;
+package com.kdc.chatapp.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,7 +21,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.auth.User;
+import com.kdc.chatapp.Activity.ChatActivity;
+import com.kdc.chatapp.Model.Contacts;
+import com.kdc.chatapp.R;
 import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;

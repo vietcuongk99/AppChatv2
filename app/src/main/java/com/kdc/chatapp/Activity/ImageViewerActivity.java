@@ -1,10 +1,11 @@
-package com.kdc.chatapp;
+package com.kdc.chatapp.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.widget.ImageView;
 
+import com.kdc.chatapp.R;
 import com.squareup.picasso.Picasso;
 
 public class ImageViewerActivity extends AppCompatActivity {

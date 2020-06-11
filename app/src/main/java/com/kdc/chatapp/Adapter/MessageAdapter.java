@@ -1,4 +1,4 @@
-package com.kdc.chatapp;
+package com.kdc.chatapp.Adapter;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -23,7 +23,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
+import com.kdc.chatapp.Activity.ImageViewerActivity;
+import com.kdc.chatapp.Activity.MainActivity;
+import com.kdc.chatapp.Model.Messages;
+import com.kdc.chatapp.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -104,8 +107,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             messageViewHolder.messageReceiverPicture.setVisibility(View.GONE);
 
             if(fromMessageType.equals("text")){
-
-
 
                 if(fromUserID.equals(messageSenderID)){
                     messageViewHolder.senderMessageText.setVisibility(View.VISIBLE);

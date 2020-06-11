@@ -17,22 +17,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <service android:name=".SinchService"></service>
-        <activity android:name=".ImageViewerActivity"></activity>
+        <service android:name=".Call.SinchService"></service>
+        <activity android:name=".Activity.ImageViewerActivity"></activity>
         <activity
-            android:name=".ChatActivity"
-            android:parentActivityName=".MainActivity" />
-        <activity android:name=".ProfileActivity" />
+            android:name=".Activity.ChatActivity"
+            android:parentActivityName=".Activity.MainActivity" />
+        <activity android:name=".Activity.ProfileActivity" />
         <activity
-            android:name=".FindFriendsActivity"
-            android:parentActivityName=".MainActivity" />
-        <activity android:name=".GroupChatActivity" />
+            android:name=".Activity.FindFriendsActivity"
+            android:parentActivityName=".Activity.MainActivity" />
+        <activity android:name=".Activity.GroupChatActivity" />
         <activity
-            android:name=".SettingsActivity"
-            android:parentActivityName=".MainActivity" />
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".MainActivity">
+            android:name=".Activity.SettingsActivity"
+            android:parentActivityName=".Activity.MainActivity" />
+        <activity android:name=".Activity.RegisterActivity" />
+        <activity android:name=".Activity.LoginActivity" />
+        <activity android:name=".Activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -42,9 +42,9 @@
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
-        <activity android:name=".CallScreenActivity"/>
+        <activity android:name=".Call.CallScreenActivity"/>
 
-        <activity android:name=".IncomingCallScreenActivity" android:screenOrientation="fullSensor"
+        <activity android:name=".Call.IncomingCallScreenActivity" android:screenOrientation="fullSensor"
             android:noHistory="true"/>
     </application>
 

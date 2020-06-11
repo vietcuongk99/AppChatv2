@@ -1,4 +1,4 @@
-package com.kdc.chatapp;
+package com.kdc.chatapp.Call;
 
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
@@ -8,6 +8,8 @@ import android.media.AudioTrack;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.util.Log;
+
+import com.kdc.chatapp.R;
 
 import java.io.FileInputStream;
 import java.io.IOException;

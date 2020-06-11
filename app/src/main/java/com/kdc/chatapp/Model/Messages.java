@@ -1,4 +1,4 @@
-package com.kdc.chatapp;
+package com.kdc.chatapp.Model;
 
 public class Messages {
     private String from, message, type, to, messageID, time, date, name;
