@@ -4,35 +4,47 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/message_profile_image"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_marginTop="10dp"
-        android:src="@drawable/profile_image"/>
-
-    <TextView
-        android:id="@+id/receiver_message_text"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/receiver_message"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:orientation="horizontal"
+        android:layout_marginStart="5dp"
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="3dp"
-        android:layout_toEndOf="@+id/message_profile_image"
-        android:background="@drawable/receiver_message_layout"
-        android:text="Recever messages here."
-        android:padding="10dp"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        />
+        android:layout_marginEnd="100dp"
+        android:gravity="">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/message_profile_image"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginHorizontal="5dp"
+            android:src="@drawable/profile_image"/>
+
+
+        <TextView
+            android:id="@+id/receiver_message_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/receiver_message_layout"
+            android:text="Recever messages here."
+            android:padding="10dp"
+            android:textSize="15sp"
+            android:layout_gravity="center_vertical"
+            />
+
+
+    </LinearLayout>
+
+
     
     <ImageView
         android:id="@+id/message_receiver_image_view"
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="13dp"
+        android:layout_marginStart="65dp"
+        android:layout_marginTop="10dp"
         android:scaleType="centerCrop">
 
     </ImageView>
@@ -43,25 +55,35 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_alignParentEnd="true"
-        android:layout_margin="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginTop="10dp"
         android:scaleType="centerCrop">
 
     </ImageView>
     
     
-    
-    <TextView
-        android:id="@+id/sender_message_text"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="end"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="@+id/receiver_message"
+        android:layout_marginEnd="5dp"
         android:layout_marginTop="10dp"
-        android:layout_alignParentTop="@+id/receiver_message_text"
-        android:background="@drawable/sender_message_layout"
-        android:text="Sender messages here."
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:padding="10dp"
-        />
+        android:layout_marginStart="100dp">
+
+
+        <TextView
+            android:id="@+id/sender_message_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/sender_message_layout"
+            android:text="Sender messages here."
+            android:textSize="15sp"
+            android:padding="10dp"
+            />
+
+    </LinearLayout>
+
 
 </RelativeLayout>

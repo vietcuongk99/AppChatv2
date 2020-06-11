@@ -45,15 +45,19 @@
         android:layout_alignParentBottom="true">
         <EditText
             android:id="@+id/input_group_message"
-            android:layout_width="350dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="8"
             android:hint="Write your message here..."
-            android:padding="17dp"/>
+            android:padding="15dp"
+            android:layout_marginHorizontal="5dp"/>
         <ImageButton
             android:id="@+id/send_message_button"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:src="@drawable/send_message"/>
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:src="@drawable/send_message"
+            android:layout_weight="1.5"
+            android:layout_marginEnd="5dp"/>
     </LinearLayout>
 
 </RelativeLayout>

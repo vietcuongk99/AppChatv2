@@ -12,8 +12,10 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,6 +49,7 @@ import com.kdc.chatapp.Call.SinchService;
 import com.sinch.android.rtc.calling.Call;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -68,7 +71,7 @@ public class ChatActivity extends BaseActivity {
     private ImageButton SendMessageButton, SendFilesButton;
     private EditText MessageInputText;
 
-    private final List<Messages> messagesList = new ArrayList<>();
+    private List<Messages> messagesList;
     private LinearLayoutManager linearLayoutManager;
     private MessageAdapter messageAdapter;
     private RecyclerView userMessagesList;
@@ -98,6 +101,8 @@ public class ChatActivity extends BaseActivity {
         messageReceiverName = getIntent().getExtras().get("visit_user_name").toString();
         messageReceiverImage = getIntent().getExtras().get("visit_image").toString();
 
+        messagesList = new ArrayList<>();
+        getMessengerList();
         InitializeControllers();
 
         userName.setText(messageReceiverName);
@@ -139,6 +144,7 @@ public class ChatActivity extends BaseActivity {
                             intent.setAction(Intent.ACTION_GET_CONTENT);
                             intent.setType("image/*");
                             startActivityForResult(intent.createChooser(intent, "Select Image"), 438);
+
                         }
                         if(i == 1) {
                             checker = "pdf";
@@ -147,6 +153,7 @@ public class ChatActivity extends BaseActivity {
                             intent.setAction(Intent.ACTION_GET_CONTENT);
                             intent.setType("application/pdf");
                             startActivityForResult(intent.createChooser(intent, "Select PDF File"), 438);
+
                         }
                         if(i == 2) {
                             checker = "docx";
@@ -155,6 +162,7 @@ public class ChatActivity extends BaseActivity {
                             intent.setAction(Intent.ACTION_GET_CONTENT);
                             intent.setType("application/msword");
                             startActivityForResult(intent.createChooser(intent, "Select MS Word File"), 438);
+
                         }
                     }
                 });
@@ -172,7 +180,6 @@ public class ChatActivity extends BaseActivity {
         ChatToolBar = (androidx.appcompat.widget.Toolbar) findViewById(R.id.chat_toolbar);
         setSupportActionBar(ChatToolBar);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowCustomEnabled(true);
 
         LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -220,8 +227,32 @@ public class ChatActivity extends BaseActivity {
             loadingBar.setCanceledOnTouchOutside(false);
             loadingBar.show();
 
+
             fileUri = data.getData();
 
+            // lấy ra tên file pdf và file doc
+            String uriString = fileUri.toString();
+            File myFile = new File(uriString);
+            String path = myFile.getAbsolutePath();
+            String displayName = null;
+
+            if (uriString.startsWith("content://")) {
+                Cursor cursor = null;
+                try {
+                    cursor = getApplicationContext().getContentResolver().query(fileUri,
+                            null, null, null, null);
+                    if (cursor != null && cursor.moveToFirst()) {
+                        displayName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                    }
+                } finally {
+                    cursor.close();
+                }
+            } else if (uriString.startsWith("file://")) {
+                displayName = myFile.getName();
+            }
+            String finalDisplayName = displayName;
+
+            // nếu file gửi không phải image
             if(!checker.equals("image")) {
                 StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("Document Files");
                 final String messageSenderRef = "Messages/" + messageSenderID + "/" + messageReceiverID;
@@ -231,7 +262,6 @@ public class ChatActivity extends BaseActivity {
                         .child(messageSenderID).child(messageReceiverID).push();
 
                 final String messagePushID = userMessageKeyRef.getKey();
-
                 final StorageReference filePath = storageReference.child(messagePushID + "." + checker);
 
                 filePath.putFile(fileUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
@@ -244,7 +274,7 @@ public class ChatActivity extends BaseActivity {
 
                                 Map messageImageBody = new HashMap();
                                 messageImageBody.put("message",downloadUrl);
-                                messageImageBody.put("name",fileUri.getLastPathSegment());
+                                messageImageBody.put("name", finalDisplayName);
                                 messageImageBody.put("type",checker);
                                 messageImageBody.put("from",messageSenderID);
                                 messageImageBody.put("to", messageReceiverID);
@@ -330,7 +360,6 @@ public class ChatActivity extends BaseActivity {
                                 public void onComplete(@NonNull Task task) {
                                     if(task.isSuccessful()){
                                         loadingBar.dismiss();
-                                        Toast.makeText(ChatActivity.this, "Message sent successfully.", Toast.LENGTH_SHORT).show();
                                     }
                                     else {
                                         loadingBar.dismiss();
@@ -374,7 +403,10 @@ public class ChatActivity extends BaseActivity {
                                 try {
                                     Date date1 = new SimpleDateFormat("dd/MM/yyyy hh:mm a").parse(SDate1);
                                     long x = (now.getTime()-date1.getTime())/60000;
-                                    if(x<60) userLastSeen.setText("active " + x + " minutes ago");
+                                    if(x<60){
+                                        x+=1;
+                                        userLastSeen.setText("active " + x + " minutes ago");
+                                    }
                                     else if(x>1440) userLastSeen.setText("active " + x/1440 + " days ago");
                                     else userLastSeen.setText("active " + x/60 + " hours ago");
                                 } catch (ParseException e) {
@@ -394,9 +426,8 @@ public class ChatActivity extends BaseActivity {
                 });
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
+    private void getMessengerList() {
+        messagesList.clear();
         RootRef.child("Messages").child(messageSenderID).child(messageReceiverID)
                 .addChildEventListener(new ChildEventListener() {
                     @Override
@@ -430,6 +461,49 @@ public class ChatActivity extends BaseActivity {
                     }
                 });
     }
+
+    /*
+    @Override
+    protected void onStart() {
+
+        super.onStart();
+
+        messagesList.clear();
+        RootRef.child("Messages").child(messageSenderID).child(messageReceiverID)
+                .addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                        Messages messages = dataSnapshot.getValue(Messages.class);
+                        messagesList.add(messages);
+                        messageAdapter.notifyDataSetChanged();
+
+                        userMessagesList.smoothScrollToPosition(userMessagesList.getAdapter().getItemCount());
+                    }
+
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                    }
+
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+    }
+
+     */
 
     private void SendMessage(){
         String messageText = MessageInputText.getText().toString();

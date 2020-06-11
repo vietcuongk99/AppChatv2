@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -112,18 +113,17 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                     messageViewHolder.senderMessageText.setVisibility(View.VISIBLE);
 
                     messageViewHolder.senderMessageText.setBackgroundResource(R.drawable.sender_message_layout);
-                    messageViewHolder.senderMessageText.setTextColor(Color.BLACK);
-                    messageViewHolder.senderMessageText.setText(messages.getMessage() + "\n \n" + messages.getTime() + " - " + messages.getDate());
+                    messageViewHolder.senderMessageText.setTextColor(Color.WHITE);
+                    messageViewHolder.senderMessageText.setText(messages.getMessage());
                 }
                 else{
-
 
                     messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
                     messageViewHolder.receiverMessageText.setVisibility(View.VISIBLE);
 
                     messageViewHolder.receiverMessageText.setBackgroundResource(R.drawable.receiver_message_layout);
                     messageViewHolder.receiverMessageText.setTextColor(Color.BLACK);
-                    messageViewHolder.receiverMessageText.setText(messages.getMessage() + "\n \n" + messages.getTime() + " - " + messages.getDate());
+                    messageViewHolder.receiverMessageText.setText(messages.getMessage());
                 }
             }
             else if(fromMessageType.equals("image")) {
@@ -139,25 +139,31 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
                 }
             }
-            else if(fromMessageType.equals("pdf") || fromMessageType.equals("docx")){
-                if(fromUserID.equals(messageSenderID)) {
-                    messageViewHolder.messageSenderPicture.setVisibility(View.VISIBLE);
 
-                    messageViewHolder.messageSenderPicture.setBackgroundResource(R.drawable.file);
+            else {
+                if(fromUserID.equals(messageSenderID)){
+                    messageViewHolder.senderMessageText.setVisibility(View.VISIBLE);
 
-                    Picasso.get().load("https://firebasestorage.googleapis.com/v0/b/messengerclone-d6e23.appspot.com/o/Image%20Files%2Ffile.png?alt=media&token=b5970d73-77c4-4276-93f0-44551483fc5a")
-                            .into(messageViewHolder.messageSenderPicture);
-
-
+                    messageViewHolder.senderMessageText.setBackgroundResource(R.drawable.sender_message_layout);
+                    messageViewHolder.senderMessageText.setTextColor(Color.WHITE);
+                    messageViewHolder.senderMessageText.setText(messages.getName());
+                    messageViewHolder.senderMessageText
+                            .setPaintFlags(messageViewHolder.senderMessageText.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
                 }
                 else {
-                    messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
-                    messageViewHolder.messageReceiverPicture.setVisibility(View.VISIBLE);
 
-                    Picasso.get().load("https://firebasestorage.googleapis.com/v0/b/messengerclone-d6e23.appspot.com/o/Image%20Files%2Ffile.png?alt=media&token=b5970d73-77c4-4276-93f0-44551483fc5a")
-                            .into(messageViewHolder.messageReceiverPicture);
+                    messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
+                    messageViewHolder.receiverMessageText.setVisibility(View.VISIBLE);
+
+                    messageViewHolder.receiverMessageText.setBackgroundResource(R.drawable.receiver_message_layout);
+                    messageViewHolder.receiverMessageText.setTextColor(Color.BLACK);
+                    messageViewHolder.receiverMessageText.setText(messages.getName());
+                    messageViewHolder.receiverMessageText
+                            .setPaintFlags(messageViewHolder.receiverMessageText.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                 }
             }
+
+
 
 
             if (fromUserID.equals(messageSenderID)) {
