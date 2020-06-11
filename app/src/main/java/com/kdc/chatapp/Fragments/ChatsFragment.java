@@ -110,7 +110,7 @@ public class ChatsFragment extends Fragment {
                                     Date now = new Date();
                                     String SDate1 = date+" "+time;
                                     try {
-                                        Date date1 = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse(SDate1);
+                                        Date date1 = new SimpleDateFormat("dd/MM/yyyy hh:mm a").parse(SDate1);
                                         long x = (now.getTime()-date1.getTime())/60000;
                                         if(x<60) holder.userStatus.setText("active " + x + " minutes ago");
                                         else if(x>1440) holder.userStatus.setText("active " + x/1440 + " days ago");

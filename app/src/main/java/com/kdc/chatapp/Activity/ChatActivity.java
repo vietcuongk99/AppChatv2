@@ -8,7 +8,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,7 +15,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -51,7 +49,6 @@ import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -359,7 +356,7 @@ public class ChatActivity extends BaseActivity {
     }
 
     private void DisplayLastSeen() {
-        RootRef.child("Users").child(messageSenderID)
+        RootRef.child("Users").child(messageReceiverID)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -375,7 +372,7 @@ public class ChatActivity extends BaseActivity {
                                 Date now = new Date();
                                 String SDate1 = date+" "+time;
                                 try {
-                                    Date date1 = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse(SDate1);
+                                    Date date1 = new SimpleDateFormat("dd/MM/yyyy hh:mm a").parse(SDate1);
                                     long x = (now.getTime()-date1.getTime())/60000;
                                     if(x<60) userLastSeen.setText("active " + x + " minutes ago");
                                     else if(x>1440) userLastSeen.setText("active " + x/1440 + " days ago");
@@ -464,9 +461,7 @@ public class ChatActivity extends BaseActivity {
             RootRef.updateChildren(messageBodyDetails).addOnCompleteListener(new OnCompleteListener() {
                 @Override
                 public void onComplete(@NonNull Task task) {
-                    if(task.isSuccessful()){
-                        Toast.makeText(ChatActivity.this, "Message sent successfully.", Toast.LENGTH_SHORT).show();
-                    }
+                    if(task.isSuccessful());
                     else {
                         Toast.makeText(ChatActivity.this, "Error.", Toast.LENGTH_SHORT).show();
                     }
