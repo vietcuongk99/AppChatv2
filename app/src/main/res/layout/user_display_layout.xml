@@ -78,8 +78,10 @@
                     android:text="Accept"
                     android:textSize="16sp"
                     android:textAllCaps="false"
-                    android:background="@android:color/holo_green_light"
-                    android:visibility="invisible">
+                    android:textColor="@android:color/background_light"
+                    android:background="@drawable/accept_button"
+                    android:visibility="invisible"
+                    >
                 </Button>
                 <Button
                     android:id="@+id/request_cancel_btn"
@@ -88,9 +90,10 @@
                     android:text="Cancel"
                     android:textSize="16sp"
                     android:layout_marginStart="15dp"
-                    android:background="@android:color/holo_red_light"
+                    android:background="@drawable/cancel_button"
                     android:textColor="@android:color/background_light"
-                    android:visibility="invisible">
+                    android:visibility="invisible"
+                    >
                 </Button>
 
             </LinearLayout>

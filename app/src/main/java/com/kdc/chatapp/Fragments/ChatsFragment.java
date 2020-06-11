@@ -112,7 +112,10 @@ public class ChatsFragment extends Fragment {
                                     try {
                                         Date date1 = new SimpleDateFormat("dd/MM/yyyy hh:mm a").parse(SDate1);
                                         long x = (now.getTime()-date1.getTime())/60000;
-                                        if(x<60) holder.userStatus.setText("active " + x + " minutes ago");
+                                        if(x<60) {
+                                            x+=1;
+                                            holder.userStatus.setText("active " + x + " minutes ago");
+                                        }
                                         else if(x>1440) holder.userStatus.setText("active " + x/1440 + " days ago");
                                         else holder.userStatus.setText("active " + x/60 + " hours ago");
                                     } catch (ParseException e) {
