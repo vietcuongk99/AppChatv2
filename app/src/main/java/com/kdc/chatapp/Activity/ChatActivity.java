@@ -330,7 +330,6 @@ public class ChatActivity extends BaseActivity {
                                 public void onComplete(@NonNull Task task) {
                                     if(task.isSuccessful()){
                                         loadingBar.dismiss();
-                                        Toast.makeText(ChatActivity.this, "Message sent successfully.", Toast.LENGTH_SHORT).show();
                                     }
                                     else {
                                         loadingBar.dismiss();
@@ -374,7 +373,10 @@ public class ChatActivity extends BaseActivity {
                                 try {
                                     Date date1 = new SimpleDateFormat("dd/MM/yyyy hh:mm a").parse(SDate1);
                                     long x = (now.getTime()-date1.getTime())/60000;
-                                    if(x<60) userLastSeen.setText("active " + x + " minutes ago");
+                                    if(x<60){
+                                        x+=1;
+                                        userLastSeen.setText("active " + x + " minutes ago");
+                                    }
                                     else if(x>1440) userLastSeen.setText("active " + x/1440 + " days ago");
                                     else userLastSeen.setText("active " + x/60 + " hours ago");
                                 } catch (ParseException e) {
