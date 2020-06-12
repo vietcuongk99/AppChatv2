@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -46,6 +47,9 @@
 
         <activity android:name=".Call.IncomingCallScreenActivity" android:screenOrientation="fullSensor"
             android:noHistory="true"/>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyA9U-7D3EWS6AV7D9Sortf-MCShX6QPa6g" />
     </application>
 
 </manifest>

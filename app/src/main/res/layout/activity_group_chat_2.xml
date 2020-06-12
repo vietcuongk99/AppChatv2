@@ -8,7 +8,7 @@
 
     <include
         android:id="@+id/group_chat_bar_layout"
-        layout="@layout/app_bar_layout">
+        layout="@layout/group_bar_layout">
     </include>
 
     <androidx.recyclerview.widget.RecyclerView

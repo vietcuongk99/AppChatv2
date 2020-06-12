@@ -4,9 +4,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ScrollView;
@@ -14,9 +23,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -53,6 +64,11 @@ public class GroupChatActivity extends AppCompatActivity {
 
     private LinearLayoutManager linearLayoutManager;
 
+    private ImageButton Location;
+    LocationManager locationManager;
+    LocationListener locationListener;
+    String lct;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +100,14 @@ public class GroupChatActivity extends AppCompatActivity {
                 SaveMessageInfoToDatabase();
 
                 userMessageInput.setText("");
+            }
+        });
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        Location = findViewById(R.id.Location);
+        Location.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SendLocation();
             }
         });
     }
@@ -182,4 +206,67 @@ public class GroupChatActivity extends AppCompatActivity {
         }
     }
 
+    private void SendLocation(){
+
+        String messageKey = GroupNameRef.push().getKey();
+
+            Calendar calForDate = Calendar.getInstance();
+            SimpleDateFormat currentDateFormat = new SimpleDateFormat("dd/MM/yyy");
+            currentDate = currentDateFormat.format(calForDate.getTime());
+
+            Calendar calForTime = Calendar.getInstance();
+            SimpleDateFormat currentTimeFormat = new SimpleDateFormat("hh:mm a");
+            currentTime = currentTimeFormat.format(calForTime.getTime());
+
+            HashMap<String, Object> groupMessageKey = new HashMap<>();
+            GroupNameRef.updateChildren(groupMessageKey);
+
+            GroupMessageKeyRef = GroupNameRef.child(messageKey);
+
+            HashMap<String, Object> messageInfoMap = new HashMap<>();
+            messageInfoMap.put("from", currentUserID);
+            messageInfoMap.put("name", currentUserName);
+            messageInfoMap.put("message", "ShareLocation");
+            messageInfoMap.put("date", currentDate);
+            messageInfoMap.put("time", currentTime);
+            GroupMessageKeyRef.updateChildren(messageInfoMap);
+    }
+    private void OpenMap(){
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]
+                            {Manifest.permission.ACCESS_FINE_LOCATION},
+                    1);
+        }
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(android.location.Location location) {
+                double latitude = location.getLatitude();
+                double longitude = location.getLongitude();
+                String uri = "geo:" + latitude + ","
+                        + longitude + "?q=" + latitude
+                        + "," + longitude;
+                startActivity(new Intent(android.content.Intent.ACTION_VIEW,
+                        Uri.parse(uri)));
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        };
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000000000, 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000000000, 0, locationListener);
+    }
 }
