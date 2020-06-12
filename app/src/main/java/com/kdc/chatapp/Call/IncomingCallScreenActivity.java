@@ -78,7 +78,7 @@ public class IncomingCallScreenActivity extends BaseActivity {
         @Override
         public void onCallEnded(Call call) {
             CallEndCause cause = call.getDetails().getEndCause();
-            Log.d(TAG, "Call ended, cause: " + cause.toString());
+            Log.d(TAG, "Call Ended. Reason: " + cause.toString());
             mAudioPlayer.stopRingtone();
             finish();
         }
