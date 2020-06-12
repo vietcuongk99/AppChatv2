@@ -4,45 +4,61 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/profile_activity"
     tools:context=".Activity.ProfileActivity">
+    
+    <RelativeLayout
+        android:id="@+id/user_image"
+        android:layout_width="match_parent"
+        android:layout_height="250dp">
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/visit_profile_image"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="110dp"
-        android:src="@drawable/profile_image"
-        />
+        <ImageView
+            android:id="@+id/user_page_image"
+            android:layout_width="match_parent"
+            android:layout_height="125dp"
+            android:tintMode="src_over"
+            android:tint="#B3FFFFFF"
+            android:scaleType="centerCrop"
+            android:src="@drawable/bg_page_default">
+
+        </ImageView>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/visit_profile_image"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginTop="110dp"
+            android:src="@drawable/profile_image"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"/>
+
+    </RelativeLayout>
+
     <TextView
         android:id="@+id/visit_user_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="user name"
-        android:layout_below="@+id/visit_profile_image"
+        android:layout_below="@+id/user_image"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="10dp"
         android:textAlignment="center"
         android:textAllCaps="false"
-        android:textSize="18sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         />
     <TextView
         android:id="@+id/visit_profile_status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="hey I'm using Coding Cafe Chat App."
+        android:text="user status"
         android:layout_below="@+id/visit_user_name"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="10dp"
         android:textAlignment="center"
         android:textAllCaps="false"
-        android:textSize="25sp"
-        android:textStyle="bold"
+        android:textSize="20sp"
         />
 
     <Button
@@ -56,8 +72,8 @@
         android:textColor="@android:color/background_light"
         android:background="@drawable/button"
         android:textStyle="bold"
-        android:textSize="20sp"
-        android:text="Send Message"
+        android:textSize="15sp"
+        android:text="Send Chat Request"
         android:textAllCaps="false"
         />
 
@@ -72,7 +88,7 @@
         android:textColor="@android:color/background_light"
         android:background="@drawable/button"
         android:textStyle="bold"
-        android:textSize="20sp"
+        android:textSize="15sp"
         android:text="Cancel Chat Request"
         android:textAllCaps="false"
         android:visibility="invisible"

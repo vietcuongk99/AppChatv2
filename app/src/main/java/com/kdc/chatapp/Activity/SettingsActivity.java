@@ -15,6 +15,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.Continuation;
@@ -43,6 +44,7 @@ public class SettingsActivity extends AppCompatActivity {
     private Button UpdateAccountSettings;
     private EditText userName, userStatus;
     private CircleImageView userProfileImage;
+    private ImageView userPageImage;
     private String currentUserID;
     private FirebaseAuth mAuth;
     private DatabaseReference RootRef;
@@ -64,8 +66,6 @@ public class SettingsActivity extends AppCompatActivity {
         UserProfileImagesRef = FirebaseStorage.getInstance().getReference().child("Profile Images");
 
         InitializeFields();
-
-        userName.setVisibility(View.INVISIBLE);
 
         UpdateAccountSettings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,6 +91,7 @@ public class SettingsActivity extends AppCompatActivity {
         userName = (EditText) findViewById(R.id.set_user_name);
         userStatus = (EditText) findViewById(R.id.set_profile_status);
         userProfileImage = (CircleImageView) findViewById(R.id.set_profile_image);
+        userPageImage = findViewById(R.id.user_page_image);
         UpdateAccountSettings = (Button) findViewById(R.id.update_settings_button);
         loadingBar = new ProgressDialog(this);
 
@@ -192,7 +193,6 @@ public class SettingsActivity extends AppCompatActivity {
             Toast.makeText(this, "Please write your status first....", Toast.LENGTH_SHORT).show();
         } else {
             HashMap<String, Object> profileMap = new HashMap<>();
-            profileMap.put("uid", currentUserID);
             profileMap.put("name", setUserName);
             profileMap.put("status", setStatus);
 
@@ -226,6 +226,7 @@ public class SettingsActivity extends AppCompatActivity {
                             userName.setText(retrieveUserName);
                             userStatus.setText(retrieveStatus);
                             Picasso.get().load(retrieveProfileImage).into(userProfileImage);
+                            Picasso.get().load(retrieveProfileImage).into(userPageImage);
                         } else if ((dataSnapshot.exists()) && (dataSnapshot.hasChild("name"))) {
                             String retrieveUserName = dataSnapshot.child("name").getValue().toString();
                             String retrieveStatus = dataSnapshot.child("status").getValue().toString();

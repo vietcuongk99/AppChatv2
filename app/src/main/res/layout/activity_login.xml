@@ -36,7 +36,7 @@
                 android:layout_marginRight="17dp"
                 android:background="@drawable/inputs"
                 android:drawableStart="@drawable/email"
-                android:hint="Email..."
+                android:hint="Email"
                 android:inputType="textEmailAddress"
                 android:padding="4dp" />
 
@@ -66,9 +66,9 @@
                 android:layout_marginRight="23dp"
                 android:text="Forget Password ?"
                 android:textAlignment="textEnd"
-                android:textSize="17dp"
+                android:textSize="15sp"
                 android:textStyle="bold"
-                android:textColor="@color/colorPrimaryDark"/>
+                android:textColor="#15ADF2"/>
 
             <Button
                 android:id="@+id/login_button"
@@ -95,9 +95,9 @@
                 android:layout_marginRight="23dp"
                 android:text="Need new account ?"
                 android:textAlignment="center"
-                android:textSize="17dp"
+                android:textSize="15sp"
                 android:textStyle="bold"
-                android:textColor="@color/colorPrimaryDark"/>
+                android:textColor="#15ADF2"/>
 
         </RelativeLayout>
     </ScrollView>

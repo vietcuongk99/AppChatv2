@@ -206,7 +206,7 @@ public class RequestsFragment extends Fragment {
                                         final String requestUserStatus = dataSnapshot.child("status").getValue().toString();
 
                                         holder.userName.setText(requestUserName);
-                                        holder.userStatus.setText("you have sent a friend request");
+                                        holder.userStatus.setText("you have sent a chat request");
 
                                         holder.itemView.findViewById(R.id.request_cancel_btn).setOnClickListener(new View.OnClickListener() {
                                             @Override

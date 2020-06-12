@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,6 +31,7 @@ public class ProfileActivity extends AppCompatActivity {
     private String receiverUserID, senderUserId, Current_State;
 
     private CircleImageView userProfileImage;
+    private ImageView userPageImage;
     private TextView userProfileName, userProfileStatus;
     private Button SendMessageRequestButton, DeclineMessageRequestButton;
     private DatabaseReference UserRef, ChatRequestRef, ContactsRef, NotificationRef;
@@ -51,6 +53,7 @@ public class ProfileActivity extends AppCompatActivity {
         senderUserId = mAuth.getCurrentUser().getUid();
 
         userProfileImage = (CircleImageView) findViewById(R.id.visit_profile_image);
+        userPageImage = findViewById(R.id.user_page_image);
         userProfileName = (TextView) findViewById(R.id.visit_user_name);
         userProfileStatus = (TextView) findViewById(R.id.visit_profile_status);
         SendMessageRequestButton = (Button) findViewById(R.id.send_message_request_button);
@@ -64,12 +67,15 @@ public class ProfileActivity extends AppCompatActivity {
         UserRef.child(receiverUserID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if ((dataSnapshot.exists()) && (dataSnapshot.hasChild("picture"))){
-                    String userImage = dataSnapshot.child("picture").getValue().toString();
+                if ((dataSnapshot.exists()) && (dataSnapshot.hasChild("image"))){
+                    String userImage = dataSnapshot.child("image").getValue().toString();
                     String userName = dataSnapshot.child("name").getValue().toString();
                     String userStatus = dataSnapshot.child("status").getValue().toString();
+                    if (userImage != null) {
+                        Picasso.get().load(userImage).into(userProfileImage);
+                        Picasso.get().load(userImage).into(userPageImage);
+                    }
 
-                    Picasso.get().load(userImage).placeholder(R.drawable.profile_image).into(userProfileImage);
                     userProfileName.setText(userName);
                     userProfileStatus.setText(userStatus);
 

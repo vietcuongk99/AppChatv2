@@ -58,6 +58,9 @@ public class MainActivity extends BaseActivity implements SinchService.StartFail
     private CircleImageView userImage;
     private TextView userName;
 
+    private long backPressedTime;
+    private Toast backToast;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -249,6 +252,24 @@ public class MainActivity extends BaseActivity implements SinchService.StartFail
         }
 
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        // nếu khoảng cách giữa 2 lần nhấn nút Back > 2 giây, thông báo hiện ra
+        if (backPressedTime + 2000 > System.currentTimeMillis()) {
+            backToast.cancel();
+            super.onBackPressed();
+            return;
+        }
+
+        else {
+            backToast = Toast.makeText(MainActivity.this, "Ấn nút Back lần nữa để thoát", Toast.LENGTH_SHORT);
+            backToast.show();
+        }
+
+        backPressedTime = System.currentTimeMillis();
     }
 
     private void RequestNewGroup() {

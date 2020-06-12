@@ -80,7 +80,7 @@
                     android:textSize="16sp"
                     android:textAllCaps="false"
                     android:textColor="@android:color/background_light"
-                    android:background="@drawable/accept_button"
+                    android:background="@drawable/bg_page_default"
                     android:visibility="invisible"
                     >
                 </Button>
