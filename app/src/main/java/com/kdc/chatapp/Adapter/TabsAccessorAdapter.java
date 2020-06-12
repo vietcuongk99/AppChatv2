@@ -49,21 +49,4 @@ public class TabsAccessorAdapter extends FragmentPagerAdapter {
         return 4;
     }
 
-    @Nullable
-    @Override
-    // đặt tiêu đề cho từng Fragment
-    public CharSequence getPageTitle(int position) {
-        switch (position) {
-            case 0:
-                return "Chats";
-            case 1:
-                return "Groups";
-            case 2:
-                return "Contacts";
-            case 3:
-                return "Requests";
-            default:
-                return null;
-        }
-    }
 }

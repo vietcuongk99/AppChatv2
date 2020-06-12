@@ -28,8 +28,8 @@
             android:layout_height="wrap_content"
             android:background="@drawable/receiver_message_layout"
             android:text="Recever messages here."
-            android:padding="10dp"
-            android:textSize="15sp"
+            android:padding="8dp"
+            android:textSize="16sp"
             android:layout_gravity="center_vertical"
             android:textColor="#fff"
             />
@@ -80,8 +80,8 @@
             android:layout_height="wrap_content"
             android:background="@drawable/sender_message_layout"
             android:text="Sender messages here."
-            android:textSize="15sp"
-            android:padding="10dp"
+            android:textSize="16sp"
+            android:padding="8dp"
             android:textColor="#fff"
             />
 

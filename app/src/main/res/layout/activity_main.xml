@@ -6,8 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".Activity.MainActivity">
 
-
-
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
@@ -17,24 +15,39 @@
             android:id="@+id/main_page_toolbar"
             layout="@layout/app_bar_layout">
         </include>
-        
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/main_tabs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:tabIndicatorColor="@android:color/white">
 
-        </com.google.android.material.tabs.TabLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/main_tabs_pager"
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/appBarLayout">
+        android:layout_above="@+id/bottom_tab_layout"
+        android:layout_below="@+id/appBarLayout">
 
-    </androidx.viewpager.widget.ViewPager>
+        <FrameLayout
+            android:id="@+id/frame_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            />
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior = "@string/appbar_scrolling_view_behavior"/>
+
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#fff"
+        app:itemTextColor="#000"
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/bottom_nav_menu" />
 
 </RelativeLayout>

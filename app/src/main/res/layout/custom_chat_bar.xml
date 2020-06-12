@@ -3,7 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorAccent"
     android:paddingVertical="10dp">
 
     <de.hdodenhof.circleimageview.CircleImageView
@@ -29,8 +28,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Display UserName"
-            android:textColor="@android:color/background_light"
-            android:textSize="18sp"
+            android:textColor="#000"
+            android:textSize="16sp"
             android:textStyle="bold"
             />
 
@@ -41,9 +40,8 @@
             android:layout_below="@+id/custom_profile_name"
             android:layout_marginTop="3dp"
             android:text="Last Seen"
-            android:textColor="@android:color/background_light"
+            android:textColor="#000"
             android:textSize="14sp"
-            android:textStyle="bold"
             />
 
     </RelativeLayout>

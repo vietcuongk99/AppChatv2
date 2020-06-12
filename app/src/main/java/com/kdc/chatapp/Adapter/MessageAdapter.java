@@ -73,7 +73,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     }
 
 
-
     @Override
     public void onBindViewHolder(@NonNull final MessageViewHolder messageViewHolder, final int position) {
             String messageSenderID = mAuth.getCurrentUser().getUid();
@@ -117,7 +116,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                     messageViewHolder.senderMessageText.setText(messages.getMessage());
                 }
                 else{
-
                     messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
                     messageViewHolder.receiverMessageText.setVisibility(View.VISIBLE);
 
@@ -143,9 +141,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             else {
                 if(fromUserID.equals(messageSenderID)){
                     messageViewHolder.senderMessageText.setVisibility(View.VISIBLE);
-
                     messageViewHolder.senderMessageText.setBackgroundResource(R.drawable.sender_message_layout);
-                    messageViewHolder.senderMessageText.setTextColor(Color.WHITE);
+                    messageViewHolder.senderMessageText.setTextColor(Color.BLACK);
                     messageViewHolder.senderMessageText.setText(messages.getName());
                     messageViewHolder.senderMessageText
                             .setPaintFlags(messageViewHolder.senderMessageText.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
@@ -156,7 +153,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                     messageViewHolder.receiverMessageText.setVisibility(View.VISIBLE);
 
                     messageViewHolder.receiverMessageText.setBackgroundResource(R.drawable.receiver_message_layout);
-                    messageViewHolder.receiverMessageText.setTextColor(Color.BLACK);
+                    messageViewHolder.receiverMessageText.setTextColor(Color.WHITE);
                     messageViewHolder.receiverMessageText.setText(messages.getName());
                     messageViewHolder.receiverMessageText
                             .setPaintFlags(messageViewHolder.receiverMessageText.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
