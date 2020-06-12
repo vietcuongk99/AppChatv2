@@ -75,36 +75,42 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     @Override
     public void onBindViewHolder(@NonNull final MessageViewHolder messageViewHolder, final int position) {
-            String messageSenderID = mAuth.getCurrentUser().getUid();
-            Messages messages = userMessageList.get(position);
-
-            String fromUserID = messages.getFrom();
-            String fromMessageType = messages.getType();
-
-            usersRef = FirebaseDatabase.getInstance().getReference().child("Users")
-                    .child(fromUserID);
-            usersRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.hasChild("image")){
-                        String receiverImage = dataSnapshot.child("image").getValue().toString();
-                        Picasso.get().load(receiverImage).placeholder(R.drawable.profile_image)
-                                .into(messageViewHolder.receiverProfileImage);
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            });
-
 
             messageViewHolder.receiverMessageText.setVisibility(View.GONE);
             messageViewHolder.receiverProfileImage.setVisibility(View.GONE);
             messageViewHolder.senderMessageText.setVisibility(View.GONE);
             messageViewHolder.messageSenderPicture.setVisibility(View.GONE);
             messageViewHolder.messageReceiverPicture.setVisibility(View.GONE);
+
+
+            String messageSenderID = mAuth.getCurrentUser().getUid();
+            Messages messages = userMessageList.get(position);
+
+            String fromUserID = messages.getFrom();
+            String fromMessageType = messages.getType();
+
+            if (!fromUserID.equals(messageSenderID)) {
+                usersRef = FirebaseDatabase.getInstance().getReference().child("Users")
+                        .child(fromUserID);
+                usersRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if(dataSnapshot.hasChild("image")){
+                            String receiverImage = dataSnapshot.child("image").getValue().toString();
+                            Picasso.get().load(receiverImage).into(messageViewHolder.receiverProfileImage);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+
+
+
+
 
             if(fromMessageType.equals("text")){
 

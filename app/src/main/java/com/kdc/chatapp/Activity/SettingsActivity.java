@@ -186,15 +186,13 @@ public class SettingsActivity extends AppCompatActivity {
         String setUserName = userName.getText().toString();
         String setStatus = userStatus.getText().toString();
 
-        if (TextUtils.isEmpty(setUserName)) {
-            Toast.makeText(this, "Please write your user name first....", Toast.LENGTH_SHORT).show();
-        }
-        if (TextUtils.isEmpty(setStatus)) {
-            Toast.makeText(this, "Please write your status first....", Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(setUserName) || TextUtils.isEmpty(setStatus)) {
+            Toast.makeText(this, "Please write your user name/ status first....", Toast.LENGTH_SHORT).show();
         } else {
             HashMap<String, Object> profileMap = new HashMap<>();
             profileMap.put("name", setUserName);
             profileMap.put("status", setStatus);
+            profileMap.put("uid", currentUserID);
 
             RootRef.child("Users").child(currentUserID).updateChildren(profileMap)
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
