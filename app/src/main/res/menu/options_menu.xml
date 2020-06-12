@@ -11,7 +11,7 @@
         app:showAsAction="never" />
 
     <item
-        android:title="Settings"
+        android:title="Update Profile"
         android:id="@+id/main_settings_option"
         app:showAsAction="never" />
 
