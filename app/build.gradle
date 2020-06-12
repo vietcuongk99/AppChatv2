@@ -44,6 +44,7 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
 
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.+'
+    implementation "com.github.nikartm:fit-button:1.2.1"
 
     implementation "androidx.annotation:annotation:1.1.0"
     // To use the Java-compatible @Experimental API annotation

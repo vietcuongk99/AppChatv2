@@ -7,6 +7,13 @@ public class Messages {
 
     }
 
+    public Messages(String from, String message, String time, String date) {
+        this.from = from;
+        this.message = message;
+        this.time = time;
+        this.date = date;
+    }
+
     public Messages(String from, String message, String type, String to, String messageID, String time, String date) {
         this.from = from;
         this.message = message;

@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.github.nikartm.button.FitButton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -188,7 +189,7 @@ public class RequestsFragment extends Fragment {
                                 });
                             }
                             else if (type.equals("sent")) {
-                                Button request_sent_btn = holder.itemView.findViewById(R.id.request_cancel_btn);
+                                FitButton request_sent_btn = holder.itemView.findViewById(R.id.request_cancel_btn);
                                 request_sent_btn.setText("Cancel");
 
                                 holder.itemView.findViewById(R.id.request_accept_btn).setVisibility(View.INVISIBLE);
@@ -205,7 +206,7 @@ public class RequestsFragment extends Fragment {
                                         final String requestUserStatus = dataSnapshot.child("status").getValue().toString();
 
                                         holder.userName.setText(requestUserName);
-                                        holder.userStatus.setText("you have sent a request to "+ requestUserName);
+                                        holder.userStatus.setText("you have sent a friend request");
 
                                         holder.itemView.findViewById(R.id.request_cancel_btn).setOnClickListener(new View.OnClickListener() {
                                             @Override
@@ -258,7 +259,7 @@ public class RequestsFragment extends Fragment {
             @Override
             public RequestsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_display_layout, parent, false);
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_request_layout, parent, false);
                 RequestsViewHolder holder = new RequestsViewHolder(view);
                 return holder;
             }
@@ -271,7 +272,7 @@ public class RequestsFragment extends Fragment {
     public static class RequestsViewHolder extends RecyclerView.ViewHolder {
 
         TextView userName, userStatus;
-        Button AcceptButton, CancelButton;
+        FitButton AcceptButton, CancelButton;
         CircleImageView profileImage;
         public RequestsViewHolder(@NonNull View itemView) {
             super(itemView);

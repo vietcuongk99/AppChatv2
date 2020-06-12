@@ -36,7 +36,6 @@ import java.util.HashMap;
 
 public class MainActivity extends BaseActivity implements SinchService.StartFailedListener {
 
-
     private Toolbar mToolbar;
     private ViewPager myViewPager;
     private TabLayout myTabLayout;
@@ -44,7 +43,7 @@ public class MainActivity extends BaseActivity implements SinchService.StartFail
 
     private FirebaseAuth mAuth;
     private DatabaseReference RootRef;
-    private String currentUserID;
+    private String currentUserID, currentUsername;
 
 
     @Override
@@ -53,9 +52,9 @@ public class MainActivity extends BaseActivity implements SinchService.StartFail
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
         RootRef = FirebaseDatabase.getInstance().getReference();
+
         mToolbar = (Toolbar) findViewById(R.id.main_page_toolbar);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle("ChatApp");
 
         myViewPager = (ViewPager) findViewById(R.id.main_tabs_pager);
         myTabsAccessorAdapter = new TabsAccessorAdapter(getSupportFragmentManager());
@@ -118,6 +117,8 @@ public class MainActivity extends BaseActivity implements SinchService.StartFail
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                     if (dataSnapshot.child("name").exists()) {
+                        currentUsername = dataSnapshot.child("name").getValue().toString();
+                        getSupportActionBar().setTitle(currentUsername);
                         if (!getSinchServiceInterface().isStarted()) {
                             getSinchServiceInterface().startClient(mAuth.getCurrentUser().getUid());
                         }
