@@ -183,8 +183,8 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void UpdateSettings() {
-        String setUserName = userName.getText().toString();
-        String setStatus = userStatus.getText().toString();
+        String setUserName = userName.getText().toString().trim();
+        String setStatus = userStatus.getText().toString().trim();
 
         if (TextUtils.isEmpty(setUserName) || TextUtils.isEmpty(setStatus)) {
             Toast.makeText(this, "Please write your user name/ status first....", Toast.LENGTH_SHORT).show();

@@ -21,18 +21,37 @@
             android:layout_marginHorizontal="5dp"
             android:src="@drawable/profile_image"/>
 
-
-        <TextView
-            android:id="@+id/receiver_message_text"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/receiver_message_layout"
-            android:text="Recever messages here."
-            android:padding="8dp"
-            android:textSize="16sp"
-            android:layout_gravity="center_vertical"
-            android:textColor="#fff"
-            />
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/sender_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="normal"
+                android:textSize="15sp"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="2dp"
+                android:visibility="invisible">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/receiver_message_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/receiver_message_layout"
+                android:text="Recever messages here."
+                android:padding="8dp"
+                android:textSize="16sp"
+                android:layout_gravity="center_vertical"
+                android:textColor="#fff"
+                />
+
+        </LinearLayout>
+
 
 
     </LinearLayout>

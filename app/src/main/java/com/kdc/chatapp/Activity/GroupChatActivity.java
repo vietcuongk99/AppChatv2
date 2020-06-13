@@ -86,7 +86,7 @@ public class GroupChatActivity extends AppCompatActivity {
         groupMessenger = new ArrayList<>();
         getMessengerList();
         recyclerView = findViewById(R.id.group_chat_layout);
-        linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(linearLayoutManager);
 
         groupMsgAdapter = new GroupMsgAdapter(groupMessenger);
@@ -99,7 +99,6 @@ public class GroupChatActivity extends AppCompatActivity {
             public void onClick(View v) {
                 SaveMessageInfoToDatabase();
 
-                userMessageInput.setText("");
             }
         });
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -176,10 +175,10 @@ public class GroupChatActivity extends AppCompatActivity {
     }
 
     private void SaveMessageInfoToDatabase() {
-        String message = userMessageInput.getText().toString();
+        String message = userMessageInput.getText().toString().trim();
         String messageKey = GroupNameRef.push().getKey();
 
-        if (TextUtils.isEmpty(message)) {
+        if (TextUtils.isEmpty(message) || message.equals("")) {
             Toast.makeText(this, "Please write message first...", Toast.LENGTH_SHORT).show();
         }
         else {

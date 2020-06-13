@@ -64,7 +64,7 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void AllowUserToLogin() {
-        String email = UserEmail.getText().toString();
+        String email = UserEmail.getText().toString().trim();
         String password = UserPassword.getText().toString();
 
         if(TextUtils.isEmpty(email)) {

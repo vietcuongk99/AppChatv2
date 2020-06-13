@@ -46,7 +46,7 @@ public class GroupMsgAdapter extends RecyclerView.Adapter<GroupMsgAdapter.GroupM
 
     public class GroupMsgViewHolder extends RecyclerView.ViewHolder{
 
-        public TextView senderMessageText, receiverMessageText;
+        public TextView senderMessageText, receiverMessageText, senderName;
         public CircleImageView receiverProfileImage;
         public ImageView messageSenderPicture, messageReceiverPicture;
 
@@ -57,6 +57,7 @@ public class GroupMsgAdapter extends RecyclerView.Adapter<GroupMsgAdapter.GroupM
             receiverProfileImage = (CircleImageView) itemView.findViewById(R.id.message_profile_image);
             messageReceiverPicture = itemView.findViewById(R.id.message_receiver_image_view);
             messageSenderPicture = itemView.findViewById(R.id.message_sender_image_view);
+            senderName = itemView.findViewById(R.id.sender_name);
         }
     }
 
@@ -78,39 +79,35 @@ public class GroupMsgAdapter extends RecyclerView.Adapter<GroupMsgAdapter.GroupM
 
         String fromUserID = messages.getFrom();
 
-        usersRef = FirebaseDatabase.getInstance().getReference().child("Users")
-                .child(fromUserID);
-        usersRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if(dataSnapshot.hasChild("image")){
-                    String receiverImage = dataSnapshot.child("image").getValue().toString();
-                    Picasso.get().load(receiverImage).placeholder(R.drawable.profile_image)
-                            .into(messageViewHolder.receiverProfileImage);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-
         messageViewHolder.receiverMessageText.setVisibility(View.GONE);
         messageViewHolder.receiverProfileImage.setVisibility(View.GONE);
         messageViewHolder.senderMessageText.setVisibility(View.GONE);
         messageViewHolder.messageReceiverPicture.setVisibility(View.GONE);
         messageViewHolder.messageSenderPicture.setVisibility(View.GONE);
 
-        if(fromUserID.equals(messageSenderID)){
-            messageViewHolder.senderMessageText.setVisibility(View.VISIBLE);
+        if (!fromUserID.equals(messageSenderID)) {
+            messageViewHolder.senderName.setVisibility(View.VISIBLE);
+            messageViewHolder.senderName.clearComposingText();
 
-            messageViewHolder.senderMessageText.setBackgroundResource(R.drawable.sender_message_layout);
-            messageViewHolder.senderMessageText.setTextColor(Color.WHITE);
-            messageViewHolder.senderMessageText.setText(messages.getMessage());
-        }
-        else{
+            usersRef = FirebaseDatabase.getInstance().getReference().child("Users")
+                    .child(fromUserID);
+            usersRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    messageViewHolder.senderName.setText(dataSnapshot.child("name").getValue().toString());
+                    if (dataSnapshot.hasChild("image")) {
+                        String receiverImage = dataSnapshot.child("image").getValue().toString();
+                        Picasso.get().load(receiverImage).into(messageViewHolder.receiverProfileImage);
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+
 
             messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
             messageViewHolder.receiverMessageText.setVisibility(View.VISIBLE);
@@ -118,6 +115,14 @@ public class GroupMsgAdapter extends RecyclerView.Adapter<GroupMsgAdapter.GroupM
             messageViewHolder.receiverMessageText.setBackgroundResource(R.drawable.receiver_message_layout);
             messageViewHolder.receiverMessageText.setTextColor(Color.WHITE);
             messageViewHolder.receiverMessageText.setText(messages.getMessage());
+
+        } else {
+            messageViewHolder.senderName.setVisibility(View.INVISIBLE);
+            messageViewHolder.senderMessageText.setVisibility(View.VISIBLE);
+
+            messageViewHolder.senderMessageText.setBackgroundResource(R.drawable.sender_message_layout);
+            messageViewHolder.senderMessageText.setTextColor(Color.WHITE);
+            messageViewHolder.senderMessageText.setText(messages.getMessage());
         }
 
     }
@@ -127,5 +132,13 @@ public class GroupMsgAdapter extends RecyclerView.Adapter<GroupMsgAdapter.GroupM
         return groupMessageList.size();
     }
 
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
 }

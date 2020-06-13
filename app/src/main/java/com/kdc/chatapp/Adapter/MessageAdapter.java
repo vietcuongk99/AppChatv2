@@ -46,7 +46,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     public class MessageViewHolder extends RecyclerView.ViewHolder{
 
-        public TextView senderMessageText, receiverMessageText;
+        public TextView senderMessageText, receiverMessageText, senderName;
         public CircleImageView receiverProfileImage;
         public ImageView messageSenderPicture, messageReceiverPicture;
 
@@ -82,7 +82,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             messageViewHolder.messageSenderPicture.setVisibility(View.GONE);
             messageViewHolder.messageReceiverPicture.setVisibility(View.GONE);
 
-
             String messageSenderID = mAuth.getCurrentUser().getUid();
             Messages messages = userMessageList.get(position);
 
@@ -106,11 +105,64 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
                     }
                 });
+
+
+
+                if(fromMessageType.equals("text")){
+
+                    messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
+                    messageViewHolder.receiverMessageText.setVisibility(View.VISIBLE);
+                    messageViewHolder.receiverMessageText.setBackgroundResource(R.drawable.receiver_message_layout);
+                    messageViewHolder.receiverMessageText.setTextColor(Color.WHITE);
+                    messageViewHolder.receiverMessageText.setText(messages.getMessage());
+
+
+                }
+                else if(fromMessageType.equals("image")) {
+
+                    messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
+                    messageViewHolder.messageReceiverPicture.setVisibility(View.VISIBLE);
+                    Picasso.get().load(messages.getMessage()).into(messageViewHolder.messageReceiverPicture);
+
+                }
+
+                else {
+                    messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
+                    messageViewHolder.receiverMessageText.setVisibility(View.VISIBLE);
+                    messageViewHolder.receiverMessageText.setBackgroundResource(R.drawable.receiver_message_layout);
+                    messageViewHolder.receiverMessageText.setTextColor(Color.BLACK);
+                    messageViewHolder.receiverMessageText.setText(messages.getName());
+
+                }
+
+
+            } else {
+
+                if(fromMessageType.equals("text")){
+
+                    messageViewHolder.senderMessageText.setVisibility(View.VISIBLE);
+                    messageViewHolder.senderMessageText.setBackgroundResource(R.drawable.sender_message_layout);
+                    messageViewHolder.senderMessageText.setTextColor(Color.WHITE);
+                    messageViewHolder.senderMessageText.setText(messages.getMessage());
+
+                }
+                else if(fromMessageType.equals("image")) {
+                    messageViewHolder.messageSenderPicture.setVisibility(View.VISIBLE);
+                    Picasso.get().load(messages.getMessage()).into(messageViewHolder.messageSenderPicture);
+                }
+
+                else {
+                    messageViewHolder.senderMessageText.setVisibility(View.VISIBLE);
+                    messageViewHolder.senderMessageText.setBackgroundResource(R.drawable.sender_message_layout);
+                    messageViewHolder.senderMessageText.setTextColor(Color.BLACK);
+                    messageViewHolder.senderMessageText.setText(messages.getName());
+
+                }
             }
 
 
 
-
+    /*
 
             if(fromMessageType.equals("text")){
 
@@ -165,6 +217,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                             .setPaintFlags(messageViewHolder.receiverMessageText.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
                 }
             }
+
+     */
 
             if (fromUserID.equals(messageSenderID)) {
                 messageViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -463,6 +517,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             }
         });
     }
+
 
 
 }

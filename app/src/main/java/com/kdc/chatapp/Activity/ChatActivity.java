@@ -464,8 +464,8 @@ public class ChatActivity extends BaseActivity {
 
 
     private void SendMessage(){
-        String messageText = MessageInputText.getText().toString();
-        if(TextUtils.isEmpty(messageText)){
+        String messageText = MessageInputText.getText().toString().trim();
+        if(TextUtils.isEmpty(messageText) || messageText.equals("")){
             Toast.makeText(this, "Please write message first...", Toast.LENGTH_SHORT).show();
         }
         else{
