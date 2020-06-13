@@ -5,13 +5,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.Toolbar;
@@ -20,6 +25,7 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.kdc.chatapp.Model.Contacts;
 import com.kdc.chatapp.R;
 import com.squareup.picasso.Picasso;
@@ -31,7 +37,13 @@ public class FindFriendsActivity extends AppCompatActivity {
     private Toolbar mToolbar;
     private RecyclerView FindFriendsRecyclerList;
     private DatabaseReference UserRef;
+    private EditText userName;
+    private ImageView search_btn;
 
+    private FirebaseRecyclerAdapter<Contacts, FindFriendViewHolder> adapter;
+
+
+    @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +53,10 @@ public class FindFriendsActivity extends AppCompatActivity {
 
         FindFriendsRecyclerList = (RecyclerView) findViewById(R.id.find_friends_recycler_list);
         FindFriendsRecyclerList.setLayoutManager(new LinearLayoutManager(this));
+
+        userName = (EditText) findViewById(R.id.friend_name);
+        search_btn = (ImageView) findViewById(R.id.search_btn);
+
 
         mToolbar = (Toolbar) findViewById(R.id.find_friends_toolbar);
         setSupportActionBar(mToolbar);
@@ -63,45 +79,90 @@ public class FindFriendsActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        searchFriend("");
 
-        FirebaseRecyclerOptions<Contacts> options = new FirebaseRecyclerOptions.Builder<Contacts>()
-                .setQuery(UserRef, Contacts.class)
-                .build();
-
-        FirebaseRecyclerAdapter<Contacts, FindFriendViewHolder> adapter =
-                new FirebaseRecyclerAdapter<Contacts, FindFriendViewHolder>(options) {
+        userName.addTextChangedListener(new TextWatcher() {
             @Override
-            protected void onBindViewHolder(@NonNull FindFriendViewHolder holder, final int position, @NonNull Contacts model) {
-                holder.userName.setText(model.getName());
-                holder.userStatus.setText(model.getStatus());
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
-                if (model.getImage() != null) {
-                    Picasso.get().load(model.getImage()).into(holder.profileImage);
-                }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String friendName = standardInputText(userName.getText().toString());
+                searchFriend(friendName);
+            }
 
-                holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+    }
+
+
+    private String standardInputText(String name) {
+        if(name.equals("")) return "";
+        name = name.trim();
+        name = name.replaceAll("\\s+", " ");
+        String temp[] = name.split(" ");
+        String nameStandard="";
+        for (int i = 0; i < temp.length; i++) {
+            nameStandard += String.valueOf(temp[i].charAt(0)).toUpperCase() + temp[i].substring(1);
+            if (i < temp.length - 1)
+                nameStandard += " ";
+        }
+        return nameStandard;
+    }
+
+    private void searchFriend(String text) {
+        FirebaseRecyclerOptions<Contacts> options;
+        if(!text.equals("")) {
+            Query firebaseSearchQuery = UserRef.orderByChild("name").startAt(text).endAt(text + "\uf8ff");
+
+            options =
+                    new FirebaseRecyclerOptions.Builder<Contacts>()
+                            .setQuery(firebaseSearchQuery, Contacts.class)
+                            .setLifecycleOwner(this)
+                            .build();
+        } else {
+            options = new FirebaseRecyclerOptions.Builder<Contacts>()
+                    .setQuery(UserRef, Contacts.class)
+                    .build();
+        }
+
+        adapter = new FirebaseRecyclerAdapter<Contacts, FindFriendViewHolder>(options) {
                     @Override
-                    public void onClick(View v) {
-                        String visit_user_id = getRef(position).getKey();
-                        Intent profileIntent = new Intent(FindFriendsActivity.this, ProfileActivity.class);
-                        profileIntent.putExtra("visit_user_id",visit_user_id);
-                        startActivity(profileIntent);
-                    }
-                });
-            }
+                    protected void onBindViewHolder(@NonNull FindFriendViewHolder holder, final int position, @NonNull Contacts model) {
+                        holder.userName.setText(model.getName());
+                        holder.userStatus.setText(model.getStatus());
 
-            @NonNull
-            @Override
-            public FindFriendViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_display_layout, parent, false);
-                FindFriendViewHolder viewHolder = new FindFriendViewHolder(view);
-                return viewHolder;
-            }
-        };
+                        if (model.getImage() != null) {
+                            Picasso.get().load(model.getImage()).into(holder.profileImage);
+                        }
+
+                        holder.itemView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                String visit_user_id = getRef(position).getKey();
+                                Intent profileIntent = new Intent(FindFriendsActivity.this, ProfileActivity.class);
+                                profileIntent.putExtra("visit_user_id",visit_user_id);
+                                startActivity(profileIntent);
+                            }
+                        });
+                    }
+
+                    @NonNull
+                    @Override
+                    public FindFriendViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_display_layout, parent, false);
+                        FindFriendViewHolder viewHolder = new FindFriendViewHolder(view);
+                        return viewHolder;
+                    }
+                };
 
         FindFriendsRecyclerList.setAdapter(adapter);
         adapter.startListening();
     }
+
 
     public static class FindFriendViewHolder extends RecyclerView.ViewHolder {
 

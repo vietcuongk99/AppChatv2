@@ -182,8 +182,21 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
+    private String standardInputText(String name) {
+        name = name.trim();
+        name = name.replaceAll("\\s+", " ");
+        String temp[] = name.split(" ");
+        String nameStandard="";
+        for (int i = 0; i < temp.length; i++) {
+            nameStandard += String.valueOf(temp[i].charAt(0)).toUpperCase() + temp[i].substring(1);
+            if (i < temp.length - 1)
+                nameStandard += " ";
+        }
+        return nameStandard;
+    }
+
     private void UpdateSettings() {
-        String setUserName = userName.getText().toString().trim();
+        String setUserName = standardInputText(userName.getText().toString());
         String setStatus = userStatus.getText().toString().trim();
 
         if (TextUtils.isEmpty(setUserName) || TextUtils.isEmpty(setStatus)) {
