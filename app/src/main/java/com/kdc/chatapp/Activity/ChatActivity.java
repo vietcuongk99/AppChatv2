@@ -284,11 +284,21 @@ public class ChatActivity extends BaseActivity {
 
 
                                 Map messageBodyDetail = new HashMap();
-                                messageBodyDetail.put(messageSenderRef+ "/" + messagePushID, messageImageBody);
-                                messageBodyDetail.put(messageReceiverRef+ "/" + messagePushID, messageImageBody);
+                                messageBodyDetail.put(messageSenderRef+ "/listMessage/" + messagePushID, messageImageBody);
+                                messageBodyDetail.put(messageReceiverRef+ "/listMessage/" + messagePushID, messageImageBody);
 
-                                RootRef.updateChildren(messageBodyDetail);
-                                loadingBar.dismiss();
+                                RootRef.updateChildren(messageBodyDetail).addOnCompleteListener(new OnCompleteListener() {
+                                    @Override
+                                    public void onComplete(@NonNull Task task) {
+                                        if(task.isSuccessful()) {
+                                            Map messageBodyDetails = new HashMap();
+                                            messageBodyDetail.put(messageSenderRef+ "/stateUserSee", 1);
+                                            messageBodyDetails.put(messageReceiverRef + "/stateUserSee", 0);
+                                            RootRef.updateChildren(messageBodyDetails);
+                                            loadingBar.dismiss();
+                                        }
+                                    }
+                                });
 
                             }
                         }).addOnFailureListener(new OnFailureListener() {
@@ -352,13 +362,17 @@ public class ChatActivity extends BaseActivity {
 
 
                             Map messageBodyDetails = new HashMap();
-                            messageBodyDetails.put(messageSenderRef + "/" + messagePushID, messageTextBody);
-                            messageBodyDetails.put(messageReceiverRef + "/" + messagePushID, messageTextBody);
+                            messageBodyDetails.put(messageSenderRef + "/listMessage/" + messagePushID, messageTextBody);
+                            messageBodyDetails.put(messageReceiverRef + "/listMessage/" + messagePushID, messageTextBody);
 
                             RootRef.updateChildren(messageBodyDetails).addOnCompleteListener(new OnCompleteListener() {
                                 @Override
                                 public void onComplete(@NonNull Task task) {
                                     if(task.isSuccessful()){
+                                        Map messageBodyDetails = new HashMap();
+                                        messageBodyDetails.put(messageSenderRef+ "/stateUserSee", 1);
+                                        messageBodyDetails.put(messageReceiverRef + "/stateUserSee", 0);
+                                        RootRef.updateChildren(messageBodyDetails);
                                         loadingBar.dismiss();
                                     }
                                     else {
@@ -426,23 +440,26 @@ public class ChatActivity extends BaseActivity {
                 });
     }
 
+
     private void getMessengerList() {
         messagesList.clear();
-        RootRef.child("Messages").child(messageSenderID).child(messageReceiverID)
+        RootRef.child("Messages").child(messageSenderID).child(messageReceiverID).child("listMessage")
                 .addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
                         Messages messages = dataSnapshot.getValue(Messages.class);
                         messagesList.add(messages);
                         messageAdapter.notifyDataSetChanged();
 
                         userMessagesList.smoothScrollToPosition(userMessagesList.getAdapter().getItemCount());
+
+                        Map messageBodyDetails = new HashMap();
+                        messageBodyDetails.put("stateUserSee", 1);
+                        RootRef.child("Messages").child(messageSenderID).child(messageReceiverID).updateChildren(messageBodyDetails);
                     }
 
                     @Override
                     public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
                     }
 
                     @Override
@@ -487,13 +504,18 @@ public class ChatActivity extends BaseActivity {
 
 
             Map messageBodyDetails = new HashMap();
-            messageBodyDetails.put(messageSenderRef + "/" + messagePushID, messageTextBody);
-            messageBodyDetails.put(messageReceiverRef + "/" + messagePushID, messageTextBody);
+            messageBodyDetails.put(messageSenderRef + "/listMessage/" + messagePushID, messageTextBody);
+            messageBodyDetails.put(messageReceiverRef + "/listMessage/" + messagePushID, messageTextBody);
 
             RootRef.updateChildren(messageBodyDetails).addOnCompleteListener(new OnCompleteListener() {
                 @Override
                 public void onComplete(@NonNull Task task) {
-                    if(task.isSuccessful());
+                    if(task.isSuccessful()) {
+                        Map messageBodyDetails = new HashMap();
+                        messageBodyDetails.put(messageSenderRef + "/stateUserSee", 1);
+                        messageBodyDetails.put(messageReceiverRef + "/stateUserSee", 0);
+                        RootRef.updateChildren(messageBodyDetails);
+                    }
                     else {
                         Toast.makeText(ChatActivity.this, "Error.", Toast.LENGTH_SHORT).show();
                     }

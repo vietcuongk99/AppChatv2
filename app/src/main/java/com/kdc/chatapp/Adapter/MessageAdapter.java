@@ -445,6 +445,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         rootRef.child("Messages")
                 .child(userMessageList.get(position).getFrom())
                 .child(userMessageList.get(position).getTo())
+                .child("listMessage")
                 .child(userMessageList.get(position).getMessageID())
                 .removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -467,6 +468,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         rootRef.child("Messages")
                 .child(userMessageList.get(position).getTo())
                 .child(userMessageList.get(position).getFrom())
+                .child("listMessage")
                 .child(userMessageList.get(position).getMessageID())
                 .removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -489,6 +491,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         rootRef.child("Messages")
                 .child(userMessageList.get(position).getTo())
                 .child(userMessageList.get(position).getFrom())
+                .child("listMessage")
                 .child(userMessageList.get(position).getMessageID())
                 .removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -498,6 +501,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                     rootRef.child("Messages")
                             .child(userMessageList.get(position).getFrom())
                             .child(userMessageList.get(position).getTo())
+                            .child("listMessage")
                             .child(userMessageList.get(position).getMessageID())
                             .removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override

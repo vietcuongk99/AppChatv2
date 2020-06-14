@@ -1,6 +1,7 @@
 package com.kdc.chatapp.Fragments;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -37,7 +38,7 @@ public class ChatsFragment extends Fragment {
 
     private View PrivateChatsView;
     private RecyclerView chatsList;
-    private DatabaseReference ChatsRef, UsersRef;
+    private DatabaseReference ChatsRef, UsersRef, RootRef;
     private FirebaseAuth mAuth;
     private String currentUserID;
 
@@ -56,6 +57,7 @@ public class ChatsFragment extends Fragment {
 
         ChatsRef = FirebaseDatabase.getInstance().getReference().child("Contacts").child(currentUserID);
         UsersRef = FirebaseDatabase.getInstance().getReference().child("Users");
+        RootRef = FirebaseDatabase.getInstance().getReference();
 
         chatsList = (RecyclerView) PrivateChatsView.findViewById(R.id.chats_list);
         chatsList.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -96,6 +98,22 @@ public class ChatsFragment extends Fragment {
                             final String retStatus = dataSnapshot.child("status").getValue().toString();
 
                             holder.userName.setText(retName);
+                            RootRef.child("Messages").child(currentUserID).child(userIDs).addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if(dataSnapshot.hasChild("stateUserSee")) {
+                                        String x = dataSnapshot.child("stateUserSee").getValue().toString();
+                                        if(x.equals("0")) {
+                                            holder.userName.setTextColor(Color.GREEN);
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
 //                            holder.userStatus.setText("Last Seen: " + "\n" + "Date " + " Time");
 
                             if (dataSnapshot.child("userState").hasChild("state")) {
@@ -151,7 +169,6 @@ public class ChatsFragment extends Fragment {
 
                     }
                 });
-
             }
 
             @NonNull
