@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,8 +21,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.MenuItemCompat;
 import androidx.viewpager.widget.ViewPager;
 
+import com.github.nikartm.button.FitButton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -225,6 +228,14 @@ public class MainActivity extends BaseActivity implements SinchService.StartFail
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.options_menu, menu);
+        MenuItem menuItem = menu.findItem(R.id.main_find_friends_option);
+        View searchView = menuItem.getActionView();
+        searchView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onOptionsItemSelected(menuItem);
+            }
+        });
         return true;
     }
 
@@ -245,6 +256,7 @@ public class MainActivity extends BaseActivity implements SinchService.StartFail
 
         if (item.getItemId() == R.id.main_find_friends_option) {
             SenUserToFindFriendsActivity();
+
         }
 
         if (item.getItemId() == R.id.main_create_group_option) {
@@ -273,35 +285,37 @@ public class MainActivity extends BaseActivity implements SinchService.StartFail
     }
 
     private void RequestNewGroup() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this, R.style.AlertDialog);
-        builder.setTitle("Enter Group Name: ");
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 
-        final EditText groupNameField = new EditText(MainActivity.this);
-        groupNameField.setHint("Group Name...");
-        builder.setView(groupNameField);
+        View view = LayoutInflater.from(MainActivity.this).inflate(R.layout.dialog_create_group, null);
+        builder.setView(view);
+        FitButton accept_btn = view.findViewById(R.id.accept_btn);
+        FitButton close_btn = view.findViewById(R.id.close_btn);
+        EditText groupNameInput = view.findViewById(R.id.group_name);
+        builder.setCancelable(false);
+        AlertDialog dialog = builder.show();
 
-        builder.setPositiveButton("Create", new DialogInterface.OnClickListener() {
+        accept_btn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String groupName = groupNameField.getText().toString();
+            public void onClick(View v) {
+                String groupName = groupNameInput.getText().toString();
 
                 if(TextUtils.isEmpty(groupName)) {
                     Toast.makeText(MainActivity.this,"Please write Group Name..." ,Toast.LENGTH_SHORT).show();
                 }
                 else {
                     CreateNewGroup(groupName);
+                    dialog.dismiss();
                 }
             }
         });
 
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        close_btn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
+            public void onClick(View v) {
+                dialog.dismiss();
             }
         });
-
-        builder.show();
     }
 
     private void CreateNewGroup(final String groupName) {

@@ -157,7 +157,17 @@ public class FindFriendsActivity extends AppCompatActivity {
                         FindFriendViewHolder viewHolder = new FindFriendViewHolder(view);
                         return viewHolder;
                     }
-                };
+
+            @Override
+            public long getItemId(int position) {
+                return position;
+            }
+
+            @Override
+            public int getItemViewType(int position) {
+                return position;
+            }
+        };
 
         FindFriendsRecyclerList.setAdapter(adapter);
         adapter.startListening();

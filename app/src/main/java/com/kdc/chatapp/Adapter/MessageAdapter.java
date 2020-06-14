@@ -162,64 +162,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
 
 
-    /*
-
-            if(fromMessageType.equals("text")){
-
-                if(fromUserID.equals(messageSenderID)){
-                    messageViewHolder.senderMessageText.setVisibility(View.VISIBLE);
-
-                    messageViewHolder.senderMessageText.setBackgroundResource(R.drawable.sender_message_layout);
-                    messageViewHolder.senderMessageText.setTextColor(Color.WHITE);
-                    messageViewHolder.senderMessageText.setText(messages.getMessage());
-                }
-                else{
-                    messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
-                    messageViewHolder.receiverMessageText.setVisibility(View.VISIBLE);
-
-                    messageViewHolder.receiverMessageText.setBackgroundResource(R.drawable.receiver_message_layout);
-                    messageViewHolder.receiverMessageText.setTextColor(Color.WHITE);
-                    messageViewHolder.receiverMessageText.setText(messages.getMessage());
-                }
-            }
-            else if(fromMessageType.equals("image")) {
-                if(fromUserID.equals(messageSenderID)) {
-
-                    messageViewHolder.messageSenderPicture.setVisibility(View.VISIBLE);
-                    Picasso.get().load(messages.getMessage()).into(messageViewHolder.messageSenderPicture);
-                }
-                else {
-                    messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
-                    messageViewHolder.messageReceiverPicture.setVisibility(View.VISIBLE);
-                    Picasso.get().load(messages.getMessage()).into(messageViewHolder.messageReceiverPicture);
-
-                }
-            }
-
-            else {
-                if(fromUserID.equals(messageSenderID)){
-                    messageViewHolder.senderMessageText.setVisibility(View.VISIBLE);
-                    messageViewHolder.senderMessageText.setBackgroundResource(R.drawable.sender_message_layout);
-                    messageViewHolder.senderMessageText.setTextColor(Color.WHITE);
-                    messageViewHolder.senderMessageText.setText(messages.getName());
-                    messageViewHolder.senderMessageText
-                            .setPaintFlags(messageViewHolder.senderMessageText.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
-                }
-                else {
-
-                    messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
-                    messageViewHolder.receiverMessageText.setVisibility(View.VISIBLE);
-
-                    messageViewHolder.receiverMessageText.setBackgroundResource(R.drawable.receiver_message_layout);
-                    messageViewHolder.receiverMessageText.setTextColor(Color.WHITE);
-                    messageViewHolder.receiverMessageText.setText(messages.getName());
-                    messageViewHolder.receiverMessageText
-                            .setPaintFlags(messageViewHolder.receiverMessageText.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-                }
-            }
-
-     */
-
             if (fromUserID.equals(messageSenderID)) {
                 messageViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -522,6 +464,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         });
     }
 
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
-
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
 }

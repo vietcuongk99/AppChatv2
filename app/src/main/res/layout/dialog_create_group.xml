@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/record_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingVertical="10dp">
+
+            <TextView
+                android:id="@+id/title_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Nhập tên nhóm chat:"
+                android:textSize="15sp"
+                android:layout_marginBottom="10dp">
+
+            </TextView>
+
+            <EditText
+                android:id="@+id/group_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:hint="nhóm 1, nhóm 2,..."
+                android:paddingVertical="15dp">
+
+            </EditText>
+
+        </LinearLayout>
+
+
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/group_action"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/scrollView">
+
+        <com.github.nikartm.button.FitButton
+            android:id="@+id/accept_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:fb_icon="@drawable/accept_icon"
+            android:gravity="center"
+            android:paddingVertical="10dp"
+            app:fb_rippleColor="#27AF2D"
+            app:fb_iconHeight="30dp"/>
+
+
+
+        <com.github.nikartm.button.FitButton
+            android:id="@+id/close_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:fb_icon="@drawable/cancel_icon"
+            android:gravity="center"
+            android:paddingVertical="10dp"
+            app:fb_rippleColor="#FF0000"
+            app:fb_iconHeight="30dp"/>
+
+    </LinearLayout>
+
+
+</RelativeLayout>
+
+

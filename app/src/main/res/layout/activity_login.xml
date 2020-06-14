@@ -68,7 +68,8 @@
                 android:textAlignment="textEnd"
                 android:textSize="15sp"
                 android:textStyle="bold"
-                android:textColor="#15ADF2"/>
+                android:textColor="#15ADF2"
+                android:visibility="gone"/>
 
             <Button
                 android:id="@+id/login_button"
