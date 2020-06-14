@@ -46,7 +46,7 @@ public class GroupMsgAdapter extends RecyclerView.Adapter<GroupMsgAdapter.GroupM
 
     public class GroupMsgViewHolder extends RecyclerView.ViewHolder{
 
-        public TextView senderMessageText, receiverMessageText, senderName;
+        public TextView senderMessageText, receiverMessageText, senderName, mirror_senderName;
         public CircleImageView receiverProfileImage;
         public ImageView messageSenderPicture, messageReceiverPicture;
 
@@ -58,6 +58,7 @@ public class GroupMsgAdapter extends RecyclerView.Adapter<GroupMsgAdapter.GroupM
             messageReceiverPicture = itemView.findViewById(R.id.message_receiver_image_view);
             messageSenderPicture = itemView.findViewById(R.id.message_sender_image_view);
             senderName = itemView.findViewById(R.id.sender_name);
+            mirror_senderName = itemView.findViewById(R.id.mirror_sender_name);
         }
     }
 
@@ -65,7 +66,7 @@ public class GroupMsgAdapter extends RecyclerView.Adapter<GroupMsgAdapter.GroupM
     @Override
     public GroupMsgAdapter.GroupMsgViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.custom_messages_layout, viewGroup,false);
+                .inflate(R.layout.custom_group_msg_layout, viewGroup,false);
         mAuth = FirebaseAuth.getInstance();
         return new GroupMsgAdapter.GroupMsgViewHolder(view);
     }
@@ -85,10 +86,9 @@ public class GroupMsgAdapter extends RecyclerView.Adapter<GroupMsgAdapter.GroupM
         messageViewHolder.senderMessageText.setVisibility(View.GONE);
         messageViewHolder.messageReceiverPicture.setVisibility(View.GONE);
         messageViewHolder.messageSenderPicture.setVisibility(View.GONE);
+        messageViewHolder.mirror_senderName.setVisibility(View.GONE);
 
         if (!fromUserID.equals(messageSenderID)) {
-            messageViewHolder.senderName.setVisibility(View.VISIBLE);
-            messageViewHolder.senderName.clearComposingText();
 
             usersRef = FirebaseDatabase.getInstance().getReference().child("Users")
                     .child(fromUserID);
@@ -96,6 +96,7 @@ public class GroupMsgAdapter extends RecyclerView.Adapter<GroupMsgAdapter.GroupM
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     messageViewHolder.senderName.setText(dataSnapshot.child("name").getValue().toString());
+                    messageViewHolder.mirror_senderName.setText(dataSnapshot.child("name").getValue().toString());
                     if (dataSnapshot.hasChild("image")) {
                         String receiverImage = dataSnapshot.child("image").getValue().toString();
                         Picasso.get().load(receiverImage).into(messageViewHolder.receiverProfileImage);
@@ -111,8 +112,15 @@ public class GroupMsgAdapter extends RecyclerView.Adapter<GroupMsgAdapter.GroupM
 
 
             if(fromMessageType.equals("text")){
+                if (checkNextMessageSender(groupMessageList, position)) {
+                    messageViewHolder.senderName.setVisibility(View.GONE);
+                    messageViewHolder.receiverProfileImage.setVisibility(View.INVISIBLE);
 
-                messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
+                } else {
+                    messageViewHolder.senderName.setVisibility(View.VISIBLE);
+                    messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
+
+                }
                 messageViewHolder.receiverMessageText.setVisibility(View.VISIBLE);
                 messageViewHolder.receiverMessageText.setBackgroundResource(R.drawable.receiver_message_layout);
                 messageViewHolder.receiverMessageText.setTextColor(Color.WHITE);
@@ -121,21 +129,38 @@ public class GroupMsgAdapter extends RecyclerView.Adapter<GroupMsgAdapter.GroupM
 
             }
             else if(fromMessageType.equals("image")) {
+                if (checkNextMessageSender(groupMessageList, position)) {
+                    messageViewHolder.senderName.setVisibility(View.GONE);
+                    messageViewHolder.receiverProfileImage.setVisibility(View.INVISIBLE);
 
-                messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
+                } else {
+                    messageViewHolder.senderName.setVisibility(View.VISIBLE);
+                    messageViewHolder.mirror_senderName.setVisibility(View.INVISIBLE);
+                    messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
+                }
                 messageViewHolder.messageReceiverPicture.setVisibility(View.VISIBLE);
                 Picasso.get().load(messages.getMessage()).into(messageViewHolder.messageReceiverPicture);
+
 
             }
 
             else {
-                messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
+                if (checkNextMessageSender(groupMessageList, position)) {
+                    messageViewHolder.senderName.setVisibility(View.GONE);
+                    messageViewHolder.receiverProfileImage.setVisibility(View.INVISIBLE);
+
+                } else {
+                    messageViewHolder.senderName.setVisibility(View.VISIBLE);
+                    messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
+                }
+
                 messageViewHolder.receiverMessageText.setVisibility(View.VISIBLE);
                 messageViewHolder.receiverMessageText.setBackgroundResource(R.drawable.receiver_message_layout);
                 messageViewHolder.receiverMessageText.setTextColor(Color.WHITE);
                 messageViewHolder.receiverMessageText.setText(messages.getName());
-                messageViewHolder.senderMessageText
-                        .setPaintFlags(messageViewHolder.senderMessageText.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
+                messageViewHolder.receiverMessageText
+                        .setPaintFlags(messageViewHolder.receiverMessageText.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
+
 
             }
 
@@ -310,5 +335,18 @@ public class GroupMsgAdapter extends RecyclerView.Adapter<GroupMsgAdapter.GroupM
     @Override
     public int getItemViewType(int position) {
         return position;
+    }
+
+    private boolean checkNextMessageSender(List<Messages> messages, int position) {
+
+        if (position != 0 && messages.size() > 0) {
+            if (messages.get(position).getFrom().equals(messages.get(position - 1).getFrom())) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 }

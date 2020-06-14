@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/chat_toolbar"
         android:layout_above="@+id/chat_layout"
-        android:layout_marginBottom="6dp">
+        android:layout_marginVertical="10dp">
 
 
     </androidx.recyclerview.widget.RecyclerView>

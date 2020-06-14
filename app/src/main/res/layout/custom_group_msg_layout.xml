@@ -11,13 +11,12 @@
         android:orientation="horizontal"
         android:layout_marginStart="5dp"
         android:layout_marginTop="10dp"
-        android:layout_marginEnd="100dp"
-        android:gravity="">
+        android:layout_marginEnd="100dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/message_profile_image"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_marginHorizontal="5dp"
             android:src="@drawable/profile_image"/>
 
@@ -46,7 +45,6 @@
                 android:text="Recever messages here."
                 android:padding="8dp"
                 android:textSize="16sp"
-                android:layout_gravity="center_vertical"
                 android:textColor="#fff"
                 />
 
@@ -57,17 +55,33 @@
     </LinearLayout>
 
 
-    
-    <ImageView
-        android:id="@+id/message_receiver_image_view"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="65dp"
-        android:layout_marginTop="10dp"
-        android:scaleType="centerCrop">
 
-    </ImageView>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:id="@+id/mirror_sender_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="2dp"
+            android:visibility="invisible">
+
+        </TextView>
+    
+        <ImageView
+            android:id="@+id/message_receiver_image_view"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:scaleType="centerCrop">
+
+        </ImageView>
+    </LinearLayout>
 
 
     <ImageView

@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.textclassifier.ConversationActions;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +31,7 @@ import com.kdc.chatapp.Model.Messages;
 import com.kdc.chatapp.R;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -46,7 +48,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     public class MessageViewHolder extends RecyclerView.ViewHolder{
 
-        public TextView senderMessageText, receiverMessageText, senderName;
+        public TextView senderMessageText, receiverMessageText;
         public CircleImageView receiverProfileImage;
         public ImageView messageSenderPicture, messageReceiverPicture;
 
@@ -110,30 +112,45 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
                 if(fromMessageType.equals("text")){
 
-                    messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
+                    if (checkNextMessageSender(userMessageList, position)) {
+                        messageViewHolder.receiverProfileImage.setVisibility(View.INVISIBLE);
+
+                    } else {
+                        messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
+                    }
                     messageViewHolder.receiverMessageText.setVisibility(View.VISIBLE);
                     messageViewHolder.receiverMessageText.setBackgroundResource(R.drawable.receiver_message_layout);
                     messageViewHolder.receiverMessageText.setTextColor(Color.WHITE);
                     messageViewHolder.receiverMessageText.setText(messages.getMessage());
 
-
                 }
                 else if(fromMessageType.equals("image")) {
+                    if (checkNextMessageSender(userMessageList, position)) {
+                        messageViewHolder.receiverProfileImage.setVisibility(View.INVISIBLE);
 
-                    messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
+                    } else {
+                        messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
+                    }
+
                     messageViewHolder.messageReceiverPicture.setVisibility(View.VISIBLE);
                     Picasso.get().load(messages.getMessage()).into(messageViewHolder.messageReceiverPicture);
 
                 }
 
                 else {
-                    messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
+                    if (checkNextMessageSender(userMessageList, position)) {
+                        messageViewHolder.receiverProfileImage.setVisibility(View.INVISIBLE);
+
+                    } else {
+                        messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
+
+                    }
                     messageViewHolder.receiverMessageText.setVisibility(View.VISIBLE);
                     messageViewHolder.receiverMessageText.setBackgroundResource(R.drawable.receiver_message_layout);
                     messageViewHolder.receiverMessageText.setTextColor(Color.WHITE);
                     messageViewHolder.receiverMessageText.setText(messages.getName());
                     messageViewHolder.senderMessageText
-                            .setPaintFlags(messageViewHolder.senderMessageText.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
+                            .setPaintFlags(messageViewHolder.senderMessageText.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
                 }
 
@@ -486,5 +503,19 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     @Override
     public int getItemViewType(int position) {
         return position;
+    }
+
+
+    private boolean checkNextMessageSender(List<Messages> messages, int position) {
+
+        if (position != 0 && messages.size() > 0) {
+            if (messages.get(position).getFrom().equals(messages.get(position - 1).getFrom())) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 }

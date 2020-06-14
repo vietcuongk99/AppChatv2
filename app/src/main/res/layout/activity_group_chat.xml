@@ -16,7 +16,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/group_chat_bar_layout"
-        android:layout_above="@+id/groupchat_layout">
+        android:layout_above="@+id/groupchat_layout"
+        android:layout_marginVertical="10dp">
 
     </androidx.recyclerview.widget.RecyclerView>
 
