@@ -78,6 +78,7 @@ public class GroupMsgAdapter extends RecyclerView.Adapter<GroupMsgAdapter.GroupM
         Messages messages = groupMessageList.get(position);
 
         String fromUserID = messages.getFrom();
+        String fromMessageType = messages.getType();
 
         messageViewHolder.receiverMessageText.setVisibility(View.GONE);
         messageViewHolder.receiverProfileImage.setVisibility(View.GONE);
@@ -109,23 +110,192 @@ public class GroupMsgAdapter extends RecyclerView.Adapter<GroupMsgAdapter.GroupM
             });
 
 
-            messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
-            messageViewHolder.receiverMessageText.setVisibility(View.VISIBLE);
+            if(fromMessageType.equals("text")){
 
-            messageViewHolder.receiverMessageText.setBackgroundResource(R.drawable.receiver_message_layout);
-            messageViewHolder.receiverMessageText.setTextColor(Color.WHITE);
-            messageViewHolder.receiverMessageText.setText(messages.getMessage());
+                messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
+                messageViewHolder.receiverMessageText.setVisibility(View.VISIBLE);
+                messageViewHolder.receiverMessageText.setBackgroundResource(R.drawable.receiver_message_layout);
+                messageViewHolder.receiverMessageText.setTextColor(Color.WHITE);
+                messageViewHolder.receiverMessageText.setText(messages.getMessage());
+
+
+            }
+            else if(fromMessageType.equals("image")) {
+
+                messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
+                messageViewHolder.messageReceiverPicture.setVisibility(View.VISIBLE);
+                Picasso.get().load(messages.getMessage()).into(messageViewHolder.messageReceiverPicture);
+
+            }
+
+            else {
+                messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
+                messageViewHolder.receiverMessageText.setVisibility(View.VISIBLE);
+                messageViewHolder.receiverMessageText.setBackgroundResource(R.drawable.receiver_message_layout);
+                messageViewHolder.receiverMessageText.setTextColor(Color.WHITE);
+                messageViewHolder.receiverMessageText.setText(messages.getName());
+                messageViewHolder.senderMessageText
+                        .setPaintFlags(messageViewHolder.senderMessageText.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
+
+            }
 
         } else {
-            messageViewHolder.senderName.setVisibility(View.INVISIBLE);
-            messageViewHolder.senderMessageText.setVisibility(View.VISIBLE);
+            if(fromMessageType.equals("text")){
 
-            messageViewHolder.senderMessageText.setBackgroundResource(R.drawable.sender_message_layout);
-            messageViewHolder.senderMessageText.setTextColor(Color.WHITE);
-            messageViewHolder.senderMessageText.setText(messages.getMessage());
+                messageViewHolder.senderMessageText.setVisibility(View.VISIBLE);
+                messageViewHolder.senderMessageText.setBackgroundResource(R.drawable.sender_message_layout);
+                messageViewHolder.senderMessageText.setTextColor(Color.WHITE);
+                messageViewHolder.senderMessageText.setText(messages.getMessage());
+
+            }
+            else if(fromMessageType.equals("image")) {
+                messageViewHolder.messageSenderPicture.setVisibility(View.VISIBLE);
+                Picasso.get().load(messages.getMessage()).into(messageViewHolder.messageSenderPicture);
+            }
+
+            else {
+                messageViewHolder.senderMessageText.setVisibility(View.VISIBLE);
+                messageViewHolder.senderMessageText.setBackgroundResource(R.drawable.sender_message_layout);
+                messageViewHolder.senderMessageText.setTextColor(Color.WHITE);
+                messageViewHolder.senderMessageText.setText(messages.getName());
+                messageViewHolder.senderMessageText
+                        .setPaintFlags(messageViewHolder.senderMessageText.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
+
+            }
         }
 
+
+        // xử lý sự kiện khi click vào ảnh / file
+        if (fromUserID.equals(messageSenderID)) {
+            messageViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if (groupMessageList.get(position).getType().equals("pdf") || groupMessageList.get(position).getType().equals("docx")) {
+                        CharSequence option[] = new CharSequence[]
+                                {
+                                        "Download and View this Document",
+                                        "Cancel"
+                                };
+                        AlertDialog.Builder builder = new AlertDialog.Builder(messageViewHolder.itemView.getContext());
+                        builder.setTitle("Choose your action");
+
+                        builder.setItems(option, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int i) {
+                                if (i == 0) {
+                                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(groupMessageList.get(position).getMessage()));
+                                    messageViewHolder.itemView.getContext().startActivity(intent);
+                                }
+                            }
+                        });
+
+                        builder.show();
+                    }
+
+                    else if (groupMessageList.get(position).getType().equals("image")) {
+                        CharSequence option[] = new CharSequence[]
+                                {
+                                        "View this Image",
+                                        "View this Image in your browser",
+                                        "Cancel"
+                                };
+                        AlertDialog.Builder builder = new AlertDialog.Builder(messageViewHolder.itemView.getContext());
+                        builder.setTitle("Choose your action");
+
+                        builder.setItems(option, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int i) {
+                                if (i == 0) {
+                                    Intent intent = new Intent(messageViewHolder.itemView.getContext(), ImageViewerActivity.class);
+                                    intent.putExtra("url", groupMessageList.get(position).getMessage());
+                                    messageViewHolder.itemView.getContext().startActivity(intent);
+                                }
+                                else if (i == 1) {
+                                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(groupMessageList.get(position).getMessage()));
+                                    messageViewHolder.itemView.getContext().startActivity(intent);
+                                }
+
+                            }
+                        });
+
+                        builder.show();
+                    }
+
+
+                }
+            });
+
+        } else {
+            messageViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    if (groupMessageList.get(position).getType().equals("pdf") || groupMessageList.get(position).getType().equals("docx")) {
+                        CharSequence option[] = new CharSequence[]
+                                {
+                                        "Download and View this Document",
+                                        "Cancel",
+                                };
+                        AlertDialog.Builder builder = new AlertDialog.Builder(messageViewHolder.itemView.getContext());
+                        builder.setTitle("Choose your action");
+
+                        builder.setItems(option, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int i) {
+                                if (i == 0) {
+                                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(groupMessageList.get(position).getMessage()));
+                                    messageViewHolder.itemView.getContext().startActivity(intent);
+                                }
+                            }
+                        });
+
+                        builder.show();
+                    }
+
+
+                    else if (groupMessageList.get(position).getType().equals("image")) {
+                        CharSequence option[] = new CharSequence[]
+                                {
+                                        "View this Image",
+                                        "View this Image in your browser",
+                                        "Cancel",
+                                };
+                        AlertDialog.Builder builder = new AlertDialog.Builder(messageViewHolder.itemView.getContext());
+                        builder.setTitle("Choose your action");
+
+                        builder.setItems(option, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int i) {
+                                if (i == 0) {
+                                    Intent intent = new Intent(messageViewHolder.itemView.getContext(), ImageViewerActivity.class);
+                                    intent.putExtra("url", groupMessageList.get(position).getMessage());
+                                    messageViewHolder.itemView.getContext().startActivity(intent);
+                                }
+                                else if (i == 1) {
+                                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(groupMessageList.get(position).getMessage()));
+                                    messageViewHolder.itemView.getContext().startActivity(intent);
+                                }
+                            }
+                        });
+
+                        builder.show();
+                    }
+
+
+                }
+            });
+        }
+
+
+
+
+
     }
+
+
+
+
 
     @Override
     public int getItemCount() {

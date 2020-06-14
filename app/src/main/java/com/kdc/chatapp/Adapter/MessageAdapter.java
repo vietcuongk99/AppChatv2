@@ -130,8 +130,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                     messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
                     messageViewHolder.receiverMessageText.setVisibility(View.VISIBLE);
                     messageViewHolder.receiverMessageText.setBackgroundResource(R.drawable.receiver_message_layout);
-                    messageViewHolder.receiverMessageText.setTextColor(Color.BLACK);
+                    messageViewHolder.receiverMessageText.setTextColor(Color.WHITE);
                     messageViewHolder.receiverMessageText.setText(messages.getName());
+                    messageViewHolder.senderMessageText
+                            .setPaintFlags(messageViewHolder.senderMessageText.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
 
                 }
 
@@ -154,8 +156,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                 else {
                     messageViewHolder.senderMessageText.setVisibility(View.VISIBLE);
                     messageViewHolder.senderMessageText.setBackgroundResource(R.drawable.sender_message_layout);
-                    messageViewHolder.senderMessageText.setTextColor(Color.BLACK);
+                    messageViewHolder.senderMessageText.setTextColor(Color.WHITE);
                     messageViewHolder.senderMessageText.setText(messages.getName());
+                    messageViewHolder.senderMessageText
+                            .setPaintFlags(messageViewHolder.senderMessageText.getPaintFlags()| Paint.UNDERLINE_TEXT_FLAG);
 
                 }
             }
@@ -237,6 +241,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                                     {
                                             "Delete for me",
                                             "View this Image",
+                                            "View this Image in your browser",
                                             "Delete for everyone",
                                             "Cancel"
                                     };
@@ -257,6 +262,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                                         messageViewHolder.itemView.getContext().startActivity(intent);
                                     }
                                     else if(i == 2){
+                                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(userMessageList.get(position).getMessage()));
+                                        messageViewHolder.itemView.getContext().startActivity(intent);
+                                    }
+                                    else if (i == 3) {
                                         deleteMessageForEveryone(position, messageViewHolder);
                                         Intent intent = new Intent(messageViewHolder.itemView.getContext(), MainActivity.class);
                                         messageViewHolder.itemView.getContext().startActivity(intent);
@@ -341,6 +350,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                                     {
                                             "Delete for me",
                                             "View this Image",
+                                            "View this Image in your browser",
                                             "Cancel",
                                     };
                             AlertDialog.Builder builder = new AlertDialog.Builder(messageViewHolder.itemView.getContext());
@@ -359,6 +369,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                                         intent.putExtra("url", userMessageList.get(position).getMessage());
                                         messageViewHolder.itemView.getContext().startActivity(intent);
 
+                                    }
+                                    else if (i == 2) {
+                                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(userMessageList.get(position).getMessage()));
+                                        messageViewHolder.itemView.getContext().startActivity(intent);
                                     }
                                 }
                             });

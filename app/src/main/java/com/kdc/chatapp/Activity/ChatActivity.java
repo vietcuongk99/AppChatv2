@@ -24,6 +24,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.nikartm.button.FitButton;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -68,7 +69,7 @@ public class ChatActivity extends BaseActivity {
     private CircleImageView userImage;
 
     private Toolbar ChatToolBar;
-    private ImageButton SendMessageButton, SendFilesButton;
+    private FitButton SendMessageButton, SendFilesButton;
     private EditText MessageInputText;
 
     private List<Messages> messagesList;
@@ -190,8 +191,8 @@ public class ChatActivity extends BaseActivity {
         userName = (TextView) findViewById(R.id.custom_profile_name);
         userLastSeen = (TextView) findViewById(R.id.custom_user_last_seen);
 
-        SendMessageButton = (ImageButton) findViewById(R.id.send_message_btn);
-        SendFilesButton = (ImageButton) findViewById(R.id.send_files_btn);
+        SendMessageButton = findViewById(R.id.send_message_btn);
+        SendFilesButton = findViewById(R.id.send_files_btn);
         MessageInputText = (EditText) findViewById(R.id.input_message);
 
         messageAdapter = new MessageAdapter(messagesList);
@@ -201,8 +202,6 @@ public class ChatActivity extends BaseActivity {
         userMessagesList.setAdapter(messageAdapter);
 
         loadingBar = new ProgressDialog(this);
-
-
 
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat currentDate = new SimpleDateFormat("dd/MM/yyyy");

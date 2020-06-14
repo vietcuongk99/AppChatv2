@@ -277,7 +277,7 @@ public class MainActivity extends BaseActivity implements SinchService.StartFail
         }
 
         else {
-            backToast = Toast.makeText(MainActivity.this, "Ấn nút Back lần nữa để thoát", Toast.LENGTH_SHORT);
+            backToast = Toast.makeText(MainActivity.this, "Press Back button again to exit", Toast.LENGTH_SHORT);
             backToast.show();
         }
 

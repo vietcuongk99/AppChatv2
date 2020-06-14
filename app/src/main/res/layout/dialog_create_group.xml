@@ -22,9 +22,11 @@
                 android:id="@+id/title_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Nhập tên nhóm chat:"
+                android:text="Create new group"
                 android:textSize="15sp"
-                android:layout_marginBottom="10dp">
+                android:layout_marginBottom="10dp"
+                android:textStyle="bold"
+                android:textColor="#000">
 
             </TextView>
 
@@ -33,7 +35,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
-                android:hint="nhóm 1, nhóm 2,..."
+                android:hint="group 1, group 2,..."
                 android:paddingVertical="15dp">
 
             </EditText>

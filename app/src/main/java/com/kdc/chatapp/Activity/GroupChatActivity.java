@@ -2,20 +2,22 @@ package com.kdc.chatapp.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.location.Location;
+import android.database.Cursor;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ScrollView;
@@ -27,7 +29,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.maps.SupportMapFragment;
+import com.github.nikartm.button.FitButton;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -35,20 +42,26 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.StorageTask;
+import com.google.firebase.storage.UploadTask;
 import com.kdc.chatapp.Adapter.GroupMsgAdapter;
 import com.kdc.chatapp.Model.Messages;
 import com.kdc.chatapp.R;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.Map;
 
 public class GroupChatActivity extends AppCompatActivity {
 
     private Toolbar mToolbar;
-    private ImageButton SendMessageButton;
+    private FitButton SendMessageButton, SendFilesButton;
     private EditText userMessageInput;
     private ScrollView mScrollView;
     private TextView displayTextMessages;
@@ -64,6 +77,12 @@ public class GroupChatActivity extends AppCompatActivity {
 
     private LinearLayoutManager linearLayoutManager;
 
+    private String checker = "", myUrl = "";
+    private StorageTask uploadTask;
+    private Uri fileUri;
+    private ProgressDialog loadingBar;
+
+
     private ImageButton Location;
     LocationManager locationManager;
     LocationListener locationListener;
@@ -73,7 +92,7 @@ public class GroupChatActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_group_chat_2);
+        setContentView(R.layout.activity_group_chat);
 
         currentGroupName = getIntent().getExtras().get("groupName").toString();
 
@@ -101,6 +120,59 @@ public class GroupChatActivity extends AppCompatActivity {
 
             }
         });
+
+        loadingBar = new ProgressDialog(this);
+        SendFilesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CharSequence options[] = new CharSequence[]
+                        {
+                                "Image",
+                                "PDF Files",
+                                "Ms Word Files"
+                        };
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(GroupChatActivity.this);
+                builder.setTitle("Select the File");
+
+                builder.setItems(options, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int i) {
+
+                        if(i == 0) {
+                            checker = "image";
+
+                            Intent intent = new Intent();
+                            intent.setAction(Intent.ACTION_GET_CONTENT);
+                            intent.setType("image/*");
+                            startActivityForResult(intent.createChooser(intent, "Select Image"), 438);
+
+                        }
+                        if(i == 1) {
+                            checker = "pdf";
+
+                            Intent intent = new Intent();
+                            intent.setAction(Intent.ACTION_GET_CONTENT);
+                            intent.setType("application/pdf");
+                            startActivityForResult(intent.createChooser(intent, "Select PDF File"), 438);
+
+                        }
+                        if(i == 2) {
+                            checker = "docx";
+
+                            Intent intent = new Intent();
+                            intent.setAction(Intent.ACTION_GET_CONTENT);
+                            intent.setType("application/msword");
+                            startActivityForResult(intent.createChooser(intent, "Select MS Word File"), 438);
+
+                        }
+                    }
+                });
+
+                builder.show();
+            }
+        });
+
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         Location = findViewById(R.id.Location);
         Location.setOnClickListener(new View.OnClickListener() {
@@ -153,8 +225,17 @@ public class GroupChatActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(currentGroupName);
 
-        SendMessageButton = (ImageButton) findViewById(R.id.send_message_button);
+        SendMessageButton = (FitButton) findViewById(R.id.send_message_button);
+        SendFilesButton = findViewById(R.id.send_files_btn);
         userMessageInput = (EditText) findViewById(R.id.input_group_message);
+
+        Calendar calForDate = Calendar.getInstance();
+        SimpleDateFormat currentDateFormat = new SimpleDateFormat("dd/MM/yyy");
+        currentDate = currentDateFormat.format(calForDate.getTime());
+
+        Calendar calForTime = Calendar.getInstance();
+        SimpleDateFormat currentTimeFormat = new SimpleDateFormat("hh:mm a");
+        currentTime = currentTimeFormat.format(calForTime.getTime());
 
     }
 
@@ -182,13 +263,6 @@ public class GroupChatActivity extends AppCompatActivity {
             Toast.makeText(this, "Please write message first...", Toast.LENGTH_SHORT).show();
         }
         else {
-            Calendar calForDate = Calendar.getInstance();
-            SimpleDateFormat currentDateFormat = new SimpleDateFormat("dd/MM/yyy");
-            currentDate = currentDateFormat.format(calForDate.getTime());
-
-            Calendar calForTime = Calendar.getInstance();
-            SimpleDateFormat currentTimeFormat = new SimpleDateFormat("hh:mm a");
-            currentTime = currentTimeFormat.format(calForTime.getTime());
 
             HashMap<String, Object> groupMessageKey = new HashMap<>();
             GroupNameRef.updateChildren(groupMessageKey);
@@ -201,6 +275,7 @@ public class GroupChatActivity extends AppCompatActivity {
                 messageInfoMap.put("message", message);
                 messageInfoMap.put("date", currentDate);
                 messageInfoMap.put("time", currentTime);
+                messageInfoMap.put("type", "text");
                 GroupMessageKeyRef.updateChildren(messageInfoMap);
         }
     }
@@ -209,13 +284,6 @@ public class GroupChatActivity extends AppCompatActivity {
 
         String messageKey = GroupNameRef.push().getKey();
 
-            Calendar calForDate = Calendar.getInstance();
-            SimpleDateFormat currentDateFormat = new SimpleDateFormat("dd/MM/yyy");
-            currentDate = currentDateFormat.format(calForDate.getTime());
-
-            Calendar calForTime = Calendar.getInstance();
-            SimpleDateFormat currentTimeFormat = new SimpleDateFormat("hh:mm a");
-            currentTime = currentTimeFormat.format(calForTime.getTime());
 
             HashMap<String, Object> groupMessageKey = new HashMap<>();
             GroupNameRef.updateChildren(groupMessageKey);
@@ -228,8 +296,168 @@ public class GroupChatActivity extends AppCompatActivity {
             messageInfoMap.put("message", "ShareLocation");
             messageInfoMap.put("date", currentDate);
             messageInfoMap.put("time", currentTime);
+            messageInfoMap.put("type", "text");
             GroupMessageKeyRef.updateChildren(messageInfoMap);
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == 438 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+
+            loadingBar.setTitle("Sending File");
+            loadingBar.setMessage("Please wait, we are sending that file...");
+            loadingBar.setCanceledOnTouchOutside(false);
+            loadingBar.show();
+
+
+            fileUri = data.getData();
+
+            // lấy ra tên file pdf và file doc
+            String uriString = fileUri.toString();
+            File myFile = new File(uriString);
+            String path = myFile.getAbsolutePath();
+            String displayName = null;
+
+            if (uriString.startsWith("content://")) {
+                Cursor cursor = null;
+                try {
+                    cursor = getApplicationContext().getContentResolver().query(fileUri,
+                            null, null, null, null);
+                    if (cursor != null && cursor.moveToFirst()) {
+                        displayName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                    }
+                } finally {
+                    cursor.close();
+                }
+            } else if (uriString.startsWith("file://")) {
+                displayName = myFile.getName();
+            }
+            String finalDisplayName = displayName;
+
+            // nếu file gửi không phải image
+            if(!checker.equals("image")) {
+                StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("Document Files");
+                final String messageSenderRef = "Groups/" + currentGroupName;
+
+                DatabaseReference userMessageKeyRef = FirebaseDatabase.getInstance().getReference().child("Groups")
+                        .child(currentGroupName).push();
+
+                final String messagePushID = userMessageKeyRef.getKey();
+                final StorageReference filePath = storageReference.child(messagePushID + "." + checker);
+
+                filePath.putFile(fileUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        filePath.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                            @Override
+                            public void onSuccess(Uri uri) {
+                                loadingBar.dismiss();
+                                String downloadUrl = uri.toString();
+
+                                HashMap<String, Object> groupMessageKey = new HashMap<>();
+                                GroupNameRef.updateChildren(groupMessageKey);
+
+                                GroupMessageKeyRef = GroupNameRef.child(messagePushID);
+
+                                HashMap<String, Object> messageInfoMap = new HashMap<>();
+                                messageInfoMap.put("from", currentUserID);
+                                messageInfoMap.put("name", finalDisplayName);
+                                messageInfoMap.put("message", downloadUrl);
+                                messageInfoMap.put("date", currentDate);
+                                messageInfoMap.put("time", currentTime);
+                                messageInfoMap.put("type", checker);
+                                GroupMessageKeyRef.updateChildren(messageInfoMap);
+
+
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                loadingBar.dismiss();
+                                Toast.makeText(GroupChatActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
+                }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                        double p = (100.0* taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                        loadingBar.setMessage((int) p + " % Uploading...");
+                    }
+                });
+            }
+
+            else if(checker.equals("image")) {
+
+                StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("Image Files");
+                final String messageSenderRef = "Groups/" + currentGroupName;
+
+                DatabaseReference userMessageKeyRef = FirebaseDatabase.getInstance().getReference().child("Groups")
+                        .child(currentGroupName).push();
+
+                final String messagePushID = userMessageKeyRef.getKey();
+
+                final StorageReference filePath = storageReference.child(messagePushID + "." + "jpg");
+                uploadTask = filePath.putFile(fileUri);
+
+                uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                    @Override
+                    public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                        if (!task.isSuccessful()) {
+                            throw task.getException();
+                        }
+
+                        // Continue with the task to get the download URL
+                        return filePath.getDownloadUrl();
+                    }
+                }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Uri> task) {
+
+                        if(task.isSuccessful()) {
+                            Uri downloadUrl = task.getResult();
+                            myUrl = downloadUrl.toString();
+
+                            loadingBar.dismiss();
+
+                            HashMap<String, Object> groupMessageKey = new HashMap<>();
+                            GroupNameRef.updateChildren(groupMessageKey);
+
+                            GroupMessageKeyRef = GroupNameRef.child(messagePushID);
+
+                            HashMap<String, Object> messageInfoMap = new HashMap<>();
+                            messageInfoMap.put("from", currentUserID);
+                            messageInfoMap.put("name", fileUri.getLastPathSegment());
+                            messageInfoMap.put("message", myUrl);
+                            messageInfoMap.put("date", currentDate);
+                            messageInfoMap.put("time", currentTime);
+                            messageInfoMap.put("type", checker);
+                            GroupMessageKeyRef.updateChildren(messageInfoMap);
+
+                        }
+
+
+                    }
+                });
+
+
+            }
+            else {
+                loadingBar.dismiss();
+                Toast.makeText(this, "Nothing Selected, Error.", Toast.LENGTH_SHORT).show();
+            }
+
+        }
+    }
+
+
+
+
+
+
+
     private void OpenMap(){
         if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)

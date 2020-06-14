@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/chat_toolbar"
-        android:layout_above="@+id/chat_linear_layout"
+        android:layout_above="@+id/chat_layout"
         android:layout_marginBottom="6dp">
 
 
@@ -26,23 +26,23 @@
 
 
     <RelativeLayout
-        android:id="@+id/chat_linear_layout"
+        android:id="@+id/chat_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:background="@android:color/background_light">
+        android:layout_alignParentBottom="true">
 
-        <ImageButton
+        <com.github.nikartm.button.FitButton
             android:id="@+id/send_files_btn"
-            android:layout_width="60dp"
+            android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/send_files"
+            android:layout_marginEnd="5dp"
+            android:gravity="center"
+            app:fb_icon="@drawable/send_files"
             android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            android:backgroundTint="@android:color/white">
-
-        </ImageButton>
+            android:backgroundTint="@android:color/white"
+            app:fb_iconWidth="30dp"
+            app:fb_iconHeight="30dp"/>
 
         <EditText
             android:id="@+id/input_message"
@@ -50,24 +50,22 @@
             android:layout_height="wrap_content"
             android:hint="Write your message here..."
             android:padding="15dp"
-            android:layout_toLeftOf="@+id/send_message_btn"
             android:layout_centerVertical="true"
             android:maxLines="5"
             android:layout_toEndOf="@+id/send_files_btn"
-            android:layout_toStartOf="@+id/send_message_btn">
-        </EditText>
+            android:layout_toStartOf="@+id/send_message_btn"
+            android:textSize="15sp" />
 
-        <ImageButton
+        <com.github.nikartm.button.FitButton
             android:id="@+id/send_message_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/send_message"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            app:fb_icon="@drawable/send_message"
+            android:layout_marginEnd="5dp"
+            android:gravity="center"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:backgroundTint="@android:color/white">
-
-        </ImageButton>
-
+            app:fb_iconWidth="30dp"
+            app:fb_iconHeight="30dp"/>
     </RelativeLayout>
 
 </RelativeLayout>

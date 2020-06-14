@@ -25,7 +25,8 @@
             android:layout_weight="8"
             android:hint="Write friend's name..."
             android:padding="15dp"
-            android:layout_marginHorizontal="5dp"/>
+            android:layout_marginHorizontal="5dp"
+            android:textSize="15sp"/>
 
         <ImageView
             android:id="@+id/search_btn"
