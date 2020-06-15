@@ -52,7 +52,6 @@ public class MainActivity extends BaseActivity implements SinchService.StartFail
 
     private Toolbar mToolbar;
     private ViewPager myViewPager;
-    private TabLayout myTabLayout;
     private TabsAccessorAdapter myTabsAccessorAdapter;
 
     private FirebaseAuth mAuth;

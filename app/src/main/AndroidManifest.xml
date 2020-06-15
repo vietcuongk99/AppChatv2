@@ -7,8 +7,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
@@ -18,8 +18,11 @@
         android:roundIcon="@mipmap/ic_chatapp_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <service android:name=".Call.SinchService"></service>
-        <activity android:name=".Activity.ImageViewerActivity"></activity>
+        <activity android:name=".Activity.AddMemActivity"></activity>
+
+        <service android:name=".Call.SinchService" />
+
+        <activity android:name=".Activity.ImageViewerActivity" />
         <activity
             android:name=".Activity.ChatActivity"
             android:parentActivityName=".Activity.MainActivity" />
@@ -43,10 +46,12 @@
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
-        <activity android:name=".Call.CallScreenActivity"/>
+        <activity android:name=".Call.CallScreenActivity" />
+        <activity
+            android:name=".Call.IncomingCallScreenActivity"
+            android:noHistory="true"
+            android:screenOrientation="fullSensor" />
 
-        <activity android:name=".Call.IncomingCallScreenActivity" android:screenOrientation="fullSensor"
-            android:noHistory="true"/>
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyA9U-7D3EWS6AV7D9Sortf-MCShX6QPa6g" />

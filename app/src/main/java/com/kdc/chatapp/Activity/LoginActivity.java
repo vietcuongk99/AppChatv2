@@ -124,14 +124,14 @@ public class LoginActivity extends BaseActivity {
 
 
     private void SendUserToMainActivity() {
-        Intent mainInten = new Intent(LoginActivity.this, MainActivity.class);;
-        mainInten.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(mainInten);
+        Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);;
+        mainIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(mainIntent);
         finish();
     }
 
     private void SendUserToRegisterActivity() {
-        Intent registerInten = new Intent(LoginActivity.this, RegisterActivity.class);;
-        startActivity(registerInten);
+        Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);;
+        startActivity(registerIntent);
     }
 }

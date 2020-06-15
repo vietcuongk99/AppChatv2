@@ -88,6 +88,8 @@ public class GroupChatActivity extends AppCompatActivity {
     LocationListener locationListener;
     String lct;
 
+    private ImageButton add_member;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -181,11 +183,25 @@ public class GroupChatActivity extends AppCompatActivity {
                 SendLocation();
             }
         });
+
+        add_member = findViewById(R.id.add_member);
+        add_member.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Map AddUser = new HashMap();
+                AddUser.put("position", "admin");
+                GroupNameRef.child("members").child(currentUserID).updateChildren(AddUser);
+
+                Intent intent = new Intent(GroupChatActivity.this, AddMemActivity.class);
+                intent.putExtra("groupName",currentGroupName);
+                startActivity(intent);
+            }
+        });
     }
 
     private void getMessengerList() {
         groupMessenger.clear();
-        GroupNameRef.addChildEventListener(new ChildEventListener() {
+        GroupNameRef.child("listMessage").addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 if (dataSnapshot.exists()) {
@@ -264,10 +280,7 @@ public class GroupChatActivity extends AppCompatActivity {
         }
         else {
 
-            HashMap<String, Object> groupMessageKey = new HashMap<>();
-            GroupNameRef.updateChildren(groupMessageKey);
-
-            GroupMessageKeyRef = GroupNameRef.child(messageKey);
+            GroupMessageKeyRef = GroupNameRef.child("listMessage").child(messageKey);
 
             HashMap<String, Object> messageInfoMap = new HashMap<>();
                 messageInfoMap.put("from", currentUserID);
@@ -284,11 +297,7 @@ public class GroupChatActivity extends AppCompatActivity {
 
         String messageKey = GroupNameRef.push().getKey();
 
-
-            HashMap<String, Object> groupMessageKey = new HashMap<>();
-            GroupNameRef.updateChildren(groupMessageKey);
-
-            GroupMessageKeyRef = GroupNameRef.child(messageKey);
+            GroupMessageKeyRef = GroupNameRef.child("listMessage").child(messageKey);
 
             HashMap<String, Object> messageInfoMap = new HashMap<>();
             messageInfoMap.put("from", currentUserID);
@@ -356,10 +365,7 @@ public class GroupChatActivity extends AppCompatActivity {
                                 loadingBar.dismiss();
                                 String downloadUrl = uri.toString();
 
-                                HashMap<String, Object> groupMessageKey = new HashMap<>();
-                                GroupNameRef.updateChildren(groupMessageKey);
-
-                                GroupMessageKeyRef = GroupNameRef.child(messagePushID);
+                                GroupMessageKeyRef = GroupNameRef.child("listMessage").child(messagePushID);
 
                                 HashMap<String, Object> messageInfoMap = new HashMap<>();
                                 messageInfoMap.put("from", currentUserID);
@@ -422,10 +428,7 @@ public class GroupChatActivity extends AppCompatActivity {
 
                             loadingBar.dismiss();
 
-                            HashMap<String, Object> groupMessageKey = new HashMap<>();
-                            GroupNameRef.updateChildren(groupMessageKey);
-
-                            GroupMessageKeyRef = GroupNameRef.child(messagePushID);
+                            GroupMessageKeyRef = GroupNameRef.child("listMessage").child(messagePushID);
 
                             HashMap<String, Object> messageInfoMap = new HashMap<>();
                             messageInfoMap.put("from", currentUserID);

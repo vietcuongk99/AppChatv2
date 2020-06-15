@@ -19,6 +19,16 @@
             android:layout_alignParentEnd="true"
             android:src="@drawable/location"
             android:layout_marginEnd="15dp" />
+
+        <ImageButton
+            android:id="@+id/add_member"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="60dp"
+            android:layout_toLeftOf="@+id/Location"
+            android:background="@null"
+            android:src="@drawable/ic_person_add_black_24dp" />
     </RelativeLayout>
 
 </androidx.appcompat.widget.Toolbar>
