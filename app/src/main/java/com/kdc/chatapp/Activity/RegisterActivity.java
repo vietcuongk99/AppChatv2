@@ -118,4 +118,10 @@ public class RegisterActivity extends AppCompatActivity {
         startActivity(mainInten);
         finish();
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 }
