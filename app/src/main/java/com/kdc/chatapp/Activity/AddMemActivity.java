@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,6 +23,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -61,9 +63,9 @@ public class AddMemActivity extends AppCompatActivity {
         groupName = getIntent().getExtras().get("groupName").toString();
 
         FindFriendsRecyclerList = (RecyclerView) findViewById(R.id.listFriends);
-        FindFriendsRecyclerList.setLayoutManager(new LinearLayoutManager(this));
+        FindFriendsRecyclerList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
         FriendsListToAdd = (RecyclerView) findViewById(R.id.list_member_group);
         FriendsListToAdd.setLayoutManager(layoutManager);
 
@@ -123,19 +125,24 @@ public class AddMemActivity extends AppCompatActivity {
         super.onOptionsItemSelected(item);
         if (item.getItemId() == R.id.add_option) {
             RootRef.child("Groups").child(groupName).child("membersCache").push();
-                RootRef.child("Groups").child(groupName).child("membersCache").addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        RootRef.child("Groups").child(groupName).child("members").push();
-                        Map AddUser = new HashMap();
-                        AddUser.put(dataSnapshot.getKey(), dataSnapshot.getValue());
+
+            RootRef.child("Groups").child(groupName).child("membersCache").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                    HashMap<String, Object> AddUser = new HashMap();
+
+                    for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
+                        AddUser.put(snapshot.getKey(), snapshot.getValue());
                         RootRef.child("Groups").child(groupName).child("members").updateChildren(AddUser);
                     }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                    }
-                });
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                }
+            });
             onBackPressed();
         }
 
@@ -221,7 +228,10 @@ public class AddMemActivity extends AppCompatActivity {
         adapter.startListening();
     }
 
+
+
     private void addMemToList() {
+
 
         FirebaseRecyclerOptions<Contacts> options = new FirebaseRecyclerOptions.Builder<Contacts>()
                 .setQuery(RootRef.child("Groups").child(groupName).child("membersCache"), Contacts.class)
@@ -238,7 +248,9 @@ public class AddMemActivity extends AppCompatActivity {
 
             @Override
             protected void onBindViewHolder(@NonNull FriendListViewHolder holder, int position, @NonNull Contacts model) {
+
                 String key = getRef(position).getKey();
+                Log.d("Img url",  " " + "\n" + key);
                 UserRef.child(key).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -246,6 +258,7 @@ public class AddMemActivity extends AppCompatActivity {
                             if (dataSnapshot.hasChild("image")) {
                                 String userImage = dataSnapshot.child("image").getValue().toString();
                                 Picasso.get().load(userImage).into(holder.profileImage);
+
                             }
                         }
                     }
@@ -259,15 +272,44 @@ public class AddMemActivity extends AppCompatActivity {
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String user_id = getRef(position).getKey();
-                        RootRef.child("Groups").child(groupName).child("membersCache").child(user_id).removeValue();
+                        RootRef.child("Groups").child(groupName).child("membersCache").child(key)
+                                .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                RootRef.child("Groups").child(groupName).child("membersCache").child(key).removeValue()
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        adapterFriend.notifyDataSetChanged();
+                                    }
+                                });
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
                     }
                 });
             }
+
+            @Override
+            public long getItemId(int position) {
+                return position;
+            }
+
+            @Override
+            public int getItemViewType(int position) {
+                return position;
+            }
         };
+
 
         FriendsListToAdd.setAdapter(adapterFriend);
         adapterFriend.startListening();
+
     }
 
 
