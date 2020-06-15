@@ -250,7 +250,7 @@ public class AddMemActivity extends AppCompatActivity {
             protected void onBindViewHolder(@NonNull FriendListViewHolder holder, int position, @NonNull Contacts model) {
 
                 String key = getRef(position).getKey();
-                Log.d("Img url",  " " + "\n" + key);
+
                 UserRef.child(key).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

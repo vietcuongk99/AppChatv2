@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -35,6 +36,9 @@ public class GroupsFragment extends Fragment {
     private ArrayList<String> list_of_groups = new ArrayList<>();
 
     private DatabaseReference GroupRef;
+    private FirebaseAuth mAuth;
+
+    private String UserId;
 
     public GroupsFragment() {
         // Required empty public constructor
@@ -49,6 +53,7 @@ public class GroupsFragment extends Fragment {
         groupFragmentView =  inflater.inflate(R.layout.fragment_groups, container, false);
 
         GroupRef = FirebaseDatabase.getInstance().getReference().child("Groups");
+
 
         InitializeFields();
 
@@ -69,19 +74,24 @@ public class GroupsFragment extends Fragment {
     }
 
     private void RetrieveAndDisplayGroups() {
+         mAuth = FirebaseAuth.getInstance();
+         UserId = mAuth.getCurrentUser().getUid();
+
         GroupRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Set<String> set = new HashSet<>();
-                Iterator iterator = dataSnapshot.getChildren().iterator();
+                 Set<String> set = new HashSet<>();
 
-                while (iterator.hasNext()) {
-                    set.add(((DataSnapshot)iterator.next()).getKey());
-                }
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                        String key = ds.getKey();
+                        if (ds.child("members").hasChild(UserId)) {
+                            set.add(key);
+                        }
+                    }
 
-                list_of_groups.clear();
-                list_of_groups.addAll(set);
-                arrayAdapter.notifyDataSetChanged();
+                    list_of_groups.clear();
+                    list_of_groups.addAll(set);
+                    arrayAdapter.notifyDataSetChanged();
             }
 
             @Override
