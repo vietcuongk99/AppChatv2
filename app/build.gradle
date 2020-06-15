@@ -45,6 +45,7 @@ dependencies {
 
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.+'
     implementation "com.github.nikartm:fit-button:1.2.1"
+    implementation 'com.rengwuxian.materialedittext:library:2.1.4'
 
     implementation "androidx.annotation:annotation:1.1.0"
     // To use the Java-compatible @Experimental API annotation

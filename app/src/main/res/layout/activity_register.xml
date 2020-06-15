@@ -1,79 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activity.RegisterActivity">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ImageView
-        android:id="@+id/register_image"
+    <View
+        android:id="@+id/view"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:scaleType="fitCenter"
-        android:src="@drawable/signup_photo" />
+        android:layout_height="300dp"
+        android:background="#0099ff">
 
-    <EditText
-        android:id="@+id/register_email"
+    </View>
+
+    <View
+        android:id="@+id/wave"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@drawable/ic_wave"
+        android:layout_below="@+id/view">
+
+    </View>
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/register_image"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="17dp"
-        android:layout_marginTop="25dp"
-        android:layout_marginRight="17dp"
-        android:background="@drawable/inputs"
-        android:drawableStart="@drawable/email"
-        android:hint="Email"
-        android:inputType="textEmailAddress"
-        android:padding="4dp" />
+        android:layout_marginTop="60dp">
 
-    <EditText
-        android:id="@+id/register_password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/register_email"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="17dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="17dp"
-        android:background="@drawable/inputs"
-        android:drawableStart="@drawable/password"
-        android:hint="Password"
-        android:inputType="textPassword"
-        android:padding="4dp" />
+        <LinearLayout
+            android:id="@+id/register_form"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_shape"
+            android:orientation="vertical"
+            android:layout_marginHorizontal="15dp"
+            android:padding="20dp"
+            android:layout_marginVertical="15dp">
 
-    <Button
-        android:id="@+id/register_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/register_password"
-        android:layout_marginLeft="17dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="17dp"
-        android:background="@drawable/button"
-        android:padding="4dp"
-        android:text="REGISTER"
-        android:textAllCaps="false"
-        android:textColor="@android:color/background_light"
-        android:textSize="22dp" />
-    <TextView
-        android:id="@+id/already_have_account_link"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/register_button"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginRight="23dp"
-        android:text="Already have an account ?"
-        android:textAlignment="center"
-        android:textSize="17dp"
-        android:textStyle="bold"
-        android:textColor="#15ADF2"/>
+            <ImageView
+                android:id="@+id/chatapp_icon"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dp"
+                android:src="@mipmap/ic_chatapp">
+
+            </ImageView>
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="REGISTER"
+                android:textSize="20sp"
+                android:textColor="#2196F3"
+                android:textAlignment="center"
+                android:layout_marginBottom="10dp"
+                android:textStyle="bold">
+
+            </TextView>
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/register_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Email"
+                android:layout_marginBottom="10dp"
+                app:met_textColorHint="#7BBFF4"
+                app:met_floatingLabel="highlight"
+                android:inputType="text"
+                android:textSize="15sp">
+
+            </com.rengwuxian.materialedittext.MaterialEditText>
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/register_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Password"
+                app:met_textColorHint="#7BBFF4"
+                android:layout_marginBottom="15dp"
+                app:met_floatingLabel="highlight"
+                android:inputType="textPassword"
+                android:textSize="15sp">
+
+            </com.rengwuxian.materialedittext.MaterialEditText>
+
+            <com.github.nikartm.button.FitButton
+                android:id="@+id/register_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="20dp"
+                app:fb_text="Register"
+                app:fb_textColor="#fff"
+                app:fb_backgroundColor="#2196F3"
+                app:fb_shape="rectangle"
+                app:fb_cornerRadius="5dp"
+                android:paddingHorizontal="30dp"
+                android:paddingVertical="10dp"
+                app:fb_textSize="15sp">
+
+            </com.github.nikartm.button.FitButton>
+
+            <TextView
+                android:id="@+id/already_have_account_link"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:textColor="#2196F3"
+                android:text="Already have an account?"
+                android:textAlignment="center"
+                android:layout_marginBottom="20dp">
+
+            </TextView>
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
 
 
 </RelativeLayout>

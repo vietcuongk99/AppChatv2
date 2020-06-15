@@ -25,7 +25,11 @@ import androidx.core.view.MenuItemCompat;
 import androidx.viewpager.widget.ViewPager;
 
 import com.github.nikartm.button.FitButton;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
@@ -62,6 +66,7 @@ public class MainActivity extends BaseActivity implements SinchService.StartFail
 
     private long backPressedTime;
     private Toast backToast;
+    private GoogleSignInAccount googleSignInAccount;
 
 
     @Override
@@ -241,12 +246,28 @@ public class MainActivity extends BaseActivity implements SinchService.StartFail
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         super.onOptionsItemSelected(item);
+
         if (item.getItemId() == R.id.main_logout_option) {
 
             updateUserStatus("offline");
 
-            mAuth.signOut();
-            SenUserToLoginActivity();
+            googleSignInAccount = GoogleSignIn.getLastSignedInAccount(MainActivity.this);
+            if (googleSignInAccount != null) {
+                GoogleSignIn.getClient(
+                        getApplicationContext(),
+                        new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()
+                ).signOut().addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        mAuth.signOut();
+                        SenUserToLoginActivity();
+                    }
+                });
+            } else {
+                mAuth.signOut();
+                SenUserToLoginActivity();
+            }
+
         }
 
         if (item.getItemId() == R.id.main_settings_option) {

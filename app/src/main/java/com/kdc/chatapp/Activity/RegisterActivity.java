@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.nikartm.button.FitButton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -21,11 +22,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.kdc.chatapp.R;
+import com.rengwuxian.materialedittext.MaterialEditText;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private Button CreateAccountButton;
-    private EditText UserEmail, UserPassword;
+    private FitButton CreateAccountButton;
+    private MaterialEditText UserEmail, UserPassword;
     private TextView AlreadyHaveAccountLink;
 
     private FirebaseAuth mAuth;
@@ -62,14 +64,9 @@ public class RegisterActivity extends AppCompatActivity {
         String email = UserEmail.getText().toString();
         String password = UserPassword.getText().toString();
 
-        if(TextUtils.isEmpty(email)) {
-            Toast.makeText(this, "Please enter email...", Toast.LENGTH_SHORT).show();
-        }
-
-        if(TextUtils.isEmpty(password)) {
-            Toast.makeText(this, "Please enter password...", Toast.LENGTH_SHORT).show();
-        }
-        else {
+        if(TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
+            Toast.makeText(this, "Please enter email and password", Toast.LENGTH_SHORT).show();
+        } else {
             loadingBar.setTitle("Create new account");
             loadingBar.setMessage("Please wait, while we are creating new account for you...");
             loadingBar.setCanceledOnTouchOutside(true);
@@ -103,9 +100,9 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void InitializeFields() {
-        CreateAccountButton = (Button) findViewById(R.id.register_button);
-        UserEmail = (EditText) findViewById(R.id.register_email);
-        UserPassword = (EditText) findViewById(R.id.register_password);
+        CreateAccountButton = (FitButton) findViewById(R.id.register_button);
+        UserEmail = (MaterialEditText) findViewById(R.id.register_email);
+        UserPassword = (MaterialEditText) findViewById(R.id.register_password);
         AlreadyHaveAccountLink = (TextView) findViewById(R.id.already_have_account_link);
         loadingBar = new ProgressDialog(this);
     }
