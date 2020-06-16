@@ -444,6 +444,28 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                             builder.show();
                         }
 
+                        else if (userMessageList.get(position).getType().equals("location")) {
+                            CharSequence option[] = new CharSequence[]
+                                    {
+                                            "Open maps",
+                                            "Cancel"
+                                    };
+                            AlertDialog.Builder builder = new AlertDialog.Builder(messageViewHolder.itemView.getContext());
+                            builder.setTitle("Choose your action");
+
+                            builder.setItems(option, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int i) {
+                                    if (i == 0) {
+                                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(userMessageList.get(position).getMessage()));
+                                        messageViewHolder.itemView.getContext().startActivity(intent);
+                                    }
+
+                                }
+                            });
+
+                            builder.show();
+                        }
 
                     }
                 });
