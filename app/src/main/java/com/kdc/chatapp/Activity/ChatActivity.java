@@ -7,6 +7,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,6 +17,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -27,8 +29,10 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,15 +54,18 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
+import com.kdc.chatapp.Adapter.StickerAdapter;
 import com.kdc.chatapp.Call.CallScreenActivity;
 import com.kdc.chatapp.Adapter.MessageAdapter;
 import com.kdc.chatapp.Model.Messages;
+import com.kdc.chatapp.Model.Sticker;
 import com.kdc.chatapp.R;
 import com.kdc.chatapp.Call.SinchService;
 import com.sinch.android.rtc.calling.Call;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -77,7 +84,7 @@ public class ChatActivity extends BaseActivity {
     private CircleImageView userImage;
 
     private Toolbar ChatToolBar;
-    private FitButton SendMessageButton, SendFilesButton;
+    private FitButton SendMessageButton, SendFilesButton, SendStickerButton;
     private EditText MessageInputText;
 
     private List<Messages> messagesList;
@@ -101,6 +108,14 @@ public class ChatActivity extends BaseActivity {
     LocationManager locationManager;
     LocationListener locationListener;
 
+
+    private Button close_btn;
+    private RelativeLayout choose_sticker, chat_layout;
+    private String[] fileList;
+    private RecyclerView listSticker;
+    private List<Sticker> stickers;
+    private StickerAdapter stickerAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,6 +131,10 @@ public class ChatActivity extends BaseActivity {
 
         messagesList = new ArrayList<>();
         getMessengerList();
+
+        stickers = new ArrayList<>();
+        getStickerList();
+
         InitializeControllers();
 
         userName.setText(messageReceiverName);
@@ -234,6 +253,37 @@ public class ChatActivity extends BaseActivity {
             }
         });
 
+
+
+        listSticker = findViewById(R.id.group_divider);
+        listSticker.setLayoutManager(new GridLayoutManager(getApplicationContext(), 4));
+        listSticker.setHasFixedSize(true);
+
+        chat_layout = findViewById(R.id.chat_layout);
+        choose_sticker = findViewById(R.id.choose_sticker);
+        close_btn = findViewById(R.id.close_btn);
+        SendStickerButton = findViewById(R.id.send_sticker_btn);
+        SendStickerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chat_layout.setVisibility(View.INVISIBLE);
+                choose_sticker.setVisibility(View.VISIBLE);
+
+                stickerAdapter = new StickerAdapter(stickers, getApplicationContext(),
+                        messageSenderID, messageReceiverID, saveCurrentTime, saveCurrentDate, "chat");
+                listSticker.setAdapter(stickerAdapter);
+            }
+        });
+
+        close_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chat_layout.setVisibility(View.VISIBLE);
+                choose_sticker.setVisibility(View.INVISIBLE);
+            }
+        });
+
+
     }
 
 
@@ -337,7 +387,8 @@ public class ChatActivity extends BaseActivity {
                         loadingBar.setMessage((int) p + " % Uploading...");
                     }
                 });
-            } else if (checker.equals("image")) {
+            }
+            else if (checker.equals("image")) {
 
                 StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("Image Files");
                 final String messageSenderRef = "Messages/" + messageSenderID + "/" + messageReceiverID;
@@ -407,7 +458,8 @@ public class ChatActivity extends BaseActivity {
                 });
 
 
-            } else {
+            }
+            else {
                 loadingBar.dismiss();
                 Toast.makeText(this, "Nothing Selected, Error.", Toast.LENGTH_SHORT).show();
             }
@@ -664,4 +716,23 @@ public class ChatActivity extends BaseActivity {
         }
 
     }
+
+
+    private void getStickerList() {
+        stickers.clear();
+        AssetManager mgr = getApplicationContext().getAssets();
+        try {
+            fileList = mgr.list("emoji");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Toast.makeText(this, "Size: " + fileList.length, Toast.LENGTH_SHORT).show();
+
+        for (int i = 0; i < fileList.length; i++) {
+            Sticker sticker = new Sticker(fileList[i], "file:///android_asset/emoji/" + fileList[i]);
+            stickers.add(sticker);
+        }
+    }
+
+
 }

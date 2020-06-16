@@ -13,6 +13,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -26,14 +27,17 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -56,20 +60,24 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.StorageTask;
 import com.google.firebase.storage.UploadTask;
 import com.kdc.chatapp.Adapter.GroupMsgAdapter;
+import com.kdc.chatapp.Adapter.StickerAdapter;
 import com.kdc.chatapp.Model.Messages;
+import com.kdc.chatapp.Model.Sticker;
 import com.kdc.chatapp.R;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class GroupChatActivity extends AppCompatActivity {
 
     private Toolbar mToolbar;
-    private FitButton SendMessageButton, SendFilesButton;
+    private FitButton SendMessageButton, SendFilesButton, SendStickerButton;
     private EditText userMessageInput;
     private RecyclerView recyclerView;
 
@@ -92,6 +100,13 @@ public class GroupChatActivity extends AppCompatActivity {
     LocationManager locationManager;
     LocationListener locationListener;
 
+    private Button close_btn;
+    private RelativeLayout choose_sticker, group_chat_send_layout;
+    private String[] fileList;
+    private RecyclerView listSticker;
+    private List<Sticker> stickers;
+    private StickerAdapter stickerAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,10 +119,14 @@ public class GroupChatActivity extends AppCompatActivity {
         currentUserID = mAuth.getCurrentUser().getUid();
         UserRef = FirebaseDatabase.getInstance().getReference().child("Users");
         GroupNameRef = FirebaseDatabase.getInstance().getReference().child("Groups").child(currentGroupName);
-        InitializeFields();
 
         groupMessenger = new ArrayList<>();
         getMessengerList();
+        stickers = new ArrayList<>();
+        getStickerList();
+
+        InitializeFields();
+
         recyclerView = findViewById(R.id.group_chat_layout);
         linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -238,24 +257,36 @@ public class GroupChatActivity extends AppCompatActivity {
         SimpleDateFormat currentTimeFormat = new SimpleDateFormat("hh:mm a");
         currentTime = currentTimeFormat.format(calForTime.getTime());
 
-    }
 
-//    private void GetUserInfo() {
-//        UserRef.child(currentUserID).addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                if (dataSnapshot.exists()) {
-//                    currentUserName = dataSnapshot.child("name").getValue().toString();
-//                }
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-//    }
+        listSticker = findViewById(R.id.group_divider);
+        listSticker.setLayoutManager(new GridLayoutManager(getApplicationContext(), 4));
+        listSticker.setHasFixedSize(true);
+
+        group_chat_send_layout = findViewById(R.id.group_chat_send_layout);
+        choose_sticker = findViewById(R.id.choose_sticker);
+        close_btn = findViewById(R.id.close_btn);
+        SendStickerButton = findViewById(R.id.send_sticker_btn);
+        SendStickerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                group_chat_send_layout.setVisibility(View.INVISIBLE);
+                choose_sticker.setVisibility(View.VISIBLE);
+
+                stickerAdapter = new StickerAdapter(stickers, getApplicationContext(),
+                        currentGroupName, currentUserID, "group");
+                listSticker.setAdapter(stickerAdapter);
+            }
+        });
+
+        close_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                group_chat_send_layout.setVisibility(View.VISIBLE);
+                choose_sticker.setVisibility(View.INVISIBLE);
+            }
+        });
+
+    }
 
     private void SaveMessageInfoToDatabase() {
         String message = userMessageInput.getText().toString().trim();
@@ -421,21 +452,6 @@ public class GroupChatActivity extends AppCompatActivity {
         }
     }
 
-//    private void SendLocation(){
-//
-//        String messageKey = GroupNameRef.push().getKey();
-//
-//        GroupMessageKeyRef = GroupNameRef.child("listMessage").child(messageKey);
-//
-//        HashMap<String, Object> messageInfoMap = new HashMap<>();
-//        messageInfoMap.put("from", currentUserID);
-//        messageInfoMap.put("name", currentUserName);
-//        messageInfoMap.put("message", "ShareLocation");
-//        messageInfoMap.put("date", currentDate);
-//        messageInfoMap.put("time", currentTime);
-//        messageInfoMap.put("type", "text");
-//        GroupMessageKeyRef.updateChildren(messageInfoMap);
-//    }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void SendLocation() {
@@ -564,5 +580,21 @@ public class GroupChatActivity extends AppCompatActivity {
         }
 
         return true;
+    }
+
+    private void getStickerList() {
+        stickers.clear();
+        AssetManager mgr = getApplicationContext().getAssets();
+        try {
+            fileList = mgr.list("emoji");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Toast.makeText(this, "Size: " + fileList.length, Toast.LENGTH_SHORT).show();
+
+        for (int i = 0; i < fileList.length; i++) {
+            Sticker sticker = new Sticker(fileList[i], "file:///android_asset/emoji/" + fileList[i]);
+            stickers.add(sticker);
+        }
     }
 }
