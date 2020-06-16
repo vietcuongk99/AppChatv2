@@ -108,8 +108,9 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void SendUserToLoginActivity() {
-        Intent loginInten = new Intent(RegisterActivity.this, LoginActivity.class);;
-        startActivity(loginInten);
+        Intent loginIntent = new Intent(RegisterActivity.this, LoginActivity.class);;
+        startActivity(loginIntent);
+        finish();
     }
 
     private void SendUserToMainActivity() {
@@ -122,6 +123,6 @@ public class RegisterActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        finish();
+        SendUserToLoginActivity();
     }
 }

@@ -160,6 +160,7 @@ public class LoginActivity extends BaseActivity {
     private void SendUserToRegisterActivity() {
         Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);;
         startActivity(registerIntent);
+        finish();
     }
 
 
