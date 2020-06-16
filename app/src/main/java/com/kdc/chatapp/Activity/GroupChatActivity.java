@@ -456,55 +456,56 @@ public class GroupChatActivity extends AppCompatActivity {
 //        GroupMessageKeyRef.updateChildren(messageInfoMap);
 //    }
 
-    private void SendLocation(){
+    private void SendLocation() {
         if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]
                             {Manifest.permission.ACCESS_FINE_LOCATION},
                     1);
-        }
-        locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(android.location.Location location) {
-                double latitude = location.getLatitude();
-                double longitude = location.getLongitude();
-                String uri = "geo:" + latitude + ","
-                        + longitude + "?q=" + latitude
-                        + "," + longitude;
+        } else {
+            locationListener = new LocationListener() {
+                @Override
+                public void onLocationChanged(android.location.Location location) {
+                    double latitude = location.getLatitude();
+                    double longitude = location.getLongitude();
+                    String uri = "geo:" + latitude + ","
+                            + longitude + "?q=" + latitude
+                            + "," + longitude;
 
-                String messageKey = GroupNameRef.push().getKey();
+                    String messageKey = GroupNameRef.push().getKey();
 
-                GroupMessageKeyRef = GroupNameRef.child("listMessage").child(messageKey);
+                    GroupMessageKeyRef = GroupNameRef.child("listMessage").child(messageKey);
 
-                HashMap<String, Object> messageInfoMap = new HashMap<>();
-                messageInfoMap.put("from", currentUserID);
-                messageInfoMap.put("name", currentUserName);
-                messageInfoMap.put("message", uri);
-                messageInfoMap.put("date", currentDate);
-                messageInfoMap.put("time", currentTime);
-                messageInfoMap.put("type", "location");
-                GroupMessageKeyRef.updateChildren(messageInfoMap);
+                    HashMap<String, Object> messageInfoMap = new HashMap<>();
+                    messageInfoMap.put("from", currentUserID);
+                    messageInfoMap.put("name", currentUserName);
+                    messageInfoMap.put("message", uri);
+                    messageInfoMap.put("date", currentDate);
+                    messageInfoMap.put("time", currentTime);
+                    messageInfoMap.put("type", "location");
+                    GroupMessageKeyRef.updateChildren(messageInfoMap);
 //                startActivity(new Intent(android.content.Intent.ACTION_VIEW,
 //                        Uri.parse(uri)));
-            }
+                }
 
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras) {
 
-            }
+                }
 
-            @Override
-            public void onProviderEnabled(String provider) {
+                @Override
+                public void onProviderEnabled(String provider) {
 
-            }
+                }
 
-            @Override
-            public void onProviderDisabled(String provider) {
+                @Override
+                public void onProviderDisabled(String provider) {
 
-            }
-        };
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000000000, 0, locationListener);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000000000, 0, locationListener);
+                }
+            };
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000000000, 0, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000000000, 0, locationListener);
+        }
     }
 }

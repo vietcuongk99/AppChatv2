@@ -598,69 +598,72 @@ public class ChatActivity extends BaseActivity {
                             {Manifest.permission.ACCESS_FINE_LOCATION},
                     1);
         }
-        locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(android.location.Location location) {
-                double latitude = location.getLatitude();
-                double longitude = location.getLongitude();
-                String uri = "geo:" + latitude + ","
-                        + longitude + "?q=" + latitude
-                        + "," + longitude;
+        else{
+            locationListener = new LocationListener() {
+                @Override
+                public void onLocationChanged(android.location.Location location) {
+                    double latitude = location.getLatitude();
+                    double longitude = location.getLongitude();
+                    String uri = "geo:" + latitude + ","
+                            + longitude + "?q=" + latitude
+                            + "," + longitude;
 
-                String messageSenderRef = "Messages/" + messageSenderID + "/" + messageReceiverID;
-                String messageReceiverRef = "Messages/" + messageReceiverID + "/" + messageSenderID;
+                    String messageSenderRef = "Messages/" + messageSenderID + "/" + messageReceiverID;
+                    String messageReceiverRef = "Messages/" + messageReceiverID + "/" + messageSenderID;
 
-                DatabaseReference userMessageKeyRef = RootRef.child("Messages")
-                        .child(messageSenderID).child(messageReceiverID).push();
-                String messagePushID = userMessageKeyRef.getKey();
+                    DatabaseReference userMessageKeyRef = RootRef.child("Messages")
+                            .child(messageSenderID).child(messageReceiverID).push();
+                    String messagePushID = userMessageKeyRef.getKey();
 
-                Map messageTextBody = new HashMap();
-                messageTextBody.put("message",uri);
-                messageTextBody.put("type","location");
-                messageTextBody.put("from",messageSenderID);
-                messageTextBody.put("to",messageReceiverID);
-                messageTextBody.put("messageID",messagePushID);
-                messageTextBody.put("time",saveCurrentTime);
-                messageTextBody.put("date",saveCurrentDate);
+                    Map messageTextBody = new HashMap();
+                    messageTextBody.put("message",uri);
+                    messageTextBody.put("type","location");
+                    messageTextBody.put("from",messageSenderID);
+                    messageTextBody.put("to",messageReceiverID);
+                    messageTextBody.put("messageID",messagePushID);
+                    messageTextBody.put("time",saveCurrentTime);
+                    messageTextBody.put("date",saveCurrentDate);
 
 
-                Map messageBodyDetails = new HashMap();
-                messageBodyDetails.put(messageSenderRef + "/listMessage/" + messagePushID, messageTextBody);
-                messageBodyDetails.put(messageReceiverRef + "/listMessage/" + messagePushID, messageTextBody);
+                    Map messageBodyDetails = new HashMap();
+                    messageBodyDetails.put(messageSenderRef + "/listMessage/" + messagePushID, messageTextBody);
+                    messageBodyDetails.put(messageReceiverRef + "/listMessage/" + messagePushID, messageTextBody);
 
-                RootRef.updateChildren(messageBodyDetails).addOnCompleteListener(new OnCompleteListener() {
-                    @Override
-                    public void onComplete(@NonNull Task task) {
-                        if(task.isSuccessful()) {
-                            Map messageBodyDetails = new HashMap();
-                            messageBodyDetails.put(messageSenderRef + "/stateUserSee", 1);
-                            messageBodyDetails.put(messageReceiverRef + "/stateUserSee", 0);
-                            RootRef.updateChildren(messageBodyDetails);
+                    RootRef.updateChildren(messageBodyDetails).addOnCompleteListener(new OnCompleteListener() {
+                        @Override
+                        public void onComplete(@NonNull Task task) {
+                            if(task.isSuccessful()) {
+                                Map messageBodyDetails = new HashMap();
+                                messageBodyDetails.put(messageSenderRef + "/stateUserSee", 1);
+                                messageBodyDetails.put(messageReceiverRef + "/stateUserSee", 0);
+                                RootRef.updateChildren(messageBodyDetails);
+                            }
+                            else {
+                                Toast.makeText(ChatActivity.this, "Error.", Toast.LENGTH_SHORT).show();
+                            }
+                            MessageInputText.setText("");
                         }
-                        else {
-                            Toast.makeText(ChatActivity.this, "Error.", Toast.LENGTH_SHORT).show();
-                        }
-                        MessageInputText.setText("");
-                    }
-                });
-            }
+                    });
+                }
 
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras) {
 
-            }
+                }
 
-            @Override
-            public void onProviderEnabled(String provider) {
+                @Override
+                public void onProviderEnabled(String provider) {
 
-            }
+                }
 
-            @Override
-            public void onProviderDisabled(String provider) {
+                @Override
+                public void onProviderDisabled(String provider) {
 
-            }
-        };
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000000000, 0, locationListener);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000000000, 0, locationListener);
+                }
+            };
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000000000, 0, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000000000, 0, locationListener);
+        }
+
     }
 }
