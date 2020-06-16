@@ -23,6 +23,8 @@ import android.provider.OpenableColumns;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -69,8 +71,6 @@ public class GroupChatActivity extends AppCompatActivity {
     private Toolbar mToolbar;
     private FitButton SendMessageButton, SendFilesButton;
     private EditText userMessageInput;
-    private ScrollView mScrollView;
-    private TextView displayTextMessages, groupName;
     private RecyclerView recyclerView;
 
     private FirebaseAuth mAuth;
@@ -89,11 +89,8 @@ public class GroupChatActivity extends AppCompatActivity {
     private ProgressDialog loadingBar;
 
 
-    private ImageButton Location;
     LocationManager locationManager;
     LocationListener locationListener;
-
-    private ImageButton add_member;
 
 
     @Override
@@ -219,8 +216,9 @@ public class GroupChatActivity extends AppCompatActivity {
     }
 
     private void InitializeFields() {
-        mToolbar = (Toolbar) findViewById(R.id.group_chat_bar_layout);
+        mToolbar = (Toolbar) findViewById(R.id.main_page_toolbar);
         setSupportActionBar(mToolbar);
+        getSupportActionBar().setTitle(currentGroupName);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowCustomEnabled(true);
 
@@ -240,50 +238,24 @@ public class GroupChatActivity extends AppCompatActivity {
         SimpleDateFormat currentTimeFormat = new SimpleDateFormat("hh:mm a");
         currentTime = currentTimeFormat.format(calForTime.getTime());
 
-
-        groupName = actionBarView.findViewById(R.id.title_group);
-        groupName.setText(currentGroupName);
-
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        Location = actionBarView.findViewById(R.id.Location);
-        Location.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SendLocation();
-            }
-        });
-
-        add_member = actionBarView.findViewById(R.id.add_member);
-        add_member.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Map AddUser = new HashMap();
-                AddUser.put("position", "admin");
-                GroupNameRef.child("members").child(currentUserID).updateChildren(AddUser);
-
-                Intent intent = new Intent(GroupChatActivity.this, AddMemActivity.class);
-                intent.putExtra("groupName", currentGroupName);
-                startActivity(intent);
-            }
-        });
-
     }
 
-    private void GetUserInfo() {
-        UserRef.child(currentUserID).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    currentUserName = dataSnapshot.child("name").getValue().toString();
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
+//    private void GetUserInfo() {
+//        UserRef.child(currentUserID).addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                if (dataSnapshot.exists()) {
+//                    currentUserName = dataSnapshot.child("name").getValue().toString();
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
 
     private void SaveMessageInfoToDatabase() {
         String message = userMessageInput.getText().toString().trim();
@@ -516,5 +488,81 @@ public class GroupChatActivity extends AppCompatActivity {
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000000000, 0, locationListener);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000000000, 0, locationListener);
         }
+    }
+
+    private void addMember() {
+        Map AddUser = new HashMap();
+        AddUser.put("position", "admin");
+        GroupNameRef.child("members").child(currentUserID).updateChildren(AddUser);
+
+        Intent intent = new Intent(GroupChatActivity.this, AddMemActivity.class);
+        intent.putExtra("groupName", currentGroupName);
+        startActivity(intent);
+    }
+
+    private void deleteMember() {
+        System.out.println("hello test");
+    }
+
+    private void leaveGroup() {
+        GroupNameRef.child("members").child(currentUserID).removeValue();
+        Intent intent = new Intent(GroupChatActivity.this, MainActivity.class);
+        startActivity(intent);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.group_menu, menu);
+        MenuItem menuItem = menu.findItem(R.id.location);
+
+        GroupNameRef.child("members").child(currentUserID).child("position").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.getValue().toString().equals("admin")) {
+                    menu.findItem(R.id.delete_member).setVisible(true);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        View searchView = menuItem.getActionView();
+        searchView.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onClick(View v) {
+                onOptionsItemSelected(menuItem);
+            }
+        });
+        return true;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        super.onOptionsItemSelected(item);
+
+        if (item.getItemId() == R.id.location) {
+            locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            SendLocation();
+        }
+
+        if (item.getItemId() == R.id.add_member) {
+            addMember();
+        }
+
+        if (item.getItemId() == R.id.delete_member) {
+            deleteMember();
+        }
+
+        if (item.getItemId() == R.id.leave_group) {
+            leaveGroup();
+        }
+
+        return true;
     }
 }

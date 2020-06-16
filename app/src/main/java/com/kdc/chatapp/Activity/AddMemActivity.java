@@ -24,6 +24,7 @@ import androidx.appcompat.widget.Toolbar;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -50,6 +51,10 @@ public class AddMemActivity extends AppCompatActivity {
 
     private FirebaseRecyclerAdapter<Contacts, FindFriendViewHolder> adapter;
     private FirebaseRecyclerAdapter<Contacts, FriendListViewHolder> adapterFriend;
+
+    private FirebaseAuth mAuth;
+
+    private String UserId;
 
 
     @SuppressLint("WrongViewCast")
@@ -169,6 +174,8 @@ public class AddMemActivity extends AppCompatActivity {
 
     private void searchFriend(String text) {
         FirebaseRecyclerOptions<Contacts> options;
+        mAuth = FirebaseAuth.getInstance();
+        UserId = mAuth.getCurrentUser().getUid();
         if(!text.equals("")) {
             Query firebaseSearchQuery = UserRef.orderByChild("name").startAt(text).endAt(text + "\uf8ff");
 
@@ -197,10 +204,12 @@ public class AddMemActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         String user_id = getRef(position).getKey();
-                        DatabaseReference groupMessage = RootRef.child("Groups").child(groupName).push();
-                        Map AddUser = new HashMap();
-                        AddUser.put("position", "admin");
-                        RootRef.child("Groups").child(groupName).child("membersCache").child(user_id).updateChildren(AddUser);
+                        if(!user_id.equals(UserId)) {
+                            DatabaseReference groupMessage = RootRef.child("Groups").child(groupName).push();
+                            Map AddUser = new HashMap();
+                            AddUser.put("position", "member");
+                            RootRef.child("Groups").child(groupName).child("membersCache").child(user_id).updateChildren(AddUser);
+                        }
                     }
                 });
             }
@@ -231,7 +240,6 @@ public class AddMemActivity extends AppCompatActivity {
 
 
     private void addMemToList() {
-
 
         FirebaseRecyclerOptions<Contacts> options = new FirebaseRecyclerOptions.Builder<Contacts>()
                 .setQuery(RootRef.child("Groups").child(groupName).child("membersCache"), Contacts.class)
