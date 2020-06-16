@@ -22,7 +22,7 @@
                 android:id="@+id/title_1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Create new group"
+                android:text="Create Group"
                 android:textSize="15sp"
                 android:layout_marginBottom="10dp"
                 android:textStyle="bold"
@@ -35,7 +35,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
-                android:hint="group 1, group 2,..."
+                android:hint="Please write group name..."
                 android:paddingVertical="15dp">
 
             </EditText>
