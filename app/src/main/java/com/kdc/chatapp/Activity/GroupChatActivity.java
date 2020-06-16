@@ -3,6 +3,7 @@ package com.kdc.chatapp.Activity;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -21,6 +22,7 @@ import android.os.Bundle;
 import android.provider.OpenableColumns;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -68,7 +70,7 @@ public class GroupChatActivity extends AppCompatActivity {
     private FitButton SendMessageButton, SendFilesButton;
     private EditText userMessageInput;
     private ScrollView mScrollView;
-    private TextView displayTextMessages;
+    private TextView displayTextMessages, groupName;
     private RecyclerView recyclerView;
 
     private FirebaseAuth mAuth;
@@ -177,28 +179,6 @@ public class GroupChatActivity extends AppCompatActivity {
             }
         });
 
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        Location = findViewById(R.id.Location);
-        Location.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SendLocation();
-            }
-        });
-
-        add_member = findViewById(R.id.add_member);
-        add_member.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Map AddUser = new HashMap();
-                AddUser.put("position", "admin");
-                GroupNameRef.child("members").child(currentUserID).updateChildren(AddUser);
-
-                Intent intent = new Intent(GroupChatActivity.this, AddMemActivity.class);
-                intent.putExtra("groupName", currentGroupName);
-                startActivity(intent);
-            }
-        });
     }
 
     private void getMessengerList() {
@@ -241,7 +221,12 @@ public class GroupChatActivity extends AppCompatActivity {
     private void InitializeFields() {
         mToolbar = (Toolbar) findViewById(R.id.group_chat_bar_layout);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setTitle(currentGroupName);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowCustomEnabled(true);
+
+        LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View actionBarView = layoutInflater.inflate(R.layout.group_bar_layout, null);
+        actionBar.setCustomView(actionBarView);
 
         SendMessageButton = (FitButton) findViewById(R.id.send_message_button);
         SendFilesButton = findViewById(R.id.send_files_btn);
@@ -254,6 +239,33 @@ public class GroupChatActivity extends AppCompatActivity {
         Calendar calForTime = Calendar.getInstance();
         SimpleDateFormat currentTimeFormat = new SimpleDateFormat("hh:mm a");
         currentTime = currentTimeFormat.format(calForTime.getTime());
+
+
+        groupName = actionBarView.findViewById(R.id.title_group);
+        groupName.setText(currentGroupName);
+
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        Location = actionBarView.findViewById(R.id.Location);
+        Location.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SendLocation();
+            }
+        });
+
+        add_member = actionBarView.findViewById(R.id.add_member);
+        add_member.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Map AddUser = new HashMap();
+                AddUser.put("position", "admin");
+                GroupNameRef.child("members").child(currentUserID).updateChildren(AddUser);
+
+                Intent intent = new Intent(GroupChatActivity.this, AddMemActivity.class);
+                intent.putExtra("groupName", currentGroupName);
+                startActivity(intent);
+            }
+        });
 
     }
 
@@ -280,7 +292,7 @@ public class GroupChatActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(message) || message.equals("")) {
             Toast.makeText(this, "Please write message first...", Toast.LENGTH_SHORT).show();
         } else {
-
+            userMessageInput.setText("");
             GroupMessageKeyRef = GroupNameRef.child("listMessage").child(messageKey);
 
             HashMap<String, Object> messageInfoMap = new HashMap<>();
@@ -380,7 +392,6 @@ public class GroupChatActivity extends AppCompatActivity {
                     }
                 });
             } else if (checker.equals("image")) {
-
                 StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("Image Files");
                 final String messageSenderRef = "Groups/" + currentGroupName;
 

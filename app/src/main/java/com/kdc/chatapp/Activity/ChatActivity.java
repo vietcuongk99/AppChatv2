@@ -500,6 +500,7 @@ public class ChatActivity extends BaseActivity {
         if (TextUtils.isEmpty(messageText) || messageText.equals("")) {
             Toast.makeText(this, "Please write message first...", Toast.LENGTH_SHORT).show();
         } else {
+            MessageInputText.setText("");
             String messageSenderRef = "Messages/" + messageSenderID + "/" + messageReceiverID;
             String messageReceiverRef = "Messages/" + messageReceiverID + "/" + messageSenderID;
 
@@ -532,7 +533,6 @@ public class ChatActivity extends BaseActivity {
                     } else {
                         Toast.makeText(ChatActivity.this, "Error.", Toast.LENGTH_SHORT).show();
                     }
-                    MessageInputText.setText("");
                 }
             });
         }
