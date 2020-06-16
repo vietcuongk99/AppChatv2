@@ -49,6 +49,7 @@ import com.squareup.picasso.Picasso;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -183,6 +184,16 @@ public class MainActivity extends BaseActivity implements SinchService.StartFail
         else {
             updateUserStatus("online");
             VerifyUserExistance();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        if (currentUser != null) {
+            updateUserStatus("offline");
         }
     }
 
@@ -345,7 +356,16 @@ public class MainActivity extends BaseActivity implements SinchService.StartFail
                     public void onComplete(@NonNull Task<Void> task) {
 
                             if (task.isSuccessful()) {
-                                Toast.makeText(MainActivity.this, groupName+" is Created Successfully...",Toast.LENGTH_SHORT).show();
+                                Map AddUser = new HashMap();
+                                AddUser.put("position", "admin");
+                                RootRef.child("Groups").child(groupName).child("members").child(currentUserID).updateChildren(AddUser).addOnCompleteListener(new OnCompleteListener() {
+                                    @Override
+                                    public void onComplete(@NonNull Task task) {
+                                        if (task.isSuccessful()) {
+                                            Toast.makeText(MainActivity.this, groupName+" is Created Successfully...",Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                });
                             }
                     }
                 });
