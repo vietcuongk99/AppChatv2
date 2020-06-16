@@ -2,6 +2,7 @@ package com.kdc.chatapp.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,6 +15,7 @@ import android.database.Cursor;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
 import android.text.TextUtils;
@@ -113,7 +115,6 @@ public class GroupChatActivity extends AppCompatActivity {
         recyclerView.setAdapter(groupMsgAdapter);
 
 
-
         SendMessageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -140,7 +141,7 @@ public class GroupChatActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int i) {
 
-                        if(i == 0) {
+                        if (i == 0) {
                             checker = "image";
 
                             Intent intent = new Intent();
@@ -149,7 +150,7 @@ public class GroupChatActivity extends AppCompatActivity {
                             startActivityForResult(intent.createChooser(intent, "Select Image"), 438);
 
                         }
-                        if(i == 1) {
+                        if (i == 1) {
                             checker = "pdf";
 
                             Intent intent = new Intent();
@@ -158,7 +159,7 @@ public class GroupChatActivity extends AppCompatActivity {
                             startActivityForResult(intent.createChooser(intent, "Select PDF File"), 438);
 
                         }
-                        if(i == 2) {
+                        if (i == 2) {
                             checker = "docx";
 
                             Intent intent = new Intent();
@@ -192,7 +193,7 @@ public class GroupChatActivity extends AppCompatActivity {
                 GroupNameRef.child("members").child(currentUserID).updateChildren(AddUser);
 
                 Intent intent = new Intent(GroupChatActivity.this, AddMemActivity.class);
-                intent.putExtra("groupName",currentGroupName);
+                intent.putExtra("groupName", currentGroupName);
                 startActivity(intent);
             }
         });
@@ -276,29 +277,27 @@ public class GroupChatActivity extends AppCompatActivity {
 
         if (TextUtils.isEmpty(message) || message.equals("")) {
             Toast.makeText(this, "Please write message first...", Toast.LENGTH_SHORT).show();
-        }
-        else {
+        } else {
 
             GroupMessageKeyRef = GroupNameRef.child("listMessage").child(messageKey);
 
             HashMap<String, Object> messageInfoMap = new HashMap<>();
-                messageInfoMap.put("from", currentUserID);
-                messageInfoMap.put("name", currentUserName);
-                messageInfoMap.put("message", message);
-                messageInfoMap.put("date", currentDate);
-                messageInfoMap.put("time", currentTime);
-                messageInfoMap.put("type", "text");
-                GroupMessageKeyRef.updateChildren(messageInfoMap);
+            messageInfoMap.put("from", currentUserID);
+            messageInfoMap.put("name", currentUserName);
+            messageInfoMap.put("message", message);
+            messageInfoMap.put("date", currentDate);
+            messageInfoMap.put("time", currentTime);
+            messageInfoMap.put("type", "text");
+            GroupMessageKeyRef.updateChildren(messageInfoMap);
         }
     }
-
 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == 438 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+        if (requestCode == 438 && resultCode == RESULT_OK && data != null && data.getData() != null) {
 
             loadingBar.setTitle("Sending File");
             loadingBar.setMessage("Please wait, we are sending that file...");
@@ -331,7 +330,7 @@ public class GroupChatActivity extends AppCompatActivity {
             String finalDisplayName = displayName;
 
             // nếu file gửi không phải image
-            if(!checker.equals("image")) {
+            if (!checker.equals("image")) {
                 StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("Document Files");
                 final String messageSenderRef = "Groups/" + currentGroupName;
 
@@ -374,13 +373,11 @@ public class GroupChatActivity extends AppCompatActivity {
                 }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                        double p = (100.0* taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                        double p = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
                         loadingBar.setMessage((int) p + " % Uploading...");
                     }
                 });
-            }
-
-            else if(checker.equals("image")) {
+            } else if (checker.equals("image")) {
 
                 StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("Image Files");
                 final String messageSenderRef = "Groups/" + currentGroupName;
@@ -407,7 +404,7 @@ public class GroupChatActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<Uri> task) {
 
-                        if(task.isSuccessful()) {
+                        if (task.isSuccessful()) {
                             Uri downloadUrl = task.getResult();
                             myUrl = downloadUrl.toString();
 
@@ -431,8 +428,7 @@ public class GroupChatActivity extends AppCompatActivity {
                 });
 
 
-            }
-            else {
+            } else {
                 loadingBar.dismiss();
                 Toast.makeText(this, "Nothing Selected, Error.", Toast.LENGTH_SHORT).show();
             }
@@ -456,13 +452,10 @@ public class GroupChatActivity extends AppCompatActivity {
 //        GroupMessageKeyRef.updateChildren(messageInfoMap);
 //    }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void SendLocation() {
-        if (ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]
-                            {Manifest.permission.ACCESS_FINE_LOCATION},
-                    1);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         } else {
             locationListener = new LocationListener() {
                 @Override
@@ -485,8 +478,6 @@ public class GroupChatActivity extends AppCompatActivity {
                     messageInfoMap.put("time", currentTime);
                     messageInfoMap.put("type", "location");
                     GroupMessageKeyRef.updateChildren(messageInfoMap);
-//                startActivity(new Intent(android.content.Intent.ACTION_VIEW,
-//                        Uri.parse(uri)));
                 }
 
                 @Override
@@ -504,6 +495,16 @@ public class GroupChatActivity extends AppCompatActivity {
 
                 }
             };
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000000000, 0, locationListener);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000000000, 0, locationListener);
         }

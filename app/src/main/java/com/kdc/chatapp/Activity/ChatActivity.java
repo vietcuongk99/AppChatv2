@@ -2,6 +2,7 @@ package com.kdc.chatapp.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
@@ -19,6 +20,7 @@ import android.database.Cursor;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
 import android.text.TextUtils;
@@ -126,7 +128,6 @@ public class ChatActivity extends BaseActivity {
         });
 
 
-
         DisplayLastSeen();
 
 
@@ -147,7 +148,7 @@ public class ChatActivity extends BaseActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int i) {
 
-                        if(i == 0) {
+                        if (i == 0) {
                             checker = "image";
 
                             Intent intent = new Intent();
@@ -156,7 +157,7 @@ public class ChatActivity extends BaseActivity {
                             startActivityForResult(intent.createChooser(intent, "Select Image"), 438);
 
                         }
-                        if(i == 1) {
+                        if (i == 1) {
                             checker = "pdf";
 
                             Intent intent = new Intent();
@@ -165,7 +166,7 @@ public class ChatActivity extends BaseActivity {
                             startActivityForResult(intent.createChooser(intent, "Select PDF File"), 438);
 
                         }
-                        if(i == 2) {
+                        if (i == 2) {
                             checker = "docx";
 
                             Intent intent = new Intent();
@@ -193,7 +194,7 @@ public class ChatActivity extends BaseActivity {
         actionBar.setDisplayShowCustomEnabled(true);
 
         LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View actionBarView = layoutInflater.inflate(R.layout.custom_chat_bar,null);
+        View actionBarView = layoutInflater.inflate(R.layout.custom_chat_bar, null);
         actionBar.setCustomView(actionBarView);
 
         userImage = (CircleImageView) findViewById(R.id.custom_profile_image);
@@ -238,7 +239,7 @@ public class ChatActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == 438 && resultCode == RESULT_OK && data != null && data.getData() != null) {
+        if (requestCode == 438 && resultCode == RESULT_OK && data != null && data.getData() != null) {
 
             loadingBar.setTitle("Sending File");
             loadingBar.setMessage("Please wait, we are sending that file...");
@@ -271,7 +272,7 @@ public class ChatActivity extends BaseActivity {
             String finalDisplayName = displayName;
 
             // nếu file gửi không phải image
-            if(!checker.equals("image")) {
+            if (!checker.equals("image")) {
                 StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("Document Files");
                 final String messageSenderRef = "Messages/" + messageSenderID + "/" + messageReceiverID;
                 final String messageReceiverRef = "Messages/" + messageReceiverID + "/" + messageSenderID;
@@ -291,10 +292,10 @@ public class ChatActivity extends BaseActivity {
                                 String downloadUrl = uri.toString();
 
                                 Map messageImageBody = new HashMap();
-                                messageImageBody.put("message",downloadUrl);
+                                messageImageBody.put("message", downloadUrl);
                                 messageImageBody.put("name", finalDisplayName);
-                                messageImageBody.put("type",checker);
-                                messageImageBody.put("from",messageSenderID);
+                                messageImageBody.put("type", checker);
+                                messageImageBody.put("from", messageSenderID);
                                 messageImageBody.put("to", messageReceiverID);
                                 messageImageBody.put("messageID", messagePushID);
                                 messageImageBody.put("time", saveCurrentTime);
@@ -302,15 +303,15 @@ public class ChatActivity extends BaseActivity {
 
 
                                 Map messageBodyDetail = new HashMap();
-                                messageBodyDetail.put(messageSenderRef+ "/listMessage/" + messagePushID, messageImageBody);
-                                messageBodyDetail.put(messageReceiverRef+ "/listMessage/" + messagePushID, messageImageBody);
+                                messageBodyDetail.put(messageSenderRef + "/listMessage/" + messagePushID, messageImageBody);
+                                messageBodyDetail.put(messageReceiverRef + "/listMessage/" + messagePushID, messageImageBody);
 
                                 RootRef.updateChildren(messageBodyDetail).addOnCompleteListener(new OnCompleteListener() {
                                     @Override
                                     public void onComplete(@NonNull Task task) {
-                                        if(task.isSuccessful()) {
+                                        if (task.isSuccessful()) {
                                             Map messageBodyDetails = new HashMap();
-                                            messageBodyDetail.put(messageSenderRef+ "/stateUserSee", 1);
+                                            messageBodyDetail.put(messageSenderRef + "/stateUserSee", 1);
                                             messageBodyDetails.put(messageReceiverRef + "/stateUserSee", 0);
                                             RootRef.updateChildren(messageBodyDetails);
                                             loadingBar.dismiss();
@@ -330,13 +331,11 @@ public class ChatActivity extends BaseActivity {
                 }).addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                        double p = (100.0* taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                        double p = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
                         loadingBar.setMessage((int) p + " % Uploading...");
                     }
                 });
-            }
-
-            else if(checker.equals("image")) {
+            } else if (checker.equals("image")) {
 
                 StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("Image Files");
                 final String messageSenderRef = "Messages/" + messageSenderID + "/" + messageReceiverID;
@@ -364,7 +363,7 @@ public class ChatActivity extends BaseActivity {
                     @Override
                     public void onComplete(@NonNull Task<Uri> task) {
 
-                        if(task.isSuccessful()) {
+                        if (task.isSuccessful()) {
                             Uri downloadUrl = task.getResult();
                             myUrl = downloadUrl.toString();
 
@@ -372,7 +371,7 @@ public class ChatActivity extends BaseActivity {
                             messageTextBody.put("message", myUrl);
                             messageTextBody.put("name", fileUri.getLastPathSegment());
                             messageTextBody.put("type", checker);
-                            messageTextBody.put("from",messageSenderID);
+                            messageTextBody.put("from", messageSenderID);
                             messageTextBody.put("to", messageReceiverID);
                             messageTextBody.put("messageID", messagePushID);
                             messageTextBody.put("time", saveCurrentTime);
@@ -386,14 +385,13 @@ public class ChatActivity extends BaseActivity {
                             RootRef.updateChildren(messageBodyDetails).addOnCompleteListener(new OnCompleteListener() {
                                 @Override
                                 public void onComplete(@NonNull Task task) {
-                                    if(task.isSuccessful()){
+                                    if (task.isSuccessful()) {
                                         Map messageBodyDetails = new HashMap();
-                                        messageBodyDetails.put(messageSenderRef+ "/stateUserSee", 1);
+                                        messageBodyDetails.put(messageSenderRef + "/stateUserSee", 1);
                                         messageBodyDetails.put(messageReceiverRef + "/stateUserSee", 0);
                                         RootRef.updateChildren(messageBodyDetails);
                                         loadingBar.dismiss();
-                                    }
-                                    else {
+                                    } else {
                                         loadingBar.dismiss();
                                         Toast.makeText(ChatActivity.this, "Error.", Toast.LENGTH_SHORT).show();
                                     }
@@ -407,8 +405,7 @@ public class ChatActivity extends BaseActivity {
                 });
 
 
-            }
-            else {
+            } else {
                 loadingBar.dismiss();
                 Toast.makeText(this, "Nothing Selected, Error.", Toast.LENGTH_SHORT).show();
             }
@@ -428,25 +425,23 @@ public class ChatActivity extends BaseActivity {
 
                             if (state.equals("online")) {
                                 userLastSeen.setText("online");
-                            }
-                            else if (state.equals("offline")) {
+                            } else if (state.equals("offline")) {
                                 Date now = new Date();
-                                String SDate1 = date+" "+time;
+                                String SDate1 = date + " " + time;
                                 try {
                                     Date date1 = new SimpleDateFormat("dd/MM/yyyy hh:mm a").parse(SDate1);
-                                    long x = (now.getTime()-date1.getTime())/60000;
-                                    if(x<60){
-                                        x+=1;
+                                    long x = (now.getTime() - date1.getTime()) / 60000;
+                                    if (x < 60) {
+                                        x += 1;
                                         userLastSeen.setText("active " + x + " minutes ago");
-                                    }
-                                    else if(x>1440) userLastSeen.setText("active " + x/1440 + " days ago");
-                                    else userLastSeen.setText("active " + x/60 + " hours ago");
+                                    } else if (x > 1440)
+                                        userLastSeen.setText("active " + x / 1440 + " days ago");
+                                    else userLastSeen.setText("active " + x / 60 + " hours ago");
                                 } catch (ParseException e) {
                                     e.printStackTrace();
                                 }
                             }
-                        }
-                        else {
+                        } else {
                             userLastSeen.setText("offline");
                         }
                     }
@@ -498,12 +493,11 @@ public class ChatActivity extends BaseActivity {
     }
 
 
-    private void SendMessage(){
+    private void SendMessage() {
         String messageText = MessageInputText.getText().toString().trim();
-        if(TextUtils.isEmpty(messageText) || messageText.equals("")){
+        if (TextUtils.isEmpty(messageText) || messageText.equals("")) {
             Toast.makeText(this, "Please write message first...", Toast.LENGTH_SHORT).show();
-        }
-        else{
+        } else {
             String messageSenderRef = "Messages/" + messageSenderID + "/" + messageReceiverID;
             String messageReceiverRef = "Messages/" + messageReceiverID + "/" + messageSenderID;
 
@@ -512,13 +506,13 @@ public class ChatActivity extends BaseActivity {
             String messagePushID = userMessageKeyRef.getKey();
 
             Map messageTextBody = new HashMap();
-            messageTextBody.put("message",messageText);
-            messageTextBody.put("type","text");
-            messageTextBody.put("from",messageSenderID);
-            messageTextBody.put("to",messageReceiverID);
-            messageTextBody.put("messageID",messagePushID);
-            messageTextBody.put("time",saveCurrentTime);
-            messageTextBody.put("date",saveCurrentDate);
+            messageTextBody.put("message", messageText);
+            messageTextBody.put("type", "text");
+            messageTextBody.put("from", messageSenderID);
+            messageTextBody.put("to", messageReceiverID);
+            messageTextBody.put("messageID", messagePushID);
+            messageTextBody.put("time", saveCurrentTime);
+            messageTextBody.put("date", saveCurrentDate);
 
 
             Map messageBodyDetails = new HashMap();
@@ -528,13 +522,12 @@ public class ChatActivity extends BaseActivity {
             RootRef.updateChildren(messageBodyDetails).addOnCompleteListener(new OnCompleteListener() {
                 @Override
                 public void onComplete(@NonNull Task task) {
-                    if(task.isSuccessful()) {
+                    if (task.isSuccessful()) {
                         Map messageBodyDetails = new HashMap();
                         messageBodyDetails.put(messageSenderRef + "/stateUserSee", 1);
                         messageBodyDetails.put(messageReceiverRef + "/stateUserSee", 0);
                         RootRef.updateChildren(messageBodyDetails);
-                    }
-                    else {
+                    } else {
                         Toast.makeText(ChatActivity.this, "Error.", Toast.LENGTH_SHORT).show();
                     }
                     MessageInputText.setText("");
@@ -558,6 +551,7 @@ public class ChatActivity extends BaseActivity {
         callScreen.putExtra(SinchService.CALL_ID, callId);
         startActivity(callScreen);
     }
+
     private void callVideoButtonClicked() {
         String userName = messageReceiverID;
         if (userName.isEmpty()) {
@@ -590,15 +584,11 @@ public class ChatActivity extends BaseActivity {
         }
     };
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void SendLocation() {
-        if (ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]
-                            {Manifest.permission.ACCESS_FINE_LOCATION},
-                    1);
-        }
-        else{
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        } else {
             locationListener = new LocationListener() {
                 @Override
                 public void onLocationChanged(android.location.Location location) {
@@ -616,13 +606,13 @@ public class ChatActivity extends BaseActivity {
                     String messagePushID = userMessageKeyRef.getKey();
 
                     Map messageTextBody = new HashMap();
-                    messageTextBody.put("message",uri);
-                    messageTextBody.put("type","location");
-                    messageTextBody.put("from",messageSenderID);
-                    messageTextBody.put("to",messageReceiverID);
-                    messageTextBody.put("messageID",messagePushID);
-                    messageTextBody.put("time",saveCurrentTime);
-                    messageTextBody.put("date",saveCurrentDate);
+                    messageTextBody.put("message", uri);
+                    messageTextBody.put("type", "location");
+                    messageTextBody.put("from", messageSenderID);
+                    messageTextBody.put("to", messageReceiverID);
+                    messageTextBody.put("messageID", messagePushID);
+                    messageTextBody.put("time", saveCurrentTime);
+                    messageTextBody.put("date", saveCurrentDate);
 
 
                     Map messageBodyDetails = new HashMap();
@@ -632,13 +622,12 @@ public class ChatActivity extends BaseActivity {
                     RootRef.updateChildren(messageBodyDetails).addOnCompleteListener(new OnCompleteListener() {
                         @Override
                         public void onComplete(@NonNull Task task) {
-                            if(task.isSuccessful()) {
+                            if (task.isSuccessful()) {
                                 Map messageBodyDetails = new HashMap();
                                 messageBodyDetails.put(messageSenderRef + "/stateUserSee", 1);
                                 messageBodyDetails.put(messageReceiverRef + "/stateUserSee", 0);
                                 RootRef.updateChildren(messageBodyDetails);
-                            }
-                            else {
+                            } else {
                                 Toast.makeText(ChatActivity.this, "Error.", Toast.LENGTH_SHORT).show();
                             }
                             MessageInputText.setText("");
@@ -661,6 +650,7 @@ public class ChatActivity extends BaseActivity {
 
                 }
             };
+
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000000000, 0, locationListener);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000000000, 0, locationListener);
         }
