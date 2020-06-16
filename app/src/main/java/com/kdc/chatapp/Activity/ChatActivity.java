@@ -5,14 +5,19 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
@@ -88,6 +93,10 @@ public class ChatActivity extends BaseActivity {
 
     private ImageButton pCall;
     private ImageButton vCall;
+
+    private ImageButton Location;
+    LocationManager locationManager;
+    LocationListener locationListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -213,7 +222,17 @@ public class ChatActivity extends BaseActivity {
         pCall = findViewById(R.id.pCall);
         vCall = findViewById(R.id.vCall);
 
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        Location = findViewById(R.id.Location);
+        Location.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SendLocation();
+            }
+        });
+
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -570,4 +589,78 @@ public class ChatActivity extends BaseActivity {
             }
         }
     };
+
+    private void SendLocation() {
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]
+                            {Manifest.permission.ACCESS_FINE_LOCATION},
+                    1);
+        }
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(android.location.Location location) {
+                double latitude = location.getLatitude();
+                double longitude = location.getLongitude();
+                String uri = "geo:" + latitude + ","
+                        + longitude + "?q=" + latitude
+                        + "," + longitude;
+
+                String messageSenderRef = "Messages/" + messageSenderID + "/" + messageReceiverID;
+                String messageReceiverRef = "Messages/" + messageReceiverID + "/" + messageSenderID;
+
+                DatabaseReference userMessageKeyRef = RootRef.child("Messages")
+                        .child(messageSenderID).child(messageReceiverID).push();
+                String messagePushID = userMessageKeyRef.getKey();
+
+                Map messageTextBody = new HashMap();
+                messageTextBody.put("message",uri);
+                messageTextBody.put("type","location");
+                messageTextBody.put("from",messageSenderID);
+                messageTextBody.put("to",messageReceiverID);
+                messageTextBody.put("messageID",messagePushID);
+                messageTextBody.put("time",saveCurrentTime);
+                messageTextBody.put("date",saveCurrentDate);
+
+
+                Map messageBodyDetails = new HashMap();
+                messageBodyDetails.put(messageSenderRef + "/listMessage/" + messagePushID, messageTextBody);
+                messageBodyDetails.put(messageReceiverRef + "/listMessage/" + messagePushID, messageTextBody);
+
+                RootRef.updateChildren(messageBodyDetails).addOnCompleteListener(new OnCompleteListener() {
+                    @Override
+                    public void onComplete(@NonNull Task task) {
+                        if(task.isSuccessful()) {
+                            Map messageBodyDetails = new HashMap();
+                            messageBodyDetails.put(messageSenderRef + "/stateUserSee", 1);
+                            messageBodyDetails.put(messageReceiverRef + "/stateUserSee", 0);
+                            RootRef.updateChildren(messageBodyDetails);
+                        }
+                        else {
+                            Toast.makeText(ChatActivity.this, "Error.", Toast.LENGTH_SHORT).show();
+                        }
+                        MessageInputText.setText("");
+                    }
+                });
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        };
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000000000, 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000000000, 0, locationListener);
+    }
 }

@@ -86,7 +86,6 @@ public class GroupChatActivity extends AppCompatActivity {
     private ImageButton Location;
     LocationManager locationManager;
     LocationListener locationListener;
-    String lct;
 
     private ImageButton add_member;
 
@@ -293,21 +292,7 @@ public class GroupChatActivity extends AppCompatActivity {
         }
     }
 
-    private void SendLocation(){
 
-        String messageKey = GroupNameRef.push().getKey();
-
-            GroupMessageKeyRef = GroupNameRef.child("listMessage").child(messageKey);
-
-            HashMap<String, Object> messageInfoMap = new HashMap<>();
-            messageInfoMap.put("from", currentUserID);
-            messageInfoMap.put("name", currentUserName);
-            messageInfoMap.put("message", "ShareLocation");
-            messageInfoMap.put("date", currentDate);
-            messageInfoMap.put("time", currentTime);
-            messageInfoMap.put("type", "text");
-            GroupMessageKeyRef.updateChildren(messageInfoMap);
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -455,13 +440,23 @@ public class GroupChatActivity extends AppCompatActivity {
         }
     }
 
+//    private void SendLocation(){
+//
+//        String messageKey = GroupNameRef.push().getKey();
+//
+//        GroupMessageKeyRef = GroupNameRef.child("listMessage").child(messageKey);
+//
+//        HashMap<String, Object> messageInfoMap = new HashMap<>();
+//        messageInfoMap.put("from", currentUserID);
+//        messageInfoMap.put("name", currentUserName);
+//        messageInfoMap.put("message", "ShareLocation");
+//        messageInfoMap.put("date", currentDate);
+//        messageInfoMap.put("time", currentTime);
+//        messageInfoMap.put("type", "text");
+//        GroupMessageKeyRef.updateChildren(messageInfoMap);
+//    }
 
-
-
-
-
-
-    private void OpenMap(){
+    private void SendLocation(){
         if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -477,8 +472,21 @@ public class GroupChatActivity extends AppCompatActivity {
                 String uri = "geo:" + latitude + ","
                         + longitude + "?q=" + latitude
                         + "," + longitude;
-                startActivity(new Intent(android.content.Intent.ACTION_VIEW,
-                        Uri.parse(uri)));
+
+                String messageKey = GroupNameRef.push().getKey();
+
+                GroupMessageKeyRef = GroupNameRef.child("listMessage").child(messageKey);
+
+                HashMap<String, Object> messageInfoMap = new HashMap<>();
+                messageInfoMap.put("from", currentUserID);
+                messageInfoMap.put("name", currentUserName);
+                messageInfoMap.put("message", uri);
+                messageInfoMap.put("date", currentDate);
+                messageInfoMap.put("time", currentTime);
+                messageInfoMap.put("type", "location");
+                GroupMessageKeyRef.updateChildren(messageInfoMap);
+//                startActivity(new Intent(android.content.Intent.ACTION_VIEW,
+//                        Uri.parse(uri)));
             }
 
             @Override

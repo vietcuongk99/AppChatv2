@@ -124,6 +124,22 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                     messageViewHolder.receiverMessageText.setText(messages.getMessage());
 
                 }
+                else if(fromMessageType.equals("location")){
+                    if (checkNextMessageSender(userMessageList, position)) {
+                        messageViewHolder.receiverProfileImage.setVisibility(View.INVISIBLE);
+
+                    } else {
+                        messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
+
+                    }
+                    messageViewHolder.receiverMessageText.setVisibility(View.VISIBLE);
+                    messageViewHolder.receiverMessageText.setBackgroundResource(R.drawable.receiver_message_layout);
+                    messageViewHolder.receiverMessageText.setTextColor(Color.WHITE);
+                    messageViewHolder.receiverMessageText.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.location,0,0,0);
+                    messageViewHolder.receiverMessageText.setText("My's location");
+
+
+                }
                 else if(fromMessageType.equals("image")) {
                     if (checkNextMessageSender(userMessageList, position)) {
                         messageViewHolder.receiverProfileImage.setVisibility(View.INVISIBLE);
@@ -163,6 +179,15 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                     messageViewHolder.senderMessageText.setBackgroundResource(R.drawable.sender_message_layout);
                     messageViewHolder.senderMessageText.setTextColor(Color.WHITE);
                     messageViewHolder.senderMessageText.setText(messages.getMessage());
+
+                }
+                else if(fromMessageType.equals("location")){
+
+                    messageViewHolder.senderMessageText.setVisibility(View.VISIBLE);
+                    messageViewHolder.senderMessageText.setBackgroundResource(R.drawable.sender_message_layout);
+                    messageViewHolder.senderMessageText.setTextColor(Color.WHITE);
+                    messageViewHolder.senderMessageText.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.location,0,0,0);
+                    messageViewHolder.senderMessageText.setText("My's location");
 
                 }
                 else if(fromMessageType.equals("image")) {
@@ -293,6 +318,28 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                             builder.show();
                         }
 
+                        else if (userMessageList.get(position).getType().equals("location")) {
+                            CharSequence option[] = new CharSequence[]
+                                    {
+                                            "Open maps",
+                                            "Cancel"
+                                    };
+                            AlertDialog.Builder builder = new AlertDialog.Builder(messageViewHolder.itemView.getContext());
+                            builder.setTitle("Choose your action");
+
+                            builder.setItems(option, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int i) {
+                                    if (i == 0) {
+                                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(userMessageList.get(position).getMessage()));
+                                        messageViewHolder.itemView.getContext().startActivity(intent);
+                                    }
+
+                                }
+                            });
+
+                            builder.show();
+                        }
 
                     }
                 });

@@ -47,6 +47,15 @@
     </RelativeLayout>
 
     <ImageButton
+        android:id="@+id/Location"
+        android:background="@null"
+        android:layout_marginTop="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toStartOf="@id/pCall"
+        android:layout_marginEnd="20dp"
+        android:src="@drawable/location" />
+    <ImageButton
         android:id="@+id/pCall"
         android:background="@null"
         android:layout_marginTop="15dp"
