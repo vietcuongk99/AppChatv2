@@ -27,6 +27,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -77,9 +78,9 @@ import java.util.Map;
 public class GroupChatActivity extends AppCompatActivity {
 
     private Toolbar mToolbar;
-    private FitButton SendMessageButton, SendFilesButton, SendStickerButton;
+    private FitButton SendMessageButton, SendFilesButton;
     private EditText userMessageInput;
-    private RecyclerView recyclerView;
+    private RecyclerView groupMessagesList;
 
     private FirebaseAuth mAuth;
     private DatabaseReference UserRef, GroupNameRef, GroupMessageKeyRef;
@@ -100,7 +101,7 @@ public class GroupChatActivity extends AppCompatActivity {
     LocationManager locationManager;
     LocationListener locationListener;
 
-    private Button close_btn;
+    private FitButton SendStickerButton, close_btn;
     private RelativeLayout choose_sticker, group_chat_send_layout;
     private String[] fileList;
     private RecyclerView listSticker;
@@ -127,12 +128,12 @@ public class GroupChatActivity extends AppCompatActivity {
 
         InitializeFields();
 
-        recyclerView = findViewById(R.id.group_chat_layout);
+        groupMessagesList = findViewById(R.id.group_chat_layout);
         linearLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(linearLayoutManager);
+        groupMessagesList.setLayoutManager(linearLayoutManager);
 
         groupMsgAdapter = new GroupMsgAdapter(groupMessenger);
-        recyclerView.setAdapter(groupMsgAdapter);
+        groupMessagesList.setAdapter(groupMsgAdapter);
 
 
         SendMessageButton.setOnClickListener(new View.OnClickListener() {
@@ -208,7 +209,7 @@ public class GroupChatActivity extends AppCompatActivity {
 
                     groupMsgAdapter.notifyDataSetChanged();
 
-                    recyclerView.smoothScrollToPosition(recyclerView.getAdapter().getItemCount());
+                    groupMessagesList.smoothScrollToPosition(groupMessagesList.getAdapter().getItemCount());
                 }
             }
 
@@ -259,7 +260,7 @@ public class GroupChatActivity extends AppCompatActivity {
 
 
         listSticker = findViewById(R.id.group_divider);
-        listSticker.setLayoutManager(new GridLayoutManager(getApplicationContext(), 4));
+        listSticker.setLayoutManager(new GridLayoutManager(getApplicationContext(), 5));
         listSticker.setHasFixedSize(true);
 
         group_chat_send_layout = findViewById(R.id.group_chat_send_layout);
@@ -269,8 +270,13 @@ public class GroupChatActivity extends AppCompatActivity {
         SendStickerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                group_chat_send_layout.setVisibility(View.INVISIBLE);
+
                 choose_sticker.setVisibility(View.VISIBLE);
+                RelativeLayout.LayoutParams params= new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                params.addRule(RelativeLayout.ABOVE, R.id.choose_sticker);
+                params.addRule(RelativeLayout.BELOW, R.id.main_page_toolbar);
+                groupMessagesList.setLayoutParams(params);
+                groupMessagesList.smoothScrollToPosition(groupMessagesList.getAdapter().getItemCount());
 
                 stickerAdapter = new StickerAdapter(stickers, getApplicationContext(),
                         currentGroupName, currentUserID, "group");
@@ -281,8 +287,12 @@ public class GroupChatActivity extends AppCompatActivity {
         close_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                group_chat_send_layout.setVisibility(View.VISIBLE);
                 choose_sticker.setVisibility(View.INVISIBLE);
+                RelativeLayout.LayoutParams params= new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                params.addRule(RelativeLayout.ABOVE, R.id.group_chat_send_layout);
+                params.addRule(RelativeLayout.BELOW, R.id.main_page_toolbar);
+                groupMessagesList.setLayoutParams(params);
+                groupMessagesList.smoothScrollToPosition(groupMessagesList.getAdapter().getItemCount());
             }
         });
 

@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.app.ActivityCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,6 +20,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.database.Cursor;
+import android.graphics.Point;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -27,8 +29,10 @@ import android.os.Bundle;
 import android.provider.OpenableColumns;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -109,8 +113,8 @@ public class ChatActivity extends BaseActivity {
     LocationListener locationListener;
 
 
-    private Button close_btn;
-    private RelativeLayout choose_sticker, chat_layout;
+    private FitButton close_btn;
+    private RelativeLayout chat_activity, choose_sticker, chat_layout;
     private String[] fileList;
     private RecyclerView listSticker;
     private List<Sticker> stickers;
@@ -254,9 +258,9 @@ public class ChatActivity extends BaseActivity {
         });
 
 
-
+        chat_activity = findViewById(R.id.chat_layout);
         listSticker = findViewById(R.id.group_divider);
-        listSticker.setLayoutManager(new GridLayoutManager(getApplicationContext(), 4));
+        listSticker.setLayoutManager(new GridLayoutManager(getApplicationContext(), 5));
         listSticker.setHasFixedSize(true);
 
         chat_layout = findViewById(R.id.chat_layout);
@@ -266,8 +270,30 @@ public class ChatActivity extends BaseActivity {
         SendStickerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chat_layout.setVisibility(View.INVISIBLE);
+
+                /*
+                Display display = getWindowManager().getDefaultDisplay();
+                Point size = new Point();
+                display.getSize(size);
+                int height = size.y;
+                int width = size.x;
+
+
+                top_content.getLayoutParams().height = height/3;
+
+                ConstraintSet constraintSet = new ConstraintSet();
+                constraintSet.clone(group_divider);
+                group_divider.getLayoutParams().width = width;
+                group_divider.getLayoutParams().height = width/6;
+
+                 */
+
                 choose_sticker.setVisibility(View.VISIBLE);
+                RelativeLayout.LayoutParams params= new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                params.addRule(RelativeLayout.ABOVE, R.id.choose_sticker);
+                params.addRule(RelativeLayout.BELOW, R.id.chat_toolbar);
+                userMessagesList.setLayoutParams(params);
+                userMessagesList.smoothScrollToPosition(userMessagesList.getAdapter().getItemCount());
 
                 stickerAdapter = new StickerAdapter(stickers, getApplicationContext(),
                         messageSenderID, messageReceiverID, saveCurrentTime, saveCurrentDate, "chat");
@@ -278,8 +304,13 @@ public class ChatActivity extends BaseActivity {
         close_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chat_layout.setVisibility(View.VISIBLE);
                 choose_sticker.setVisibility(View.INVISIBLE);
+
+                RelativeLayout.LayoutParams params= new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                params.addRule(RelativeLayout.ABOVE, R.id.chat_layout);
+                params.addRule(RelativeLayout.BELOW, R.id.chat_toolbar);
+                userMessagesList.setLayoutParams(params);
+                userMessagesList.smoothScrollToPosition(userMessagesList.getAdapter().getItemCount());
             }
         });
 
@@ -733,6 +764,7 @@ public class ChatActivity extends BaseActivity {
             stickers.add(sticker);
         }
     }
+
 
 
 }

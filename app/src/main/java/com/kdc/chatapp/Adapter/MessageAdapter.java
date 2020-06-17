@@ -50,7 +50,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
         public TextView senderMessageText, receiverMessageText;
         public CircleImageView receiverProfileImage;
-        public ImageView messageSenderPicture, messageReceiverPicture;
+        public ImageView messageSenderPicture, messageReceiverPicture, messageSenderSticker, messageReceiverSticker;
 
 
         public MessageViewHolder(@NonNull View itemView) {
@@ -60,6 +60,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             receiverProfileImage = (CircleImageView) itemView.findViewById(R.id.message_profile_image);
             messageReceiverPicture = itemView.findViewById(R.id.message_receiver_image_view);
             messageSenderPicture = itemView.findViewById(R.id.message_sender_image_view);
+            messageReceiverSticker = itemView.findViewById(R.id.message_receiver_sticker_view);
+            messageSenderSticker = itemView.findViewById(R.id.message_sender_sticker_view);
+
 
 
         }
@@ -83,6 +86,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
             messageViewHolder.senderMessageText.setVisibility(View.GONE);
             messageViewHolder.messageSenderPicture.setVisibility(View.GONE);
             messageViewHolder.messageReceiverPicture.setVisibility(View.GONE);
+            messageViewHolder.messageSenderSticker.setVisibility(View.GONE);
+            messageViewHolder.messageReceiverSticker.setVisibility(View.GONE);
 
             String messageSenderID = mAuth.getCurrentUser().getUid();
             Messages messages = userMessageList.get(position);
@@ -153,6 +158,19 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
                 }
 
+                else if(fromMessageType.equals("sticker")) {
+                    if (checkNextMessageSender(userMessageList, position)) {
+                        messageViewHolder.receiverProfileImage.setVisibility(View.INVISIBLE);
+
+                    } else {
+                        messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
+                    }
+
+                    messageViewHolder.messageReceiverSticker.setVisibility(View.VISIBLE);
+                    Picasso.get().load(messages.getMessage()).into(messageViewHolder.messageReceiverSticker);
+
+                }
+
                 else {
                     if (checkNextMessageSender(userMessageList, position)) {
                         messageViewHolder.receiverProfileImage.setVisibility(View.INVISIBLE);
@@ -193,6 +211,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                 else if(fromMessageType.equals("image")) {
                     messageViewHolder.messageSenderPicture.setVisibility(View.VISIBLE);
                     Picasso.get().load(messages.getMessage()).into(messageViewHolder.messageSenderPicture);
+                }
+
+                else if(fromMessageType.equals("sticker")) {
+                    messageViewHolder.messageSenderSticker.setVisibility(View.VISIBLE);
+                    Picasso.get().load(messages.getMessage()).into(messageViewHolder.messageSenderSticker);
                 }
 
                 else {

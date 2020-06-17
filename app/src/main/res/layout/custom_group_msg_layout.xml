@@ -76,18 +76,39 @@
     
         <ImageView
             android:id="@+id/message_receiver_image_view"
-            android:layout_width="150dp"
+            android:layout_width="125dp"
             android:layout_height="150dp"
             android:scaleType="centerCrop">
 
         </ImageView>
+
+        <ImageView
+            android:id="@+id/message_receiver_sticker_view"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:scaleType="centerCrop">
+
+        </ImageView>
+
+
     </LinearLayout>
 
 
     <ImageView
         android:id="@+id/message_sender_image_view"
-        android:layout_width="150dp"
+        android:layout_width="125dp"
         android:layout_height="150dp"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="5dp"
+        android:layout_marginTop="10dp"
+        android:scaleType="centerCrop">
+
+    </ImageView>
+
+    <ImageView
+        android:id="@+id/message_sender_sticker_view"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="5dp"
         android:layout_marginTop="10dp"

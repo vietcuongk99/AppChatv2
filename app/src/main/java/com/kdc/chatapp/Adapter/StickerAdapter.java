@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -79,7 +80,7 @@ public class StickerAdapter extends RecyclerView.Adapter<StickerAdapter.StickerV
         holder.title.setText(stickers.get(position).getName());
         Glide.with(mContext).load(stickers.get(position).getUrl()).into(holder.image);
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
+        holder.stateItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -107,7 +108,7 @@ public class StickerAdapter extends RecyclerView.Adapter<StickerAdapter.StickerV
                                     HashMap<String, Object> messageTextBody = new HashMap();
                                     messageTextBody.put("message", url);
                                     messageTextBody.put("name", stickers.get(position).getName());
-                                    messageTextBody.put("type", "image");
+                                    messageTextBody.put("type", "sticker");
                                     messageTextBody.put("from", messageSenderID);
                                     messageTextBody.put("to", messageReceiverID);
                                     messageTextBody.put("messageID", messagePushID);
@@ -169,7 +170,7 @@ public class StickerAdapter extends RecyclerView.Adapter<StickerAdapter.StickerV
                                     messageInfoMap.put("message", url);
                                     messageInfoMap.put("date", saveCurrentDate);
                                     messageInfoMap.put("time", saveCurrentTime);
-                                    messageInfoMap.put("type", "image");
+                                    messageInfoMap.put("type", "sticker");
                                     GroupMessageKeyRef.updateChildren(messageInfoMap);
 
                                 }
@@ -197,11 +198,13 @@ public class StickerAdapter extends RecyclerView.Adapter<StickerAdapter.StickerV
     public static class StickerViewHolder extends RecyclerView.ViewHolder {
         private TextView title;
         private ImageView image;
+        private FrameLayout stateItem;
 
         public StickerViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.image_name);
             image = itemView.findViewById(R.id.image);
+            stateItem = itemView.findViewById(R.id.frame_container);
         }
     }
 

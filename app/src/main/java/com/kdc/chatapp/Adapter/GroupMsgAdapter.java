@@ -50,7 +50,7 @@ public class GroupMsgAdapter extends RecyclerView.Adapter<GroupMsgAdapter.GroupM
 
         public TextView senderMessageText, receiverMessageText, senderName, mirror_senderName;
         public CircleImageView receiverProfileImage;
-        public ImageView messageSenderPicture, messageReceiverPicture;
+        public ImageView messageSenderPicture, messageReceiverPicture, messageSenderSticker, messageReceiverSticker;
 
         public GroupMsgViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -59,6 +59,8 @@ public class GroupMsgAdapter extends RecyclerView.Adapter<GroupMsgAdapter.GroupM
             receiverProfileImage = (CircleImageView) itemView.findViewById(R.id.message_profile_image);
             messageReceiverPicture = itemView.findViewById(R.id.message_receiver_image_view);
             messageSenderPicture = itemView.findViewById(R.id.message_sender_image_view);
+            messageSenderSticker = itemView.findViewById(R.id.message_sender_sticker_view);
+            messageReceiverSticker = itemView.findViewById(R.id.message_receiver_sticker_view);
             senderName = itemView.findViewById(R.id.sender_name);
             mirror_senderName = itemView.findViewById(R.id.mirror_sender_name);
         }
@@ -89,6 +91,8 @@ public class GroupMsgAdapter extends RecyclerView.Adapter<GroupMsgAdapter.GroupM
         messageViewHolder.messageReceiverPicture.setVisibility(View.GONE);
         messageViewHolder.messageSenderPicture.setVisibility(View.GONE);
         messageViewHolder.mirror_senderName.setVisibility(View.GONE);
+        messageViewHolder.messageReceiverSticker.setVisibility(View.GONE);
+        messageViewHolder.messageSenderSticker.setVisibility(View.GONE);
 
         if (!fromUserID.equals(messageSenderID)) {
 
@@ -164,6 +168,22 @@ public class GroupMsgAdapter extends RecyclerView.Adapter<GroupMsgAdapter.GroupM
 
             }
 
+            else if(fromMessageType.equals("sticker")) {
+                if (checkNextMessageSender(groupMessageList, position)) {
+                    messageViewHolder.senderName.setVisibility(View.GONE);
+                    messageViewHolder.receiverProfileImage.setVisibility(View.INVISIBLE);
+
+                } else {
+                    messageViewHolder.senderName.setVisibility(View.VISIBLE);
+                    messageViewHolder.mirror_senderName.setVisibility(View.INVISIBLE);
+                    messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
+                }
+                messageViewHolder.messageReceiverSticker.setVisibility(View.VISIBLE);
+                Picasso.get().load(messages.getMessage()).into(messageViewHolder.messageReceiverSticker);
+
+
+            }
+
             else {
                 if (checkNextMessageSender(groupMessageList, position)) {
                     messageViewHolder.senderName.setVisibility(View.GONE);
@@ -205,6 +225,11 @@ public class GroupMsgAdapter extends RecyclerView.Adapter<GroupMsgAdapter.GroupM
             else if(fromMessageType.equals("image")) {
                 messageViewHolder.messageSenderPicture.setVisibility(View.VISIBLE);
                 Picasso.get().load(messages.getMessage()).into(messageViewHolder.messageSenderPicture);
+            }
+
+            else if(fromMessageType.equals("sticker")) {
+                messageViewHolder.messageSenderSticker.setVisibility(View.VISIBLE);
+                Picasso.get().load(messages.getMessage()).into(messageViewHolder.messageSenderSticker);
             }
 
             else {
