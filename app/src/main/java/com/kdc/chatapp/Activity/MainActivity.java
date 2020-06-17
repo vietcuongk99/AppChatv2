@@ -118,7 +118,6 @@ public class MainActivity extends BaseActivity implements SinchService.StartFail
         });
 
 
-
         myTabsAccessorAdapter = new TabsAccessorAdapter(getSupportFragmentManager());
         myViewPager.setAdapter(myTabsAccessorAdapter);
         myViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {

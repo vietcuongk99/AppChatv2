@@ -229,7 +229,7 @@ public class ChatActivity extends BaseActivity {
         SendFilesButton = findViewById(R.id.send_files_btn);
         MessageInputText = (EditText) findViewById(R.id.input_message);
 
-        messageAdapter = new MessageAdapter(messagesList);
+        messageAdapter = new MessageAdapter(messagesList, ChatActivity.this);
         userMessagesList = (RecyclerView) findViewById(R.id.private_message_list_of_users);
         linearLayoutManager = new LinearLayoutManager(this);
         userMessagesList.setLayoutManager(linearLayoutManager);
@@ -304,7 +304,7 @@ public class ChatActivity extends BaseActivity {
         close_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                choose_sticker.setVisibility(View.INVISIBLE);
+                choose_sticker.setVisibility(View.GONE);
 
                 RelativeLayout.LayoutParams params= new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 params.addRule(RelativeLayout.ABOVE, R.id.chat_layout);
@@ -753,18 +753,30 @@ public class ChatActivity extends BaseActivity {
         stickers.clear();
         AssetManager mgr = getApplicationContext().getAssets();
         try {
-            fileList = mgr.list("emoji");
+            fileList = mgr.list("sticker");
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Toast.makeText(this, "Size: " + fileList.length, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Size: " + fileList.length, Toast.LENGTH_SHORT).show();
 
         for (int i = 0; i < fileList.length; i++) {
-            Sticker sticker = new Sticker(fileList[i], "file:///android_asset/emoji/" + fileList[i]);
+            Sticker sticker = new Sticker(fileList[i], "file:///android_asset/sticker/" + fileList[i]);
             stickers.add(sticker);
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if (choose_sticker.getVisibility() == View.VISIBLE) {
+            choose_sticker.setVisibility(View.GONE);
 
-
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.addRule(RelativeLayout.ABOVE, R.id.chat_layout);
+            params.addRule(RelativeLayout.BELOW, R.id.chat_toolbar);
+            userMessagesList.setLayoutParams(params);
+            userMessagesList.smoothScrollToPosition(userMessagesList.getAdapter().getItemCount());
+        } else {
+            super.onBackPressed();
+        }
+    }
 }

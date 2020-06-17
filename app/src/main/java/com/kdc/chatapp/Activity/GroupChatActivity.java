@@ -132,9 +132,8 @@ public class GroupChatActivity extends AppCompatActivity {
         linearLayoutManager = new LinearLayoutManager(getApplicationContext());
         groupMessagesList.setLayoutManager(linearLayoutManager);
 
-        groupMsgAdapter = new GroupMsgAdapter(groupMessenger);
+        groupMsgAdapter = new GroupMsgAdapter(groupMessenger, GroupChatActivity.this);
         groupMessagesList.setAdapter(groupMsgAdapter);
-
 
         SendMessageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -287,7 +286,7 @@ public class GroupChatActivity extends AppCompatActivity {
         close_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                choose_sticker.setVisibility(View.INVISIBLE);
+                choose_sticker.setVisibility(View.GONE);
                 RelativeLayout.LayoutParams params= new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 params.addRule(RelativeLayout.ABOVE, R.id.group_chat_send_layout);
                 params.addRule(RelativeLayout.BELOW, R.id.main_page_toolbar);
@@ -596,15 +595,30 @@ public class GroupChatActivity extends AppCompatActivity {
         stickers.clear();
         AssetManager mgr = getApplicationContext().getAssets();
         try {
-            fileList = mgr.list("emoji");
+            fileList = mgr.list("sticker");
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Toast.makeText(this, "Size: " + fileList.length, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Size: " + fileList.length, Toast.LENGTH_SHORT).show();
 
         for (int i = 0; i < fileList.length; i++) {
-            Sticker sticker = new Sticker(fileList[i], "file:///android_asset/emoji/" + fileList[i]);
+            Sticker sticker = new Sticker(fileList[i], "file:///android_asset/sticker/" + fileList[i]);
             stickers.add(sticker);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+
+        if (choose_sticker.getVisibility() == View.VISIBLE) {
+            choose_sticker.setVisibility(View.GONE);
+            RelativeLayout.LayoutParams params= new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.addRule(RelativeLayout.ABOVE, R.id.group_chat_send_layout);
+            params.addRule(RelativeLayout.BELOW, R.id.main_page_toolbar);
+            groupMessagesList.setLayoutParams(params);
+            groupMessagesList.smoothScrollToPosition(groupMessagesList.getAdapter().getItemCount());
+        } else {
+            super.onBackPressed();
         }
     }
 }

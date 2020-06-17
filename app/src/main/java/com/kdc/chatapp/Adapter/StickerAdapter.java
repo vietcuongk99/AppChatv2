@@ -1,6 +1,7 @@
 package com.kdc.chatapp.Adapter;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -29,7 +30,10 @@ import com.kdc.chatapp.Model.Sticker;
 import com.kdc.chatapp.R;
 import com.squareup.picasso.Picasso;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -93,53 +97,61 @@ public class StickerAdapter extends RecyclerView.Adapter<StickerAdapter.StickerV
 
                     final String messagePushID = userMessageKeyRef.getKey();
 
+                    //Toast.makeText(mContext, stickers.get(position).getUrl(), Toast.LENGTH_SHORT).show();
+
+                    AssetManager mgr = mContext.getAssets();
 
                     final StorageReference storageReference = FirebaseStorage
                             .getInstance()
                             .getReference().child("Sticker" + "/" + messagePushID + "_" + stickers.get(position).getName());
-                    storageReference.putBytes(getByteArray(holder.image)).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    try {
+                        storageReference.putStream(new BufferedInputStream(mgr.open("sticker" + "/" + stickers.get(position).getName())))
+                                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                            storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    String url = uri.toString();
-                                    HashMap<String, Object> messageTextBody = new HashMap();
-                                    messageTextBody.put("message", url);
-                                    messageTextBody.put("name", stickers.get(position).getName());
-                                    messageTextBody.put("type", "sticker");
-                                    messageTextBody.put("from", messageSenderID);
-                                    messageTextBody.put("to", messageReceiverID);
-                                    messageTextBody.put("messageID", messagePushID);
-                                    messageTextBody.put("time", saveCurrentTime);
-                                    messageTextBody.put("date", saveCurrentDate);
+                                storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        String url = uri.toString();
+                                        HashMap<String, Object> messageTextBody = new HashMap();
+                                        messageTextBody.put("message", url);
+                                        messageTextBody.put("name", stickers.get(position).getName());
+                                        messageTextBody.put("type", "sticker");
+                                        messageTextBody.put("from", messageSenderID);
+                                        messageTextBody.put("to", messageReceiverID);
+                                        messageTextBody.put("messageID", messagePushID);
+                                        messageTextBody.put("time", saveCurrentTime);
+                                        messageTextBody.put("date", saveCurrentDate);
 
 
-                                    HashMap<String, Object> messageBodyDetails = new HashMap<>();
-                                    messageBodyDetails.put(messageSenderRef + "/listMessage/" + messagePushID, messageTextBody);
-                                    messageBodyDetails.put(messageReceiverRef + "/listMessage/" + messagePushID, messageTextBody);
+                                        HashMap<String, Object> messageBodyDetails = new HashMap<>();
+                                        messageBodyDetails.put(messageSenderRef + "/listMessage/" + messagePushID, messageTextBody);
+                                        messageBodyDetails.put(messageReceiverRef + "/listMessage/" + messagePushID, messageTextBody);
 
-                                    FirebaseDatabase.getInstance().getReference().updateChildren(messageBodyDetails)
-                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    if (task.isSuccessful()) {
-                                                        HashMap<String, Object> messageBodyDetails = new HashMap<>();
-                                                        messageBodyDetails.put(messageSenderRef + "/stateUserSee", 1);
-                                                        messageBodyDetails.put(messageReceiverRef + "/stateUserSee", 0);
-                                                        FirebaseDatabase.getInstance().getReference().updateChildren(messageBodyDetails);
-                                                    } else {
-                                                        Toast.makeText(mContext, "Error.", Toast.LENGTH_SHORT).show();
+                                        FirebaseDatabase.getInstance().getReference().updateChildren(messageBodyDetails)
+                                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        if (task.isSuccessful()) {
+                                                            HashMap<String, Object> messageBodyDetails = new HashMap<>();
+                                                            messageBodyDetails.put(messageSenderRef + "/stateUserSee", 1);
+                                                            messageBodyDetails.put(messageReceiverRef + "/stateUserSee", 0);
+                                                            FirebaseDatabase.getInstance().getReference().updateChildren(messageBodyDetails);
+                                                        } else {
+                                                            Toast.makeText(mContext, "Error.", Toast.LENGTH_SHORT).show();
+                                                        }
                                                     }
-                                                }
-                                            });
+                                                });
 
-                                }
-                            });
+                                    }
+                                });
 
-                        }
-                    });
+                            }
+                        });
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
 
                 }
                 else {
@@ -149,35 +161,40 @@ public class StickerAdapter extends RecyclerView.Adapter<StickerAdapter.StickerV
                             .child(currentGroupName).push();
 
                     final String messagePushID = userMessageKeyRef.getKey();
-
+                    AssetManager mgr = mContext.getAssets();
                     final StorageReference storageReference = FirebaseStorage
                             .getInstance()
                             .getReference().child("Sticker" + "/" + messagePushID + "_" + stickers.get(position).getName());
-                    storageReference.putBytes(getByteArray(holder.image)).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    try {
+                        storageReference.putStream(new BufferedInputStream(mgr.open("sticker" + "/" + stickers.get(position).getName())))
+                                .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                            storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    String url = uri.toString();
-                                    DatabaseReference GroupNameRef = FirebaseDatabase.getInstance().getReference().child("Groups").child(currentGroupName);
-                                    DatabaseReference GroupMessageKeyRef = GroupNameRef.child("listMessage").child(messagePushID);
+                                storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        String url = uri.toString();
+                                        DatabaseReference GroupNameRef = FirebaseDatabase.getInstance().getReference().child("Groups").child(currentGroupName);
+                                        DatabaseReference GroupMessageKeyRef = GroupNameRef.child("listMessage").child(messagePushID);
 
-                                    HashMap<String, Object> messageInfoMap = new HashMap<>();
-                                    messageInfoMap.put("from", currentUserID);
-                                    messageInfoMap.put("name", stickers.get(position).getName());
-                                    messageInfoMap.put("message", url);
-                                    messageInfoMap.put("date", saveCurrentDate);
-                                    messageInfoMap.put("time", saveCurrentTime);
-                                    messageInfoMap.put("type", "sticker");
-                                    GroupMessageKeyRef.updateChildren(messageInfoMap);
+                                        HashMap<String, Object> messageInfoMap = new HashMap<>();
+                                        messageInfoMap.put("from", currentUserID);
+                                        messageInfoMap.put("name", stickers.get(position).getName());
+                                        messageInfoMap.put("message", url);
+                                        messageInfoMap.put("date", saveCurrentDate);
+                                        messageInfoMap.put("time", saveCurrentTime);
+                                        messageInfoMap.put("type", "sticker");
+                                        GroupMessageKeyRef.updateChildren(messageInfoMap);
 
-                                }
-                            });
+                                    }
+                                });
 
-                        }
-                    });
+                            }
+                        });
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
 
             }

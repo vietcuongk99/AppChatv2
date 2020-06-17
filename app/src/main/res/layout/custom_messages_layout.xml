@@ -49,8 +49,8 @@
 
     <ImageView
         android:id="@+id/message_receiver_sticker_view"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_alignParentStart="true"
         android:layout_marginStart="50dp"
         android:layout_marginTop="10dp"

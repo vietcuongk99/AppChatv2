@@ -1,6 +1,7 @@
 package com.kdc.chatapp.Adapter;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,9 +43,11 @@ public class GroupMsgAdapter extends RecyclerView.Adapter<GroupMsgAdapter.GroupM
     private List<Messages> groupMessageList;
     private FirebaseAuth mAuth;
     private DatabaseReference usersRef;
+    private Context mContext;
 
-    public GroupMsgAdapter(List<Messages> groupMessageList){
+    public GroupMsgAdapter(List<Messages> groupMessageList, Context mContext){
         this.groupMessageList = groupMessageList;
+        this.mContext = mContext;
     }
 
     public class GroupMsgViewHolder extends RecyclerView.ViewHolder{
@@ -84,6 +88,7 @@ public class GroupMsgAdapter extends RecyclerView.Adapter<GroupMsgAdapter.GroupM
 
         String fromUserID = messages.getFrom();
         String fromMessageType = messages.getType();
+        String name = messages.getName();
 
         messageViewHolder.receiverMessageText.setVisibility(View.GONE);
         messageViewHolder.receiverProfileImage.setVisibility(View.GONE);
@@ -163,23 +168,38 @@ public class GroupMsgAdapter extends RecyclerView.Adapter<GroupMsgAdapter.GroupM
                     messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
                 }
                 messageViewHolder.messageReceiverPicture.setVisibility(View.VISIBLE);
-                Picasso.get().load(messages.getMessage()).into(messageViewHolder.messageReceiverPicture);
+                Glide.with(mContext).load(messages.getMessage()).into(messageViewHolder.messageReceiverPicture);
 
 
             }
 
             else if(fromMessageType.equals("sticker")) {
-                if (checkNextMessageSender(groupMessageList, position)) {
-                    messageViewHolder.senderName.setVisibility(View.GONE);
-                    messageViewHolder.receiverProfileImage.setVisibility(View.INVISIBLE);
+                if (name.endsWith(".gif")) {
+                    if (checkNextMessageSender(groupMessageList, position)) {
+                        messageViewHolder.senderName.setVisibility(View.GONE);
+                        messageViewHolder.receiverProfileImage.setVisibility(View.INVISIBLE);
 
+                    } else {
+                        messageViewHolder.senderName.setVisibility(View.VISIBLE);
+                        messageViewHolder.mirror_senderName.setVisibility(View.INVISIBLE);
+                        messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
+                    }
+                    messageViewHolder.messageReceiverSticker.setVisibility(View.VISIBLE);
+                    Glide.with(mContext).asGif().load(messages.getMessage()).into(messageViewHolder.messageReceiverSticker);
                 } else {
-                    messageViewHolder.senderName.setVisibility(View.VISIBLE);
-                    messageViewHolder.mirror_senderName.setVisibility(View.INVISIBLE);
-                    messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
+                    if (checkNextMessageSender(groupMessageList, position)) {
+                        messageViewHolder.senderName.setVisibility(View.GONE);
+                        messageViewHolder.receiverProfileImage.setVisibility(View.INVISIBLE);
+
+                    } else {
+                        messageViewHolder.senderName.setVisibility(View.VISIBLE);
+                        messageViewHolder.mirror_senderName.setVisibility(View.INVISIBLE);
+                        messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
+                    }
+                    messageViewHolder.messageReceiverSticker.setVisibility(View.VISIBLE);
+                    Glide.with(mContext).load(messages.getMessage()).into(messageViewHolder.messageReceiverSticker);
                 }
-                messageViewHolder.messageReceiverSticker.setVisibility(View.VISIBLE);
-                Picasso.get().load(messages.getMessage()).into(messageViewHolder.messageReceiverSticker);
+
 
 
             }
@@ -228,8 +248,15 @@ public class GroupMsgAdapter extends RecyclerView.Adapter<GroupMsgAdapter.GroupM
             }
 
             else if(fromMessageType.equals("sticker")) {
-                messageViewHolder.messageSenderSticker.setVisibility(View.VISIBLE);
-                Picasso.get().load(messages.getMessage()).into(messageViewHolder.messageSenderSticker);
+
+                if (name.endsWith(".gif")) {
+                    messageViewHolder.messageSenderSticker.setVisibility(View.VISIBLE);
+                    Glide.with(mContext).asGif().load(messages.getMessage()).into(messageViewHolder.messageSenderSticker);
+                } else {
+                    messageViewHolder.messageSenderSticker.setVisibility(View.VISIBLE);
+                    Glide.with(mContext).load(messages.getMessage()).into(messageViewHolder.messageSenderSticker);
+                }
+
             }
 
             else {

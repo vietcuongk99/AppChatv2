@@ -1,6 +1,7 @@
 package com.kdc.chatapp.Adapter;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,9 +43,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     private List<Messages> userMessageList;
     private FirebaseAuth mAuth;
     private DatabaseReference usersRef;
+    private Context mContext;
 
-    public MessageAdapter(List<Messages> userMessageList){
+    public MessageAdapter(List<Messages> userMessageList, Context mContext){
         this.userMessageList = userMessageList;
+        this.mContext = mContext;
     }
 
     public class MessageViewHolder extends RecyclerView.ViewHolder{
@@ -94,6 +98,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
             String fromUserID = messages.getFrom();
             String fromMessageType = messages.getType();
+            String name = messages.getName();
 
             if (!fromUserID.equals(messageSenderID)) {
                 usersRef = FirebaseDatabase.getInstance().getReference().child("Users")
@@ -159,6 +164,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                 }
 
                 else if(fromMessageType.equals("sticker")) {
+                    if (name.endsWith(".gif")) {
+                        messageViewHolder.messageReceiverSticker.setVisibility(View.VISIBLE);
+                        Glide.with(mContext).asGif().load(messages.getMessage()).into(messageViewHolder.messageReceiverSticker);
+                    } else {
+                        messageViewHolder.messageReceiverSticker.setVisibility(View.VISIBLE);
+                        Glide.with(mContext).load(messages.getMessage()).into(messageViewHolder.messageReceiverSticker);
+                    }
+
                     if (checkNextMessageSender(userMessageList, position)) {
                         messageViewHolder.receiverProfileImage.setVisibility(View.INVISIBLE);
 
@@ -166,8 +179,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                         messageViewHolder.receiverProfileImage.setVisibility(View.VISIBLE);
                     }
 
-                    messageViewHolder.messageReceiverSticker.setVisibility(View.VISIBLE);
-                    Picasso.get().load(messages.getMessage()).into(messageViewHolder.messageReceiverSticker);
 
                 }
 
@@ -183,8 +194,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                     messageViewHolder.receiverMessageText.setBackgroundResource(R.drawable.receiver_message_layout);
                     messageViewHolder.receiverMessageText.setTextColor(Color.WHITE);
                     messageViewHolder.receiverMessageText.setText(messages.getName());
-                    messageViewHolder.senderMessageText
-                            .setPaintFlags(messageViewHolder.senderMessageText.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+                    messageViewHolder.receiverMessageText
+                            .setPaintFlags(messageViewHolder.receiverMessageText.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 
                 }
 
@@ -214,8 +225,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                 }
 
                 else if(fromMessageType.equals("sticker")) {
-                    messageViewHolder.messageSenderSticker.setVisibility(View.VISIBLE);
-                    Picasso.get().load(messages.getMessage()).into(messageViewHolder.messageSenderSticker);
+                    if (name.endsWith(".gif")) {
+                        messageViewHolder.messageSenderSticker.setVisibility(View.VISIBLE);
+                        Glide.with(mContext).asGif().load(messages.getMessage()).into(messageViewHolder.messageSenderSticker);
+                    } else {
+                        messageViewHolder.messageSenderSticker.setVisibility(View.VISIBLE);
+                        Glide.with(mContext).load(messages.getMessage()).into(messageViewHolder.messageSenderSticker);
+                    }
+
                 }
 
                 else {

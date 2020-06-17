@@ -100,7 +100,7 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_above="@+id/group_chat_send_layout"
-        android:visibility="invisible"
+        android:visibility="gone"
         android:background="@drawable/rounded_border">
 
         <RelativeLayout
