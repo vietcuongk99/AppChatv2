@@ -16,6 +16,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -67,18 +69,12 @@ public class AddMemActivity extends AppCompatActivity {
         RootRef = FirebaseDatabase.getInstance().getReference();
         groupName = getIntent().getExtras().get("groupName").toString();
 
-        FindFriendsRecyclerList = (RecyclerView) findViewById(R.id.listFriends);
+        FindFriendsRecyclerList = (RecyclerView) findViewById(R.id.listMember);
         FindFriendsRecyclerList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
-        FriendsListToAdd = (RecyclerView) findViewById(R.id.list_member_group);
-        FriendsListToAdd.setLayoutManager(layoutManager);
+        userName = (EditText) findViewById(R.id.friend_name);
 
-        userName = (EditText) findViewById(R.id.friend_name_add);
-
-
-
-        mToolbar = (Toolbar) findViewById(R.id.find_friends_to_add_toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.add_members);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("Add members");
 
@@ -194,22 +190,23 @@ public class AddMemActivity extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(@NonNull FindFriendViewHolder holder, final int position, @NonNull Contacts model) {
                 holder.userName.setText(model.getName());
-                holder.userStatus.setText(model.getStatus());
 
                 if (model.getImage() != null) {
                     Picasso.get().load(model.getImage()).into(holder.profileImage);
                 }
 
-                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                String user_id = getRef(position).getKey();
+
+                holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
-                    public void onClick(View v) {
-                        String user_id = getRef(position).getKey();
-                        if(!user_id.equals(UserId)) {
-                            DatabaseReference groupMessage = RootRef.child("Groups").child(groupName).push();
-                            Map AddUser = new HashMap();
-                            AddUser.put("position", "member");
-                            RootRef.child("Groups").child(groupName).child("membersCache").child(user_id).updateChildren(AddUser);
+                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                        if(isChecked==true) {
+                            RootRef.child("Groups").child(groupName).push();
+                            Map DeleteUser = new HashMap();
+                            DeleteUser.put("position", "member");
+                            RootRef.child("Groups").child(groupName).child("membersCache").child(user_id).updateChildren(DeleteUser);
                         }
+                        else RootRef.child("Groups").child(groupName).child("membersCache").child(user_id).removeValue();
                     }
                 });
             }
@@ -217,7 +214,7 @@ public class AddMemActivity extends AppCompatActivity {
             @NonNull
             @Override
             public FindFriendViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_display_layout, parent, false);
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.delete_mem_radio_layout, parent, false);
                 FindFriendViewHolder viewHolder = new FindFriendViewHolder(view);
                 return viewHolder;
             }
@@ -241,97 +238,21 @@ public class AddMemActivity extends AppCompatActivity {
 
     private void addMemToList() {
 
-        FirebaseRecyclerOptions<Contacts> options = new FirebaseRecyclerOptions.Builder<Contacts>()
-                .setQuery(RootRef.child("Groups").child(groupName).child("membersCache"), Contacts.class)
-                .build();
-
-        adapterFriend = new FirebaseRecyclerAdapter<Contacts, FriendListViewHolder>(options) {
-            @NonNull
-            @Override
-            public FriendListViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_profile_image, parent, false);
-                FriendListViewHolder viewHolder = new FriendListViewHolder(view);
-                return viewHolder;
-            }
-
-            @Override
-            protected void onBindViewHolder(@NonNull FriendListViewHolder holder, int position, @NonNull Contacts model) {
-
-                String key = getRef(position).getKey();
-
-                UserRef.child(key).addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.exists()) {
-                            if (dataSnapshot.hasChild("image")) {
-                                String userImage = dataSnapshot.child("image").getValue().toString();
-                                Picasso.get().load(userImage).into(holder.profileImage);
-
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
-
-                holder.itemView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        RootRef.child("Groups").child(groupName).child("membersCache").child(key)
-                                .addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                RootRef.child("Groups").child(groupName).child("membersCache").child(key).removeValue()
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        adapterFriend.notifyDataSetChanged();
-                                    }
-                                });
-
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                            }
-                        });
-                    }
-                });
-            }
-
-            @Override
-            public long getItemId(int position) {
-                return position;
-            }
-
-            @Override
-            public int getItemViewType(int position) {
-                return position;
-            }
-        };
-
-
-        FriendsListToAdd.setAdapter(adapterFriend);
-        adapterFriend.startListening();
-
     }
 
 
     public static class FindFriendViewHolder extends RecyclerView.ViewHolder {
 
-        TextView userName, userStatus;
+        TextView userName;
         CircleImageView profileImage;
+        CheckBox checkBox;
 
         public FindFriendViewHolder(@NonNull View itemView) {
             super(itemView);
 
             userName = itemView.findViewById(R.id.user_profile_name);
-            userStatus = itemView.findViewById(R.id.user_status);
             profileImage = itemView.findViewById(R.id.users_profile_image);
+            checkBox = itemView.findViewById(R.id.checkbox_delete);
 
         }
     }

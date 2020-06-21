@@ -195,7 +195,7 @@ public class DeleteUserOutGroup extends AppCompatActivity {
 
                     onBackPressed();
 
-                    Intent settingsIntent = new Intent(DeleteUserOutGroup.this, GroupChatActivity.class);;
+                    Intent settingsIntent = new Intent(DeleteUserOutGroup.this, MainActivity.class);;
                     startActivity(settingsIntent);
 
                 }
