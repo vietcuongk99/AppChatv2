@@ -241,7 +241,7 @@ public class ChatActivity extends BaseActivity {
         SimpleDateFormat currentDate = new SimpleDateFormat("dd/MM/yyyy");
         saveCurrentDate = currentDate.format(calendar.getTime());
 
-        SimpleDateFormat currentTime = new SimpleDateFormat("hh:mm a");
+        SimpleDateFormat currentTime = new SimpleDateFormat("hh:mm:ss");
         saveCurrentTime = currentTime.format(calendar.getTime());
 
         pCall = findViewById(R.id.pCall);
@@ -516,12 +516,29 @@ public class ChatActivity extends BaseActivity {
                                 try {
                                     Date date1 = new SimpleDateFormat("dd/MM/yyyy hh:mm a").parse(SDate1);
                                     long x = (now.getTime() - date1.getTime()) / 60000;
-                                    if (x < 60) {
-                                        x += 1;
-                                        userLastSeen.setText("active " + x + " minutes ago");
-                                    } else if (x > 1440)
-                                        userLastSeen.setText("active " + x / 1440 + " days ago");
-                                    else userLastSeen.setText("active " + x / 60 + " hours ago");
+                                    if(x<60) {
+                                        x+=1;
+                                        if(x==1) {
+                                            userLastSeen.setText("active " + x + " minute ago");
+                                        }
+                                        else userLastSeen.setText("active " + x + " minutes ago");
+                                    }
+                                    else if(x>1440) {
+                                        x=x/1440;
+                                        if(x==1) {
+                                            userLastSeen.setText("active " + x + " day ago");
+                                        }
+                                        else  userLastSeen.setText("active " + x + " days ago");
+
+                                    }
+                                    else {
+                                        x=x/60;
+                                        if(x==1) {
+                                            userLastSeen.setText("active " + x + " hour ago");
+                                        }
+                                        else  userLastSeen.setText("active " + x + " hours ago");
+
+                                    }
                                 } catch (ParseException e) {
                                     e.printStackTrace();
                                 }

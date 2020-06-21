@@ -18,7 +18,8 @@
         android:roundIcon="@mipmap/ic_chatapp_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activity.AddMemActivity"></activity>
+        <activity android:name=".Activity.DeleteUserOutGroup"></activity>
+        <activity android:name=".Activity.AddMemActivity" />
 
         <service android:name=".Call.SinchService" />
 

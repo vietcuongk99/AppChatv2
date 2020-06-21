@@ -28,12 +28,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
@@ -526,8 +522,11 @@ public class GroupChatActivity extends AppCompatActivity {
     }
 
     private void deleteMember() {
-        System.out.println("hello test");
+        Intent intent = new Intent(GroupChatActivity.this, DeleteUserOutGroup.class);
+        intent.putExtra("groupName", currentGroupName);
+        startActivity(intent);
     }
+
 
     private void leaveGroup() {
         GroupNameRef.child("members").child(currentUserID).removeValue();
