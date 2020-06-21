@@ -529,7 +529,42 @@ public class GroupChatActivity extends AppCompatActivity {
 
 
     private void leaveGroup() {
-        GroupNameRef.child("members").child(currentUserID).removeValue();
+        GroupNameRef.child("members").child(currentUserID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds: dataSnapshot.getChildren()) {
+                    if(ds.getValue().toString().equals("admin")) {
+                        GroupNameRef.child("members").child(currentUserID).removeValue();
+                        GroupNameRef.child("members").orderByKey().limitToFirst(1).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                if(dataSnapshot.exists()) {
+                                    for (DataSnapshot supportItem: dataSnapshot.getChildren()) {
+                                        String futureUID = supportItem.getKey();
+                                        Map updatePosition = new HashMap();
+                                        updatePosition.put("position", "admin");
+                                        GroupNameRef.child("members").child(futureUID).updateChildren(updatePosition);
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+                    else {
+                        GroupNameRef.child("members").child(currentUserID).removeValue();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
         Intent intent = new Intent(GroupChatActivity.this, MainActivity.class);
         startActivity(intent);
     }

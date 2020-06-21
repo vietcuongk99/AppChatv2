@@ -1,6 +1,7 @@
 package com.kdc.chatapp.Activity;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -42,7 +44,9 @@ public class DeleteUserOutGroup extends AppCompatActivity {
     private DatabaseReference UserRef, RootRef, MemberCurrentGroup;
     private String groupName;
 
-    private CheckBox checkBox;
+    private FirebaseAuth mAuth;
+
+    private String CurrentUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,7 +153,6 @@ public class DeleteUserOutGroup extends AppCompatActivity {
         super.onOptionsItemSelected(item);
         if (item.getItemId() == R.id.add_option) {
             deleteAction();
-            onBackPressed();
         }
 
         if (item.getItemId() == R.id.cancel) {
@@ -160,11 +163,47 @@ public class DeleteUserOutGroup extends AppCompatActivity {
     }
 
     private void deleteAction() {
+        mAuth = FirebaseAuth.getInstance();
+        CurrentUserId = mAuth.getCurrentUser().getUid();
+
         RootRef.child("Groups").child(groupName).child("membersCache").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
-                    RootRef.child("Groups").child(groupName).child("members").child(snapshot.getKey()).removeValue();
+                if(dataSnapshot.hasChild(CurrentUserId)) {
+                    for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
+                        RootRef.child("Groups").child(groupName).child("members").child(snapshot.getKey().toString()).removeValue();
+                    }
+
+                    RootRef.child("Groups").child(groupName).child("members").orderByKey().limitToFirst(1).addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if(dataSnapshot.exists()) {
+                                for (DataSnapshot supportItem: dataSnapshot.getChildren()) {
+                                    String futureUID = supportItem.getKey();
+                                    Map updatePosition = new HashMap();
+                                    updatePosition.put("position", "admin");
+                                    RootRef.child("Groups").child(groupName).child("members").child(futureUID).updateChildren(updatePosition);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+                    onBackPressed();
+
+                    Intent settingsIntent = new Intent(DeleteUserOutGroup.this, GroupChatActivity.class);;
+                    startActivity(settingsIntent);
+
+                }
+                else {
+                    for (DataSnapshot snapshot: dataSnapshot.getChildren()) {
+                        RootRef.child("Groups").child(groupName).child("members").child(snapshot.getKey().toString()).removeValue();
+                    }
+                    onBackPressed();
                 }
             }
 
