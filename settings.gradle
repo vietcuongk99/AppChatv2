@@ -1,2 +1,0 @@
-rootProject.name='ChatApp'
-include ':app', ':sinch-android-rtc-3.17.4'
