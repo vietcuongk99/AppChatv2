@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/group_chat_activity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activity.GroupChatActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/groupAppBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include
+            android:id="@+id/main_page_toolbar"
+            layout="@layout/app_bar_layout">
+        </include>
+
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/group_chat_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/groupAppBarLayout"
+        android:layout_above="@+id/group_chat_send_layout"
+        android:layout_marginVertical="10dp">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+    <RelativeLayout
+        android:id="@+id/group_chat_send_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true">
+
+        <com.github.nikartm.button.FitButton
+            android:id="@+id/send_files_btn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="5dp"
+            android:gravity="center"
+            app:fb_icon="@drawable/send_files"
+            android:layout_alignParentStart="true"
+            android:backgroundTint="@android:color/white"
+            app:fb_iconWidth="30dp"
+            app:fb_iconHeight="30dp"
+            app:fb_rippleColor="#59A6E3"
+            android:layout_centerVertical="true"/>
+
+        <com.github.nikartm.button.FitButton
+            android:id="@+id/send_sticker_btn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="5dp"
+            android:gravity="center"
+            app:fb_icon="@drawable/add_sticker"
+            android:layout_toEndOf="@+id/send_files_btn"
+            app:fb_iconColor="#3498DB"
+            app:fb_iconWidth="30dp"
+            app:fb_iconHeight="30dp"
+            app:fb_rippleColor="#59A6E3"
+            android:layout_centerVertical="true"/>
+        <EditText
+            android:id="@+id/input_group_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Write your message here..."
+            android:layout_marginHorizontal="5dp"
+            android:layout_centerVertical="true"
+            android:maxLines="4"
+            android:layout_toEndOf="@+id/send_sticker_btn"
+            android:layout_toStartOf="@+id/send_message_button"
+            android:textSize="15sp"
+            android:paddingHorizontal="10dp"
+            android:background="@drawable/rounded_border"
+            android:paddingVertical="5dp"/>
+
+        <com.github.nikartm.button.FitButton
+            android:id="@+id/send_message_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:fb_icon="@drawable/send_message"
+            android:layout_marginEnd="5dp"
+            android:gravity="center"
+            android:layout_alignParentEnd="true"
+            app:fb_iconWidth="30dp"
+            app:fb_iconHeight="30dp"
+            app:fb_rippleColor="#59A6E3"
+            android:layout_centerVertical="true"/>
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/choose_sticker"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_above="@+id/group_chat_send_layout"
+        android:visibility="gone"
+        android:background="@drawable/rounded_border">
+
+        <RelativeLayout
+            android:id="@+id/close_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Choose sticker"
+                android:layout_alignParentStart="true"
+                android:textStyle="bold"
+                android:layout_marginStart="20dp"
+                android:layout_centerVertical="true">
+
+            </TextView>
+
+            <com.github.nikartm.button.FitButton
+                android:id="@+id/close_btn"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentEnd="true"
+                app:fb_icon="@drawable/cancel_icon"
+                app:fb_iconWidth="30dp"
+                app:fb_iconHeight="30dp"
+                android:layout_marginEnd="5dp"
+                app:fb_rippleColor="#FF0000"
+                android:gravity="center">
+            </com.github.nikartm.button.FitButton>
+
+        </RelativeLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/group_divider"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/close_list"
+            android:padding="5dp"
+            android:layout_centerHorizontal="true">
+
+        </androidx.recyclerview.widget.RecyclerView>
+
+    </RelativeLayout>
+
+</RelativeLayout>
