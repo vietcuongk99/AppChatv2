@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "388429424429-gmrqrr58u5a4g0or5mlbjgpp0r0rrprm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.kdc.chatapp",
+            "certificate_hash": "471ae831bcccc8820420095975fca26b01e9ced9"
+          }
+        },
+        {
           "client_id": "388429424429-s6nk364n679uilsen388kmgaja9f2kmd.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -36,7 +44,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "388429424429-vplcdr6an8q842of8o5dtatt6qbpgiu3.apps.googleusercontent.com",
+              "client_id": "388429424429-ioggi95mpbk609bjsp90ho7m3c0u2j83.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
