@@ -405,10 +405,20 @@ public class MainActivity extends BaseActivity implements SinchService.StartFail
 
     //hiển thị màn WeMap Flutter
     private void sendUserToWeMapScreen() {
-        startActivity(FlutterActivity
-                .withCachedEngine("my_engine_id")
-                .build(this)
-        );
+
+//        flutterEngine = new FlutterEngine(this);
+//        // Configure an initial route.
+//        flutterEngine.getNavigationChannel().setInitialRoute("your/route/here");
+//        // Start executing Dart code to pre-warm the FlutterEngine.
+//        flutterEngine.getDartExecutor().executeDartEntrypoint(
+//                DartExecutor.DartEntrypoint.createDefault()
+//        );
+//        // Cache the FlutterEngine to be used by FlutterActivity or FlutterFragment.
+//        FlutterEngineCache
+//                .getInstance()
+//                .put("my_engine_id", flutterEngine);
+
+        startActivity(FlutterActivity.createDefaultIntent(this));
     }
 
 }

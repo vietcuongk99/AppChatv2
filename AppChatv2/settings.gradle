@@ -1,11 +1,12 @@
 rootProject.name='ChatApp'
 // Include the host app project.
 include ':app', ':sinch-android-rtc-3.17.4'
-setBinding(new Binding([gradle: this]))                                // new
-evaluate(new File(                                                     // new
-        settingsDir.parentFile,                                        // new
-        'wemap_flutter_module/.android/include_flutter.groovy'         // new
-))                                                                     // new
+
+setBinding(new Binding([gradle: this]))
+evaluate(new File(
+        settingsDir.parentFile,
+        '/WeMap-Flutter-SDK-master/wemap_flutter_module/.android/include_flutter.groovy'
+))
 
 include ':wemap_flutter_module'
-project(':wemap_flutter_module').projectDir = new File('../wemap_flutter_module')
+project(':wemap_flutter_module').projectDir = new File('../WeMap-Flutter-SDK-master/wemap_flutter_module')
