@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ChatApp.iml" filepath="$PROJECT_DIR$/.idea/modules/ChatApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/ChatApp.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/ChatApp.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1550447986/ChatApp.connectivity.iml" filepath="$PROJECT_DIR$/.idea/modules/-1550447986/ChatApp.connectivity.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/980690455/ChatApp.flutter.iml" filepath="$PROJECT_DIR$/.idea/modules/980690455/ChatApp.flutter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1376750542/ChatApp.fluttertoast.iml" filepath="$PROJECT_DIR$/.idea/modules/-1376750542/ChatApp.fluttertoast.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1965890272/ChatApp.location.iml" filepath="$PROJECT_DIR$/.idea/modules/1965890272/ChatApp.location.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1110149910/ChatApp.path_provider.iml" filepath="$PROJECT_DIR$/.idea/modules/1110149910/ChatApp.path_provider.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/sinch-android-rtc-3.17.4/ChatApp.sinch-android-rtc-3.17.4.iml" filepath="$PROJECT_DIR$/.idea/modules/sinch-android-rtc-3.17.4/ChatApp.sinch-android-rtc-3.17.4.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1719569037/ChatApp.sqflite.iml" filepath="$PROJECT_DIR$/.idea/modules/-1719569037/ChatApp.sqflite.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1253486925/ChatApp.url_launcher.iml" filepath="$PROJECT_DIR$/.idea/modules/-1253486925/ChatApp.url_launcher.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/702234470/ChatApp.wemap_flutter_module.iml" filepath="$PROJECT_DIR$/.idea/modules/702234470/ChatApp.wemap_flutter_module.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-1638716983/ChatApp.wemapgl.iml" filepath="$PROJECT_DIR$/.idea/modules/-1638716983/ChatApp.wemapgl.iml" />
+    </modules>
+  </component>
+</project>
