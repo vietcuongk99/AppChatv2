@@ -153,7 +153,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                     messageViewHolder.receiverMessageText.setBackgroundResource(R.drawable.receiver_message_layout);
                     messageViewHolder.receiverMessageText.setTextColor(Color.WHITE);
                     messageViewHolder.receiverMessageText.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.location,0,0,0);
-                    messageViewHolder.receiverMessageText.setText("My's location");
+                    messageViewHolder.receiverMessageText.setText("Sender location");
 
 
                 }
@@ -223,7 +223,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                     messageViewHolder.senderMessageText.setBackgroundResource(R.drawable.sender_message_layout);
                     messageViewHolder.senderMessageText.setTextColor(Color.WHITE);
                     messageViewHolder.senderMessageText.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.location,0,0,0);
-                    messageViewHolder.senderMessageText.setText("My's location");
+                    messageViewHolder.senderMessageText.setText("My location");
 
                 }
                 else if(fromMessageType.equals("image")) {

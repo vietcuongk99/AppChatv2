@@ -158,7 +158,7 @@ public class GroupMsgAdapter extends RecyclerView.Adapter<GroupMsgAdapter.GroupM
                 messageViewHolder.receiverMessageText.setBackgroundResource(R.drawable.receiver_message_layout);
                 messageViewHolder.receiverMessageText.setTextColor(Color.WHITE);
                 messageViewHolder.receiverMessageText.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.location,0,0,0);
-                messageViewHolder.receiverMessageText.setText("My's location");
+                messageViewHolder.receiverMessageText.setText("Sender location");
 
 
             }
@@ -244,7 +244,7 @@ public class GroupMsgAdapter extends RecyclerView.Adapter<GroupMsgAdapter.GroupM
                 messageViewHolder.senderMessageText.setBackgroundResource(R.drawable.sender_message_layout);
                 messageViewHolder.senderMessageText.setTextColor(Color.WHITE);
                 messageViewHolder.senderMessageText.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.location,0,0,0);
-                messageViewHolder.senderMessageText.setText("My's location");
+                messageViewHolder.senderMessageText.setText("My location");
 
             }
             else if(fromMessageType.equals("image")) {
@@ -394,8 +394,6 @@ public class GroupMsgAdapter extends RecyclerView.Adapter<GroupMsgAdapter.GroupM
 
                         builder.show();
                     }
-
-
                     else if (groupMessageList.get(position).getType().equals("image")) {
                         CharSequence option[] = new CharSequence[]
                                 {
@@ -449,7 +447,6 @@ public class GroupMsgAdapter extends RecyclerView.Adapter<GroupMsgAdapter.GroupM
                                                     .build(mContext)
                                     );
                                 }
-
                             }
                         });
 

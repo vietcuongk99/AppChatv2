@@ -46,6 +46,7 @@ class FullMapState extends State<FullMap> {
             WeMap(
                 trackCameraPosition: true,
                 myLocationEnabled: true,
+                compassEnabled: false,
                 onMapClick: (point, latlng, _place) async {
                   place = await _place;
                 },
