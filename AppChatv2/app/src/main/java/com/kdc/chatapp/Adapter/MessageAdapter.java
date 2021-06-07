@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
@@ -37,6 +38,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.flutter.embedding.android.FlutterActivity;
+import io.flutter.embedding.engine.FlutterEngine;
+import io.flutter.embedding.engine.dart.DartExecutor;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageViewHolder> {
 
@@ -44,6 +50,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     private FirebaseAuth mAuth;
     private DatabaseReference usersRef;
     private Context mContext;
+    private FlutterEngine flutterEngine;
 
     public MessageAdapter(List<Messages> userMessageList, Context mContext){
         this.userMessageList = userMessageList;
@@ -371,8 +378,23 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                                 @Override
                                 public void onClick(DialogInterface dialog, int i) {
                                     if (i == 0) {
-                                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(userMessageList.get(position).getMessage()));
-                                        messageViewHolder.itemView.getContext().startActivity(intent);
+                                        // Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(userMessageList.get(position).getMessage()));
+                                        // messageViewHolder.itemView.getContext().startActivity(intent);
+                                        String msgContent = userMessageList.get(position).getMessage();
+                                        SharedPreferences prefs = mContext.getSharedPreferences("FlutterSharedPreferences", MODE_PRIVATE);
+                                        prefs.edit().putString("flutter.test", msgContent).apply();
+                                        flutterEngine = new FlutterEngine(mContext);
+
+                                        // Start executing Dart code to pre-warm the FlutterEngine.
+                                        flutterEngine.getDartExecutor().executeDartEntrypoint(
+                                                DartExecutor.DartEntrypoint.createDefault()
+                                        );
+                                        mContext.startActivity(
+                                                FlutterActivity
+                                                        .withNewEngine()
+                                                        .initialRoute("/direction")
+                                                        .build(mContext)
+                                        );
                                     }
 
                                 }
@@ -385,11 +407,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                 });
 
             }
-
-
-
-
-
             else {
                 messageViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -497,8 +514,23 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                                 @Override
                                 public void onClick(DialogInterface dialog, int i) {
                                     if (i == 0) {
-                                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(userMessageList.get(position).getMessage()));
-                                        messageViewHolder.itemView.getContext().startActivity(intent);
+                                        // Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(userMessageList.get(position).getMessage()));
+                                        // messageViewHolder.itemView.getContext().startActivity(intent);
+                                        String msgContent = userMessageList.get(position).getMessage();
+                                        SharedPreferences prefs = mContext.getSharedPreferences("FlutterSharedPreferences", MODE_PRIVATE);
+                                        prefs.edit().putString("flutter.test", msgContent).apply();
+                                        flutterEngine = new FlutterEngine(mContext);
+
+                                        // Start executing Dart code to pre-warm the FlutterEngine.
+                                        flutterEngine.getDartExecutor().executeDartEntrypoint(
+                                                DartExecutor.DartEntrypoint.createDefault()
+                                        );
+                                        mContext.startActivity(
+                                                FlutterActivity
+                                                        .withNewEngine()
+                                                        .initialRoute("/direction")
+                                                        .build(mContext)
+                                        );
                                     }
 
                                 }
@@ -511,9 +543,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                 });
             }
     }
-
-
-
 
 
     @Override

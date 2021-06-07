@@ -236,21 +236,21 @@ public class MainActivity extends BaseActivity implements SinchService.StartFail
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.options_menu, menu);
         MenuItem searchItem = menu.findItem(R.id.main_find_friends_option);
-        MenuItem showLocationItem = menu.findItem(R.id.your_location_option);
+        //MenuItem showLocationItem = menu.findItem(R.id.your_location_option);
         View searchView = searchItem.getActionView();
-        View showLocationView = showLocationItem.getActionView();
+        //View showLocationView = showLocationItem.getActionView();
         searchView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onOptionsItemSelected(searchItem);
             }
         });
-        showLocationView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onOptionsItemSelected(showLocationItem);
-            }
-        });
+//        showLocationView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                onOptionsItemSelected(showLocationItem);
+//            }
+//        });
         return true;
     }
 
@@ -285,9 +285,9 @@ public class MainActivity extends BaseActivity implements SinchService.StartFail
         if (item.getItemId() == R.id.main_create_group_option) {
             RequestNewGroup();
         }
-        if (item.getItemId() == R.id.your_location_option) {
-            sendUserToWeMapScreen();
-        }
+//        if (item.getItemId() == R.id.your_location_option) {
+//            sendUserToWeMapScreen();
+//        }
         return true;
     }
 

@@ -473,9 +473,10 @@ public class GroupChatActivity extends AppCompatActivity {
                 public void onLocationChanged(android.location.Location location) {
                     double latitude = location.getLatitude();
                     double longitude = location.getLongitude();
-                    String uri = "geo:" + latitude + ","
-                            + longitude + "?q=" + latitude
-                            + "," + longitude;
+//                    String uri = "geo:" + latitude + ","
+//                            + longitude + "?q=" + latitude
+//                            + "," + longitude;
+                    String msgContent = "{\"latitude\":" + latitude + "\"longitude\":" + longitude + "}";
 
                     String messageKey = GroupNameRef.push().getKey();
 
@@ -484,7 +485,7 @@ public class GroupChatActivity extends AppCompatActivity {
                     HashMap<String, Object> messageInfoMap = new HashMap<>();
                     messageInfoMap.put("from", currentUserID);
                     messageInfoMap.put("name", currentUserName);
-                    messageInfoMap.put("message", uri);
+                    messageInfoMap.put("message", msgContent);
                     messageInfoMap.put("date", currentDate);
                     messageInfoMap.put("time", currentTime);
                     messageInfoMap.put("type", "location");

@@ -702,9 +702,11 @@ public class ChatActivity extends BaseActivity {
                 public void onLocationChanged(android.location.Location location) {
                     double latitude = location.getLatitude();
                     double longitude = location.getLongitude();
-                    String uri = "geo:" + latitude + ","
-                            + longitude + "?q=" + latitude
-                            + "," + longitude;
+//                    String uri = "geo:" + latitude + ","
+//                            + longitude + "?q=" + latitude
+//                            + "," + longitude;
+
+                    String msgContent = "{\"latitude\":" + latitude + "\"longitude\":" + longitude + "}";
 
                     String messageSenderRef = "Messages/" + messageSenderID + "/" + messageReceiverID;
                     String messageReceiverRef = "Messages/" + messageReceiverID + "/" + messageSenderID;
@@ -714,7 +716,7 @@ public class ChatActivity extends BaseActivity {
                     String messagePushID = userMessageKeyRef.getKey();
 
                     Map messageTextBody = new HashMap();
-                    messageTextBody.put("message", uri);
+                    messageTextBody.put("message", msgContent);
                     messageTextBody.put("type", "location");
                     messageTextBody.put("from", messageSenderID);
                     messageTextBody.put("to", messageReceiverID);
