@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.net.Uri;
@@ -35,7 +36,11 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.flutter.embedding.android.FlutterActivity;
+import io.flutter.embedding.engine.FlutterEngine;
+import io.flutter.embedding.engine.dart.DartExecutor;
 
+import static android.content.Context.MODE_PRIVATE;
 import static androidx.core.content.ContextCompat.startActivity;
 
 public class GroupMsgAdapter extends RecyclerView.Adapter<GroupMsgAdapter.GroupMsgViewHolder> {
@@ -341,8 +346,17 @@ public class GroupMsgAdapter extends RecyclerView.Adapter<GroupMsgAdapter.GroupM
                             @Override
                             public void onClick(DialogInterface dialog, int i) {
                                 if (i == 0) {
-                                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(groupMessageList.get(position).getMessage()));
-                                    messageViewHolder.itemView.getContext().startActivity(intent);
+                                    //Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(groupMessageList.get(position).getMessage()));
+                                    //messageViewHolder.itemView.getContext().startActivity(intent);
+                                    String msgContent = groupMessageList.get(position).getMessage();
+                                    SharedPreferences prefs = mContext.getSharedPreferences("FlutterSharedPreferences", MODE_PRIVATE);
+                                    prefs.edit().putString("flutter.test", msgContent).apply();
+                                    mContext.startActivity(
+                                            FlutterActivity
+                                                    .withNewEngine()
+                                                    .initialRoute("/direction")
+                                                    .build(mContext)
+                                    );
                                 }
 
                             }
@@ -423,8 +437,17 @@ public class GroupMsgAdapter extends RecyclerView.Adapter<GroupMsgAdapter.GroupM
                             @Override
                             public void onClick(DialogInterface dialog, int i) {
                                 if (i == 0) {
-                                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(groupMessageList.get(position).getMessage()));
-                                    messageViewHolder.itemView.getContext().startActivity(intent);
+                                    //Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(groupMessageList.get(position).getMessage()));
+                                    //messageViewHolder.itemView.getContext().startActivity(intent);
+                                    String msgContent = groupMessageList.get(position).getMessage();
+                                    SharedPreferences prefs = mContext.getSharedPreferences("FlutterSharedPreferences", MODE_PRIVATE);
+                                    prefs.edit().putString("flutter.test", msgContent).apply();
+                                    mContext.startActivity(
+                                            FlutterActivity
+                                                    .withNewEngine()
+                                                    .initialRoute("/direction")
+                                                    .build(mContext)
+                                    );
                                 }
 
                             }

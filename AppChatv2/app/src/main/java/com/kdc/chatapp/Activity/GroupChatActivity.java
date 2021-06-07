@@ -476,7 +476,7 @@ public class GroupChatActivity extends AppCompatActivity {
 //                    String uri = "geo:" + latitude + ","
 //                            + longitude + "?q=" + latitude
 //                            + "," + longitude;
-                    String msgContent = "{\"latitude\":" + latitude + "\"longitude\":" + longitude + "}";
+                    String msgContent = "{\"latitude\":" + latitude + "," + "\"longitude\":" + longitude + "}";
 
                     String messageKey = GroupNameRef.push().getKey();
 

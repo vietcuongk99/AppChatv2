@@ -236,21 +236,13 @@ public class MainActivity extends BaseActivity implements SinchService.StartFail
         super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.options_menu, menu);
         MenuItem searchItem = menu.findItem(R.id.main_find_friends_option);
-        //MenuItem showLocationItem = menu.findItem(R.id.your_location_option);
         View searchView = searchItem.getActionView();
-        //View showLocationView = showLocationItem.getActionView();
         searchView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onOptionsItemSelected(searchItem);
             }
         });
-//        showLocationView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                onOptionsItemSelected(showLocationItem);
-//            }
-//        });
         return true;
     }
 
@@ -285,9 +277,6 @@ public class MainActivity extends BaseActivity implements SinchService.StartFail
         if (item.getItemId() == R.id.main_create_group_option) {
             RequestNewGroup();
         }
-//        if (item.getItemId() == R.id.your_location_option) {
-//            sendUserToWeMapScreen();
-//        }
         return true;
     }
 
@@ -401,24 +390,6 @@ public class MainActivity extends BaseActivity implements SinchService.StartFail
         currentUserID = mAuth.getCurrentUser().getUid();
         RootRef.child("Users").child(currentUserID).child("userState")
                 .updateChildren(onlineStateMap);
-    }
-
-    //hiển thị màn WeMap Flutter
-    private void sendUserToWeMapScreen() {
-
-//        flutterEngine = new FlutterEngine(this);
-//        // Configure an initial route.
-//        flutterEngine.getNavigationChannel().setInitialRoute("your/route/here");
-//        // Start executing Dart code to pre-warm the FlutterEngine.
-//        flutterEngine.getDartExecutor().executeDartEntrypoint(
-//                DartExecutor.DartEntrypoint.createDefault()
-//        );
-//        // Cache the FlutterEngine to be used by FlutterActivity or FlutterFragment.
-//        FlutterEngineCache
-//                .getInstance()
-//                .put("my_engine_id", flutterEngine);
-
-        startActivity(FlutterActivity.createDefaultIntent(this));
     }
 
 }
