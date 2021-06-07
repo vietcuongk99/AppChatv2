@@ -390,7 +390,7 @@ public class MainActivity extends BaseActivity implements SinchService.StartFail
         SimpleDateFormat currentDate = new SimpleDateFormat("dd/MM/yyyy");
         saveCurrentDate = currentDate.format(calendar.getTime());
 
-        SimpleDateFormat currentTime = new SimpleDateFormat("hh:mm:ss");
+        SimpleDateFormat currentTime = new SimpleDateFormat("HH:mm:ss");
         saveCurrentTime = currentTime.format(calendar.getTime());
 
         HashMap<String, Object> onlineStateMap = new HashMap<>();
