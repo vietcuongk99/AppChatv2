@@ -29,6 +29,8 @@ class FullMapState extends State<FullMap> {
   bool reverse = true;
   WeMapPlace place;
   String _sharedString = "";
+  double latitude = 0;
+  double longitude = 0;
 
   void _onMapCreated(WeMapController controller) {
     mapController = controller;
@@ -36,57 +38,71 @@ class FullMapState extends State<FullMap> {
 
   @override
   Widget build(BuildContext context) {
-    Map<String, dynamic> destinationPoint = jsonDecode(_sharedString);
-    LatLng location = new LatLng(destinationPoint['latitude'], destinationPoint['longitude']);
-    return new Scaffold(
-      body: Stack(
-        children: <Widget>[
-          Text(
-            "\nDestination point is "+_sharedString + " $location"
-          ),
-          WeMap(
-            trackCameraPosition: true,
-            myLocationEnabled: true,
-            onMapClick: (point, latlng, _place) async {
-              place = await _place;
-            },
-            onPlaceCardClose: () {
-              // print("Place Card closed");
-            },
-            reverse: true,
-            onMapCreated: _onMapCreated,
-            initialCameraPosition: CameraPosition(
-              target: LatLng(21.036029, 105.782950),
-              //target: LatLng(location.latitude, location.longitude),
-              zoom: 14.0,
+    return new MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        body: Stack(
+          children: <Widget>[
+            WeMap(
+                trackCameraPosition: true,
+                myLocationEnabled: true,
+                onMapClick: (point, latlng, _place) async {
+                  place = await _place;
+                },
+                onPlaceCardClose: () {
+                  // print("Place Card closed");
+                },
+                reverse: true,
+                onMapCreated: _onMapCreated,
+                initialCameraPosition: const CameraPosition(
+                  target: LatLng(21.036029, 105.782950),
+                  // target: LatLng(latitude, longitude),
+                  zoom: 13.0,
+                ),
+                destinationIcon: "assets/symbols/destination.png",
+                onStyleLoadedCallback: onStyleLoadedCallback
             ),
-            destinationIcon: "assets/symbols/destination.png",
-          ),
-          WeMapSearchBar(
-            location: myLatLng,
-            onSelected: (_place) {
-              setState(() {
-                place = _place;
-              });
-              mapController.moveCamera(
+            WeMapSearchBar(
+              location: myLatLng,
+              onSelected: (_place) {
+                setState(() {
+                  place = _place;
+                });
+                mapController.moveCamera(
+                  CameraUpdate.newCameraPosition(
+                    CameraPosition(
+                      target: place.location,
+                      zoom: 18.0,
+                    ),
+                  ),
+                );
+                mapController.showPlaceCard(place);
+              },
+              onClearInput: () {
+                setState(() {
+                  place = null;
+                  mapController.showPlaceCard(place);
+                });
+              },
+            ),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            // Add your onPressed code here!
+            mapController.moveCamera(
                 CameraUpdate.newCameraPosition(
                   CameraPosition(
-                    target: place.location,
+                    target: LatLng(latitude, longitude),
                     zoom: 14.0,
                   ),
-                ),
-              );
-              mapController.showPlaceCard(place);
-            },
-            onClearInput: () {
-              setState(() {
-                place = null;
-                mapController.showPlaceCard(place);
-              });
-            },
-          ),
-        ],
-      ),
+                ));
+          },
+          child: const Icon(Icons.navigation),
+          backgroundColor: Colors.green,
+        ),
+      )
+
     );
   }
 
@@ -94,8 +110,28 @@ class FullMapState extends State<FullMap> {
     super.initState();
   }
 
-  void onStyleLoadCallback() async {
+  void onStyleLoadedCallback() async {
     _sharedString = (await SharedPreferences.getInstance()).getString("test");
-    // destinationPoint = jsonDecode(_sharedString);
+    List arr = _sharedString.split(",");
+
+    setState(() {
+      latitude = double.parse(arr[0]);
+      longitude = double.parse(arr[1]);
+    });
+
+    await mapController.addCircle(CircleOptions(
+        geometry: LatLng(latitude, longitude),
+        circleRadius: 8.0,
+        circleColor: '#d3d3d3',
+        circleStrokeWidth: 1.5,
+        circleStrokeColor: '#0071bc'));
+    await mapController.moveCamera(
+      CameraUpdate.newCameraPosition(
+        CameraPosition(
+          target: LatLng(latitude, longitude),
+          zoom: 13.0,
+        ),
+      ),
+    );
 }
 }

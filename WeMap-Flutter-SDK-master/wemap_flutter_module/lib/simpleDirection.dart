@@ -35,6 +35,9 @@ class DirectionAPIState extends State<DirectionAPI> {
 
   @override
   Widget build(BuildContext context) {
+    List arr = _sharedString.split(",");
+    double latitude = double.parse(arr[0]);
+    double longitude = double.parse(arr[1]);
     return MaterialApp(
         title: "Direction example",
         debugShowCheckedModeBanner: false,
@@ -49,7 +52,8 @@ class DirectionAPIState extends State<DirectionAPI> {
                 Padding(
                   padding: EdgeInsets.only(bottom: 12.0),
                   child: Text(
-                      "Trip distance: $_tripDistance m. Trip time estimate: $_tripTime ms" + "\nDestination point is "+_sharedString ),
+                      "Trip distance: $_tripDistance m. Trip time estimate: $_tripTime ms" + "\nDestination point is "+_sharedString
+                  + "\nLatitude: $latitude"),
                 ),
                 Center(
                   child: SizedBox(

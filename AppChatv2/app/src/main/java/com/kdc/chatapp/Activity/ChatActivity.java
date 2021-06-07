@@ -706,7 +706,7 @@ public class ChatActivity extends BaseActivity {
 //                            + longitude + "?q=" + latitude
 //                            + "," + longitude;
 
-                    String msgContent = "{\"latitude\":" + latitude + "," + "\"longitude\":" + longitude + "}";
+                    String msgContent = latitude + "," + longitude;
 
                     String messageSenderRef = "Messages/" + messageSenderID + "/" + messageReceiverID;
                     String messageReceiverRef = "Messages/" + messageReceiverID + "/" + messageSenderID;

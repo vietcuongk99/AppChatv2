@@ -476,7 +476,7 @@ public class GroupChatActivity extends AppCompatActivity {
 //                    String uri = "geo:" + latitude + ","
 //                            + longitude + "?q=" + latitude
 //                            + "," + longitude;
-                    String msgContent = "{\"latitude\":" + latitude + "," + "\"longitude\":" + longitude + "}";
+                    String msgContent = latitude + "," + longitude;
 
                     String messageKey = GroupNameRef.push().getKey();
 
@@ -548,6 +548,8 @@ public class GroupChatActivity extends AppCompatActivity {
                                     }
                                 }
                             }
+
+
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError databaseError) {

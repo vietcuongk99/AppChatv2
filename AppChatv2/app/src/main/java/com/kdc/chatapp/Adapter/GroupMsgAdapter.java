@@ -354,7 +354,7 @@ public class GroupMsgAdapter extends RecyclerView.Adapter<GroupMsgAdapter.GroupM
                                     mContext.startActivity(
                                             FlutterActivity
                                                     .withNewEngine()
-                                                    .initialRoute("/direction")
+                                                    .initialRoute("/")
                                                     .build(mContext)
                                     );
                                 }
@@ -445,7 +445,7 @@ public class GroupMsgAdapter extends RecyclerView.Adapter<GroupMsgAdapter.GroupM
                                     mContext.startActivity(
                                             FlutterActivity
                                                     .withNewEngine()
-                                                    .initialRoute("/direction")
+                                                    .initialRoute("/")
                                                     .build(mContext)
                                     );
                                 }

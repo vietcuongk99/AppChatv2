@@ -392,7 +392,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                                         mContext.startActivity(
                                                 FlutterActivity
                                                         .withNewEngine()
-                                                        .initialRoute("/direction")
+                                                        .initialRoute("/")
                                                         .build(mContext)
                                         );
                                     }
@@ -528,7 +528,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
                                         mContext.startActivity(
                                                 FlutterActivity
                                                         .withNewEngine()
-                                                        .initialRoute("/direction")
+                                                        .initialRoute("/")
                                                         .build(mContext)
                                         );
                                     }
